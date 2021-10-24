@@ -1,0 +1,11 @@
+{
+   "workbench.colorCustomizations": {
+      "[One Dark Pro]": {
+         "tab.activeBorderTop": "#0A84FF",
+         "tab.activeBackground": "#0000ff",
+         "tab.activeBorder": "#ff0000",
+         "tab.unfocusedActiveBorder": "#000000",
+         "activityBar.background": "#00AA00"
+      }
+   }
+}
