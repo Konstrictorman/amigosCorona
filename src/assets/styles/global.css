@@ -1,0 +1,28 @@
+.form {
+   background-color: whitesmoke;
+   padding:25px;
+   margin-top: 20px;
+}
+
+.left {
+   text-align: left;
+
+}
+
+.title {
+   text-align: center;
+   background-color: orange;
+   color: white;
+   height: 40px;
+   justify-content: "center";
+   border: 2px solid orchid;
+   border-radius: 5px;
+}
+
+.centerItem {
+   width: 500;
+   height: 80;
+   display: "flex";
+   align-items: "center";
+   justify-content: "center";
+}

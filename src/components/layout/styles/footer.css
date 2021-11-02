@@ -1,0 +1,14 @@
+body {
+   padding-bottom: 70px;
+}
+
+.footerBox {
+   background-color: orange;
+   box-sizing: border-box;
+   display: flex;
+   max-width: 100%;
+}
+
+.border {
+   border: 1px solid rgba(0,0,0,0.5);
+}
