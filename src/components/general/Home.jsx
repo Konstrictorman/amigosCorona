@@ -1,12 +1,12 @@
 import React from "react"; 
-import { AppMenu } from "./layout/AppMenu";
+import { Spinner } from "./Spinner";
 
 
 export const Home = () => {
   return (
     <>
       <h1> home</h1>
-      
+      <Spinner />
     </>
   );
 };

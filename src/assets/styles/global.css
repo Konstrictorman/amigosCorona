@@ -1,7 +1,14 @@
 .form {
    background-color: whitesmoke;
-   padding:25px;
+   padding-top:25px;
+   padding-left: 75px;
+   padding-right: 75px;
+   padding-bottom: 25px;
    margin-top: 20px;
+}
+
+.grid {
+   background-color: whitesmoke;   
 }
 
 .left {
@@ -20,9 +27,10 @@
 }
 
 .centerItem {
-   width: 500;
-   height: 80;
-   display: "flex";
-   align-items: "center";
-   justify-content: "center";
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   height: 100%;
+
+
 }

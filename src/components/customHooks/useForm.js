@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export const useForm = (initialState={}) => {
 
    const [formState, setFormState] = useState(initialState);
+
 
    //Desestructura del event, el objeto target en el argumento
    const handleInputChange = ({target}) => {
@@ -17,6 +18,10 @@ export const useForm = (initialState={}) => {
    const reset = () => {
       setFormState(initialState);
    }
+
+   useEffect(() => {
+      console.log(formState)
+   }, [formState])
 
    return [formState, handleInputChange, reset];
 }

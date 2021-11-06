@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import { DataTable } from "../DataTable";
+import { DataTable } from "../general/DataTable";
 import { Button } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { DataGrid } from "@mui/x-data-grid";
+import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
+
 
 const columns = [
 	{ field: "id", headerName: "ID", width: 120 },
@@ -40,52 +41,37 @@ const rows = [
 	{ id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
 
-export const SalesPointList = () => {
-	const [selectedRows, setSelectedRows] = useState([]);
+export const SalesPointList = ({history}) => {
+   
    const [selectedIds, setSelectedIds] = useState([]);
 
-	const onRowClick = (e) => {
-		console.log("row clicked",e.target.value);
-	};
-
-   const handleRowSelection = (row) => {
-      console.log("SelectedRows before: ",selectedRows);
-      console.log("clicked row: ",row);
-
-      let filas = [];
-      if (selectedRows.length !== 0) {
-         filas = selectedRows.filter(r => r.id !==row.id);
-      }
-      
-      console.log("Filtered rows: ",rows);
-      if (filas.length === selectedRows.length) {
-         filas.push(row);
-      }
-      
-      setSelectedRows(filas);
-      console.log("SelectedRows after: ",selectedRows);
-   }
-
+  
    const handleRowChange = (ids) => {
       console.log('Ids:',ids);
       setSelectedIds(ids);
    }
 
+   const [animatedStyle, handleClick] = useAnimatedStyle(
+      {
+         history,
+         path: '/salesPointNew'
+      }
+   )
+
+
 	return (
-		<>
+		<div className={"text-center animate__animated " + animatedStyle} style={{'overflow': 'hidden'}}>
 			<h4 className="title">Puntos de venta</h4>
 			<div>
 				<div
-					style={{ height: 600, width: "100%" }}
-					className="border border-primary rounded"
+					style={{ height: 600, width: "100%", backgroundColor:"whitesmoke"}}
 				>
                {
 					<DataTable
+               
 						rows={rows}
 						columns={columns}
 						pageSize={5}
-						setSelectedRows={setSelectedRows}
-						onRowClick={(row) => handleRowSelection(row)}
                   onSelectionModelChange={(ids) => handleRowChange(ids)}
 					/>
                }
@@ -109,9 +95,10 @@ export const SalesPointList = () => {
 				variant="contained"
 				style={{ textTransform: "none" }}
 				startIcon={<PointOfSaleIcon />}
+            onClick={handleClick}
 			>
 				Crear nuevo punto de venta
 			</Button>
-		</>
+		</div>
 	);
 };

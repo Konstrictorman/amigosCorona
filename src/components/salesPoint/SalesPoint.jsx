@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -18,7 +18,6 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const SalesPoint = () => {
-	const [age, setAge] = useState();
 
 	const handleSubmit = (e) => {
 		console.log("submitting");
@@ -31,9 +30,7 @@ export const SalesPoint = () => {
       */
 	};
 
-	const handleChange = (e) => {
-		console.log(e.target.name, ":", e.target.value);
-	};
+
 
 	return (
 		<div>

@@ -54,14 +54,14 @@ export const AppMenu = () => {
 
 			>
 				
-            <MenuItem onClick={() => {handleMenuClick('/')}}>
+            <MenuItem onClick={() => {handleMenuClick('/home')}}>
                <ListItemIcon>
                   <HomeIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Inicio</ListItemText>
             </MenuItem>            
             <Divider />
-            <MenuItem onClick={() => {handleMenuClick('/clients')}}>
+            <MenuItem onClick={() => {handleMenuClick('/clientList')}}>
                <ListItemIcon>
                   <GroupsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          

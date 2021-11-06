@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-
+import { useForm } from '../customHooks/useForm';
 import "../../assets/styles/global.css";
+import { useAnimatedStyle } from '../customHooks/useAnimatedStyle';
+
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -15,13 +17,23 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: theme.palette.text.secondary,
 }));
 
-export const SalesPointNew = () => {
-	const [age, setAge] = useState();
+export const SalesPointNew = ({history}) => {
+   
+   const [formValues, handleInputChange] = useForm(
+      {
+         name: '',
+         description: '',
+         state: '',
+      }
+   )
+
+   const {name,description,state} = formValues;
 
 	const handleSubmit = (e) => {
-		console.log("submitting");
-		/*
       e.preventDefault();
+		console.log("submitting:" ,formValues);
+		/*
+      
       if (inputValue.trim().length > 2) {
          setCategories(cats => [inputValue, ...cats]);
          setInputValue('');
@@ -29,12 +41,15 @@ export const SalesPointNew = () => {
       */
 	};   
 
-	const handleChange = (e) => {
-		console.log(e.target.name, ":", e.target.value);
-	};   
+   const [animatedStyle, handleClickOut] = useAnimatedStyle(
+      {
+         history,
+         path: '/salesPointList'
+      }
+   )
 
 	return (
-		<div>
+		<div className={"text-center animate__animated " + animatedStyle} style={{'overflow': 'hidden'}}>
 			<h4 className="title">Nuevo punto de venta</h4>
 			<div>
 				<form className="form border border-primary rounded" onSubmit={handleSubmit}>
@@ -46,6 +61,10 @@ export const SalesPointNew = () => {
 									className="form-control"
 									placeholder="Punto de venta"
 									aria-label="Punto de venta"
+                           value={name}
+                           name="name"
+                           onChange={handleInputChange}
+                           autoComplete="off"                           
 								/>
 							</Item>
 						</Grid>
@@ -57,6 +76,10 @@ export const SalesPointNew = () => {
 									className="form-control"
 									placeholder="Descripción"
 									aria-label="Descripción"
+                           value={description}
+                           name="description"
+                           onChange={handleInputChange}
+                           autoComplete="off"
 								/>
 							</Item>
 						</Grid>
@@ -64,10 +87,13 @@ export const SalesPointNew = () => {
 						<Grid item xs={6}>
 							<Item>
 								<select
+                           value={state}
+                           name="state"
+                           onChange={handleInputChange}
 									className="form-select"
 									aria-label="Default select example"
 								>
-									<option selected>Open this select menu</option>
+									<option className="form-control">Estado</option>
 									<option value="1">One</option>
 									<option value="2">Two</option>
 									<option value="3">Three</option>
@@ -95,6 +121,7 @@ export const SalesPointNew = () => {
 								variant="contained"
 								startIcon={<ClearIcon />}
 								style={{ textTransform: "none" }}
+                        onClick={handleClickOut}
 							>
 								Cancelar
 							</Button>
@@ -105,6 +132,7 @@ export const SalesPointNew = () => {
 								variant="contained"
 								startIcon={<CheckIcon />}
 								style={{ textTransform: "none" }}
+                        onClick={handleSubmit}
 							>
 								Guardar
 							</Button>
