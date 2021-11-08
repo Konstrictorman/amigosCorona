@@ -1,14 +1,13 @@
-import React from 'react';
-import { Button, Grid } from "@mui/material";
+import React, { useEffect } from "react";
+import { Button, Grid, switchClasses } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
+import { useForm } from "react-hook-form";
+import "../../assets/styles/global.css";
+import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useForm } from '../customHooks/useForm';
-import "../../assets/styles/global.css";
-import { useAnimatedStyle } from '../customHooks/useAnimatedStyle';
-
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -17,42 +16,37 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: theme.palette.text.secondary,
 }));
 
-export const SalesPointNew = ({history}) => {
+export const SalesPointNew = ({ history }) => {
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm();
+
+	const onSubmit = (data) => {
+		console.log("submitting:", data);
+	};
+
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		history,
+		path: "/salesPointList",
+	});
+
+
    
-   const [formValues, handleInputChange] = useForm(
-      {
-         name: '',
-         description: '',
-         state: '',
-      }
-   )
-
-   const {name,description,state} = formValues;
-
-	const handleSubmit = (e) => {
-      e.preventDefault();
-		console.log("submitting:" ,formValues);
-		/*
-      
-      if (inputValue.trim().length > 2) {
-         setCategories(cats => [inputValue, ...cats]);
-         setInputValue('');
-      } 
-      */
-	};   
-
-   const [animatedStyle, handleClickOut] = useAnimatedStyle(
-      {
-         history,
-         path: '/salesPointList'
-      }
-   )
 
 	return (
-		<div className={"text-center animate__animated " + animatedStyle} style={{'overflow': 'hidden'}}>
+		<div
+			className={"text-center animate__animated " + animatedStyle}
+			style={{ overflow: "hidden" }}
+		>
 			<h4 className="title">Nuevo punto de venta</h4>
 			<div>
-				<form className="form border border-primary rounded" onSubmit={handleSubmit}>
+				<form
+					className="form border border-primary rounded"
+					onSubmit={handleSubmit(onSubmit)}
+				>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<Item>
@@ -60,12 +54,19 @@ export const SalesPointNew = ({history}) => {
 									type="text"
 									className="form-control"
 									placeholder="Punto de venta"
-									aria-label="Punto de venta"
-                           value={name}
-                           name="name"
-                           onChange={handleInputChange}
-                           autoComplete="off"                           
+									name="name"
+									autoComplete="off"                           
+									{...register("name", {
+										required: true,
+										maxLength: 50,
+										minLength: 5,
+										pattern: /^[A-Za-z]+$/i,
+									})}
 								/>
+                        {errors?.name?.type === "required" &&  ( <p className="error">Dato obligatorio</p>)}
+                        {errors?.name?.type === "maxLength" &&  ( <p className="error">La longitud máxima es de 50 caracteres</p>)}
+                        {errors?.name?.type === "minLength" &&  ( <p className="error">la longitud mínima es de 5 caracteres</p>)}
+                        {errors?.name?.type === "pattern" &&  ( <p className="error">Solamente se permiten caracteres alfabéticos</p>)}
 							</Item>
 						</Grid>
 
@@ -75,29 +76,35 @@ export const SalesPointNew = ({history}) => {
 									type="text"
 									className="form-control"
 									placeholder="Descripción"
-									aria-label="Descripción"
-                           value={description}
-                           name="description"
-                           onChange={handleInputChange}
-                           autoComplete="off"
+									name="description"
+									autoComplete="off"                           
+									{...register("description", {
+										required: true,
+										maxLength: 100,
+										minLength: 5,                              
+									})}
 								/>
+                        {errors?.description?.type === "required" &&  ( <p className="error">Dato obligatorio</p>)}
+                        {errors?.description?.type === "maxLength" &&  ( <p className="error">La longitud máxima es de 100 caracteres</p>)}
+                        {errors?.description?.type === "minLength" &&  ( <p className="error">la longitud mínima es de 5 caracteres</p>)}
 							</Item>
 						</Grid>
 
 						<Grid item xs={6}>
 							<Item>
 								<select
-                           value={state}
-                           name="state"
-                           onChange={handleInputChange}
+									name="state"
 									className="form-select"
-									aria-label="Default select example"
+									{...register("state",{
+										required: true,
+									})}
 								>
-									<option className="form-control">Estado</option>
+									<option value="">Estado...</option>
 									<option value="1">One</option>
 									<option value="2">Two</option>
 									<option value="3">Three</option>
 								</select>
+                        {errors?.state?.type === "required" &&  ( <p className="error">Dato obligatorio</p>)}
 							</Item>
 						</Grid>
 						<Grid item xs={6} className="text-start">
@@ -114,14 +121,13 @@ export const SalesPointNew = ({history}) => {
 						<Grid item xs={12} />
 						<Grid item xs={12} />
 
-
 						<Grid item xs={6} className="text-end">
 							<Button
 								color="error"
 								variant="contained"
 								startIcon={<ClearIcon />}
 								style={{ textTransform: "none" }}
-                        onClick={handleClickOut}
+								onClick={handleClickOut}
 							>
 								Cancelar
 							</Button>
@@ -132,14 +138,14 @@ export const SalesPointNew = ({history}) => {
 								variant="contained"
 								startIcon={<CheckIcon />}
 								style={{ textTransform: "none" }}
-                        onClick={handleSubmit}
+								type="submit"
 							>
 								Guardar
 							</Button>
-						</Grid>                  
+						</Grid>
 					</Grid>
 				</form>
 			</div>
 		</div>
 	);
-}
+};

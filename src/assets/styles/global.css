@@ -31,6 +31,24 @@
    align-items: center;
    justify-content: center;
    height: 100%;
+}
 
+.error {
+   color: red;
+   text-align: left;
+   margin-left: 0.5rem;
+   font-size: small;
+   font-weight: 400;
+}
 
+.headerCol {
+   background-color:lightgrey;
+   color: black;
+   font-weight: bold;
+}
+
+.clickableCell {
+   color: blue;
+   text-decoration: underline;
+   cursor: pointer;
 }

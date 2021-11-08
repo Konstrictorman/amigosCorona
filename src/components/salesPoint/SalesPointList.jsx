@@ -7,21 +7,23 @@ import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 
 
 const columns = [
-	{ field: "id", headerName: "ID", width: 120 },
-	{ field: "firstName", headerName: "First name", width: 200 },
-	{ field: "lastName", headerName: "Last name", width: 200 },
+	{ field: "id", headerName: "ID", width: 120, headerClassName: 'headerCol',headerAlign: 'center', align: 'center' ,cellClassName: 'clickableCell'},
+	{ field: "firstName", headerName: "First name", width: 200, headerClassName: 'headerCol',headerAlign: 'center' },
+	{ field: "lastName", headerName: "Last name", width: 200, headerClassName: 'headerCol',headerAlign: 'center' },
 	{
 		field: "age",
 		headerName: "Age",
 		type: "number",
 		width: 120,
+      headerClassName: 'headerCol',headerAlign: 'center',align: 'center'
 	},
 	{
 		field: "fullName",
 		headerName: "Full name",
 		description: "This column has a value getter and is not sortable.",
 		sortable: false,
-		width: 160,
+		width: 280,
+      headerClassName: 'headerCol',headerAlign: 'center',
 		valueGetter: (params) =>
 			`${params.getValue(params.id, "firstName") || ""} ${
 				params.getValue(params.id, "lastName") || ""
@@ -39,6 +41,9 @@ const rows = [
 	{ id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
 	{ id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
 	{ id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+   { id: 10, lastName: "Pérez", firstName: "Roger", age: 65 },
+   { id: 11, lastName: "González", firstName: "Ivonne", age: 65 },
+   { id: 12, lastName: "Benavides", firstName: "Mercedes", age: 65 },
 ];
 
 export const SalesPointList = ({history}) => {
@@ -51,7 +56,14 @@ export const SalesPointList = ({history}) => {
       setSelectedIds(ids);
    }
 
-   const [animatedStyle, handleClick] = useAnimatedStyle(
+   const handleClick = (params) => {
+      const {field, row} = params;
+      if (field === "id") {
+         console.log("Abriendo registro ", row);
+      }
+   }
+
+   const [animatedStyle, handleClickOut] = useAnimatedStyle(
       {
          history,
          path: '/salesPointNew'
@@ -64,15 +76,16 @@ export const SalesPointList = ({history}) => {
 			<h4 className="title">Puntos de venta</h4>
 			<div>
 				<div
-					style={{ height: 600, width: "100%", backgroundColor:"whitesmoke"}}
+					style={{ height: 630, width: "100%", backgroundColor:"whitesmoke"}}
 				>
                {
 					<DataTable
                
 						rows={rows}
 						columns={columns}
-						pageSize={5}
-                  onSelectionModelChange={(ids) => handleRowChange(ids)}
+						pageSize={10}
+                  onCellClick={handleClick}
+                  onSelectionModelChange={handleRowChange}
 					/>
                }
 
@@ -95,7 +108,7 @@ export const SalesPointList = ({history}) => {
 				variant="contained"
 				style={{ textTransform: "none" }}
 				startIcon={<PointOfSaleIcon />}
-            onClick={handleClick}
+            onClick={handleClickOut}
 			>
 				Crear nuevo punto de venta
 			</Button>
