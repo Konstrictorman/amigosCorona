@@ -75,7 +75,7 @@ export const AppMenu = () => {
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
             
-            <MenuItem onClick={() => {handleMenuClick('/promotions')}}>
+            <MenuItem onClick={() => {handleMenuClick('/promotionsList')}}>
                <ListItemIcon>
                   <PriceCheckIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          

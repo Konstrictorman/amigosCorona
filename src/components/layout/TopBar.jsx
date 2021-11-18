@@ -15,8 +15,8 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import "./styles/topBar.css";
 
 export const TopBar = () => {
-	const [auth, setAuth] = React.useState(true);
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [auth, setAuth] = useState(true);
+	const [anchorEl, setAnchorEl] = useState(null);
 
    /*
 	const handleChange = (event) => {

@@ -1,36 +1,40 @@
-.form {
+.calendar {
    background-color: whitesmoke;
-   padding-top:25px;
-   padding-left: 75px;
-   padding-right: 75px;
-   padding-bottom: 25px;
-   margin-top: 20px;
+   border: 1px solid orchid !important;   
 }
 
-.grid {
-   background-color: whitesmoke;   
+.calendar:focus-within {
+   box-shadow: 0px 0px 0px 1px orchid;
 }
 
-.left {
-   text-align: left;
-
+.calendar .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input-css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+   padding: 0px 10px 0px 5px !important;
+   margin: 0px !important;
 }
 
-.title {
-   text-align: center;
-   background-color: orange;
-   color: white;
-   height: 40px;
-   justify-content: "center";
-   border: 2px solid orchid;
-   border-radius: 5px;
+.calendar .MuiInputBase-root .input .MuiOutlinedInput-input .MuiInputBase-input .MuiInputBase-inputAdornedEnd .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
+   padding: 0px 10px 0px 5px !important;
+   margin: 0px !important;
 }
 
 .centerItem {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   height: 100%;
+   position: absolute;
+   left: 50%;
+   margin: 0;
+   transform: translate(-50%, -50%);
+}
+
+.checkList {
+   border: 1px solid orchid; 
+   background-color: whitesmoke;
+   border-radius: 4px;
+   
+}
+
+.clickableCell {
+   color: blue;
+   text-decoration: underline;
+   cursor: pointer;
 }
 
 .error {
@@ -41,14 +45,104 @@
    font-weight: 400;
 }
 
+.form {
+   background-color: whitesmoke;
+   padding-top:25px;
+   padding-left: 75px;
+   padding-right: 75px;
+   padding-bottom: 25px;
+   margin-top: 0px;
+}
+
+.form__control {
+   display: block;
+   width: 100%;   
+   font-size: 16px;
+   font-weight: 400;
+   line-height: 1.5;
+   color: #212529;
+   background-clip: padding-box;
+   margin-top: 0px !important;
+   margin-bottom: 0px !important;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   border-radius: 4px;
+   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form__select {
+   display: block;
+   width: 100%;
+   padding: 0px 36px 2px 12px !important;
+   font-size: 16px;
+   font-weight: 400;
+   line-height: 1.5;
+   color: #212529;
+   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+   background-repeat: no-repeat;
+   background-position: right .75rem center;
+   background-size: 16px 12px;
+   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+   appearance: none;
+}
+
+.grid {
+   background-color: whitesmoke;   
+}
+
 .headerCol {
    background-color:lightgrey;
    color: black;
    font-weight: bold;
 }
 
-.clickableCell {
-   color: blue;
-   text-decoration: underline;
-   cursor: pointer;
+.inputBox {
+   background-color: whitesmoke !important;
+   border: 1px solid orchid !important;   
+   border-radius: 4px;
+   padding-left: 10px;
+   height: 28px;
 }
+
+
+.inputBox:focus-within {
+   box-shadow: 0px 0px 0px 1px orchid;
+}
+
+.left {
+   text-align: left;
+
+}
+
+
+
+.slider {
+   color: orange !important;
+ }
+ 
+ .slider:hover {
+   color: #2e8b57;
+ }
+
+ .slider .MuiSlider-thumb {
+   border-radius: 1px;
+ }
+
+.title {
+   text-align: center;
+   background-color: orange;
+   color: white;
+   height: 40px;
+   justify-content: "center";
+   border: 2px solid orchid;
+   border-radius: 5px;
+   margin-bottom: 5px;
+}
+
+
+
+
+
+
+

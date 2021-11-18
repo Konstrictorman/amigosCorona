@@ -5,10 +5,10 @@ import { ClientList } from '../components/clients/ClientList';
 import { Home } from '../components/general/Home';
 import { PageNotFound } from '../components/general/PageNotFound';
 import { Layout } from '../components/layout/Layout';
-import { Promotions } from '../components/promotions/Promotions';
+import { Promotion } from '../components/promotions/Promotion';
+import { PromotionsList } from '../components/promotions/PromotionsList';
 import { SalesPoint } from '../components/salesPoint/SalesPoint';
 import { SalesPointList } from '../components/salesPoint/SalesPointList';
-import { SalesPointNew } from '../components/salesPoint/SalesPointNew';
 
 
 
@@ -23,13 +23,13 @@ export const DashRouter = () => {
                   <Route exact path="/home" component={Home}/>
                   <Route exact path="/bills" component={Bills}/>
                   <Route exact path="/clientList" component={ClientList}/>
-                  <Route exact path="/promotions" component={Promotions}/>
+                  <Route exact path="/promotionsList" component={PromotionsList}/>
+                  <Route exact path="/promotion" component={Promotion}/>
                   <Route exact path="/salesPoint" component={SalesPoint}/>
-                  <Route exact path="/salesPointNew" component={SalesPointNew}/>
                   <Route exact path="/salesPointList" component={SalesPointList}/>
-                  
+                  <Route exact path="/" component={Home}/>
                   <Route component={PageNotFound}/>
-                  <Redirect to="/home"/>
+                
                </Switch>   
             </div>
             

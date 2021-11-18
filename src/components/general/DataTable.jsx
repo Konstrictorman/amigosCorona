@@ -8,7 +8,8 @@ export const DataTable = (props) => {
 	return (
 		<>
 			<DataGrid
-            className="border border-primary rounded"
+            className="border border-primary rounded align-self-center"
+            density="compact"
 				rows={rows}
 				columns={columns}
 				pageSize={pageSize}
