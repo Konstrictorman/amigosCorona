@@ -15,6 +15,20 @@ export const useForm = (initialState={}) => {
       })
    }   
 
+   const handleDateChange = (name, value) => {
+      setFormState({
+         ...formState,
+         [name]: value,
+      })
+   }    
+
+   const handleCheckChange = ({target}) => {
+      setFormState({
+         ...formState,
+         [target.name]: target.checked,
+      })
+   }      
+
    const reset = () => {
       setFormState(initialState);
    }
@@ -23,5 +37,5 @@ export const useForm = (initialState={}) => {
       console.log(formState)
    }, [formState])
 
-   return [formState, handleInputChange, reset];
+   return [formState, handleInputChange, handleDateChange, handleCheckChange, reset];
 }

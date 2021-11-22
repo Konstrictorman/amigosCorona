@@ -1,20 +1,5 @@
-.calendar {
-   background-color: whitesmoke;
-   border: 1px solid orchid !important;   
-}
-
-.calendar:focus-within {
-   box-shadow: 0px 0px 0px 1px orchid;
-}
-
-.calendar .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input-css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
-   padding: 0px 10px 0px 5px !important;
-   margin: 0px !important;
-}
-
-.calendar .MuiInputBase-root .input .MuiOutlinedInput-input .MuiInputBase-input .MuiInputBase-inputAdornedEnd .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input{
-   padding: 0px 10px 0px 5px !important;
-   margin: 0px !important;
+.border {
+   border: 1px solid black;
 }
 
 .centerItem {
@@ -54,41 +39,15 @@
    margin-top: 0px;
 }
 
-.form__control {
-   display: block;
-   width: 100%;   
-   font-size: 16px;
-   font-weight: 400;
-   line-height: 1.5;
-   color: #212529;
-   background-clip: padding-box;
-   margin-top: 0px !important;
-   margin-bottom: 0px !important;
-   -webkit-appearance: none;
-   -moz-appearance: none;
-   appearance: none;
-   border-radius: 4px;
-   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
 
-.form__select {
-   display: block;
-   width: 100%;
-   padding: 0px 36px 2px 12px !important;
-   font-size: 16px;
-   font-weight: 400;
-   line-height: 1.5;
-   color: #212529;
-   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-   background-repeat: no-repeat;
-   background-position: right .75rem center;
-   background-size: 16px 12px;
-   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-   appearance: none;
-}
 
 .grid {
-   background-color: whitesmoke;   
+   /*background-color: whitesmoke;   */
+   /*background-color: white;*/
+}
+
+.grid-item {
+   padding-top: 8px !important;
 }
 
 .headerCol {
@@ -97,37 +56,51 @@
    font-weight: bold;
 }
 
-.inputBox {
-   background-color: whitesmoke !important;
-   border: 1px solid orchid !important;   
-   border-radius: 4px;
-   padding-left: 10px;
-   height: 28px;
+.helperText {
+   padding-top: 1px;
+   margin-top: 1px !important;
+   font-style: italic;
+   font-weight: bolder;
 }
 
+.half-width {
+   width: 50%;
+}
 
-.inputBox:focus-within {
-   box-shadow: 0px 0px 0px 1px orchid;
+.half-quarter-width {
+   width: 75%;
+}
+
+.item {
+   display: flex;   
 }
 
 .left {
    text-align: left;
-
 }
 
+.primary-font {
+   font-family: 'Roboto', sans-serif !important;
+   font-size: 12px !important;
+}
+
+.quarter-width {
+   width: 25%;
+}
+
+.right {
+   margin-left:auto !important;
+}
+
+.right-align {
+   text-align: right;
+}
+
+.test {
 
 
-.slider {
-   color: orange !important;
- }
- 
- .slider:hover {
-   color: #2e8b57;
- }
-
- .slider .MuiSlider-thumb {
-   border-radius: 1px;
- }
+   text-align: right;
+}
 
 .title {
    text-align: center;
@@ -139,10 +112,3 @@
    border-radius: 5px;
    margin-bottom: 5px;
 }
-
-
-
-
-
-
-

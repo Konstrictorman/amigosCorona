@@ -5,221 +5,304 @@ import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 import { getPromoById } from "./selectors/getPromoById";
 import { useHistory, useLocation } from "react-router";
 import queryString from "query-string";
-import { useForm } from "react-hook-form";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { Button,Grid, Input, TextField } from "@mui/material";
+import {
+	Button,
+	FormControlLabel,
+	FormHelperText,
+	Grid,
+	Input,
+	InputAdornment,
+	MenuItem,
+	Switch,
+	TextField,
+} from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 import esLocale from "date-fns/locale/es";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CalendarTextField } from "../general/CalendarTextField";
 import "../../assets/styles/global.css";
-import { createStyles, withStyles } from "@mui/styles";
+import { useForm } from "../customHooks/useForm";
+import { DesktopDatePicker } from "@mui/lab";
+import { CustomTextField } from "../general/CustomTextField";
+import { createTheme } from "@mui/system";
+import { Label } from "@mui/icons-material";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
-	padding: theme.spacing(1),
+	padding: 0,
+	paddingTop: theme.spacing(0.7),
+	/*
+	
+	paddingBottom: theme.spacing(1.5),
+	paddingLeft: theme.spacing(2),
+	paddingRight: theme.spacing(2),
+   color: theme.palette.text.secondary,
+   */
 	textAlign: "left",
 	color: theme.palette.text.secondary,
 }));
-
-
-const CssTextField = withStyles({
-   root: {
-      
-      '& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input': {
-         padding: '0px 5px 0px 10px' ,
-         margin: 0,  
-         height: '26px',       
-      },
-     '& .css-i4bv87-MuiSvgIcon-root' : {
-        fontSize: '24px',
-     },
-     '& .MuiOutlinedInput-root': {
-       '& fieldset': {
-         borderColor: 'rgba(255,255,255,0)',
-       },
-       '&:hover fieldset': {
-         borderColor: 'rgba(255,255,255,0)',
-       },
-       '&.Mui-focused fieldset': {
-         borderColor: 'rgba(255,255,255,0)',
-       },     
-     },
-   },
- })(TextField);
 
 export const Promotion = () => {
 	const history = useHistory();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm();
-
 	const promo = useMemo(() => getPromoById(id), [id]);
-
 	const salePoints = getSalesPoints();
 
 	const sortSalesPoints = () => {
 		const array = salePoints.sort((a, b) => a.name.localeCompare(b.name));
-		console.log(JSON.stringify(array));
 		return array;
 	};
 
 	const sortedSalePoints = useMemo(() => sortSalesPoints(), [salePoints]);
-
-	const onSubmit = (data) => {
-		console.log("submitting:", data);
-	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		history,
 		path: "/promotionsList",
 	});
 
-   const [value, setValue] = React.useState(null);
+	const [formValues, handleInputChange, handleDateChange, handleCheckChange] =
+		useForm({
+			name: promo?.name ? promo.name : "",
+			startDate: promo?.fechaInicio ? promo.fechaInicio : "",
+			endDate: promo?.fechaFin ? promo.fechaFin : "",
+			article: promo?.idArticulo ? promo.idArticulo : "",
+			salesPoint: promo?.idPuntoVenta ? promo.idPuntoVenta : "",
+			percentage: promo?.pctPromo ? promo.pctPromo : "",
+			excluded: promo?.flagExclusion ? promo.flagExclusion : false,
+			all: promo?.flagTodos ? promo.flagTodos : false,
+		});
+
+	const {
+		name,
+		startDate,
+		endDate,
+		article,
+		salesPoint,
+		percentage,
+		excluded,
+		all,
+	} = formValues;
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log(formValues);
+	};
 
 	return (
 		<div
-			className={"container animate__animated " + animatedStyle}
+			className={"d-flex flex-column container animate__animated " + animatedStyle}
 			style={{ overflow: "hidden" }}
 		>
-			<h4 className="title">
+			<h4 className="title align-self-center"  style={{ width: "80%" }}>
 				Promoción / Exclusión {promo?.id ? promo.name : "nueva"}
 			</h4>
-			<div>
+			<div
+				className="align-self-center"
+				style={{
+					height: 460,
+					width: "80%",
+				}}
+			>
 				<form
 					className="form border border-primary rounded"
-					onSubmit={handleSubmit(onSubmit)}
+					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<Item>
-								<label for="name">Nombre</label>
-								<Input
+								<TextField
+									label="Nombre de la promoción/exclusión"
+									error={false}
 									id="name"
 									type="text"
-									className="form__control inputBox"
 									name="name"
 									autoComplete="off"
-                           disableUnderline={true}
-									defaultValue={promo?.name}
-									{...register("name", {
-										required: true,
-										maxLength: 50,
-										minLength: 5,
-										pattern: /^[A-Za-z]+$/i,
-									})}
+									size="small"
+									required
+									value={name}
+									onChange={handleInputChange}
+									className="form-control"
 								/>
-
-								{errors?.name?.type === "required" && (
-									<p className="error">Dato obligatorio</p>
-								)}
-								{errors?.name?.type === "maxLength" && (
-									<p className="error">
-										La longitud máxima es de 50 caracteres
-									</p>
-								)}
-								{errors?.name?.type === "minLength" && (
-									<p className="error">
-										la longitud mínima es de 5 caracteres
-									</p>
-								)}
-								{errors?.name?.type === "pattern" && (
-									<p className="error">
-										Solamente se permiten caracteres alfabéticos
-									</p>
-								)}
 							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item>
-								<label for="startDate">Fecha inicio vigencia</label>
+							<Item className="item half-width">
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
 								>
-									<DatePicker
-										name="startDate"
-                              value={value}
-                              onChange={(newValue) => {
-                                 setValue(newValue);
-                              }}										
+									<DesktopDatePicker
+										label="Fecha inicio vigencia"
+										id="startDate"
+										value={startDate}
+										minDate={new Date()}
+										onChange={(newValue) => {
+											handleDateChange("startDate", newValue);
+										}}
+										className="form__control"
 										renderInput={(params) => (
-											<CssTextField 
-                                    name="startDate" 
-                                    {...params} 
-                                    className="form__control calendar" 
-                                    margin="dense"
-                                    variant="outlined"
-                                    
-                                 />
+											<TextField
+												{...params}
+												size="small"
+												required
+												className="form-control"
+												error={false}
+											/>
 										)}
-                              sx={{'padding':'0px !important'}}
 									/>
 								</LocalizationProvider>
 							</Item>
-						</Grid>
-						<Grid item xs={6}>
-							<Item>
-								<label for="description">Artículo</label>
-								<Input
-									id="article"
-									type="text"
-									className="form__control inputBox"
-									name="article"
-									autoComplete="off"
-                           disableUnderline={true}
-									defaultValue={promo?.idArticulo}
-									{...register("article", {
-										required: true,
-										maxLength: 100,
-										minLength: 5,
-									})}
-								/>
-								{errors?.description?.type === "required" && (
-									<p className="error">Dato obligatorio</p>
-								)}
-								{errors?.description?.type === "maxLength" && (
-									<p className="error">
-										La longitud máxima es de 100 caracteres
-									</p>
-								)}
-								{errors?.description?.type === "minLength" && (
-									<p className="error">
-										la longitud mínima es de 5 caracteres
-									</p>
-								)}
-							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								xilofoniando
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={6}>
+						<Grid item xs={6} className="grid-item">
 							<Item>
-								<label for="state">Punto de venta</label>
-								<select
-									id="salesPoint"
-									name="salesPoint"
-									className="form__select inputBox"
-									value={promo?.idPuntoVenta}
-									{...register("salesPoint")}
-								>
-									<option value="">...</option>
-									{sortedSalePoints.map((sp) => (
-										<option key={sp.id} value={sp.id}>
-											{sp.name}
-										</option>
-									))}
-								</select>
+								<TextField
+									label="Artículo"
+									error={false}
+									id="article"
+									type="text"
+									name="article"
+									autoComplete="off"
+									size="small"
+									required
+									value={article}
+									onChange={handleInputChange}
+									className="form-control"
+								/>
 							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								xilofoniando
+							</FormHelperText>
 						</Grid>
-						<Grid></Grid>
+
+						<Grid item xs={6} className="grid-item">
+							<Item className="item half-width">
+								<LocalizationProvider
+									dateAdapter={AdapterDateFns}
+									locale={esLocale}
+								>
+									<DesktopDatePicker
+										label="Fecha final vigencia"
+										id="endDate"
+										value={endDate}
+										minDate={new Date()}
+										onChange={(newValue) => {
+											handleDateChange("endDate", newValue);
+										}}
+										renderInput={(params) => (
+											<TextField
+												{...params}
+												size="small"
+												required
+												className="form-control"
+												error={false}
+											/>
+										)}
+									/>
+								</LocalizationProvider>
+							</Item>
+							<FormHelperText className="helperText">x </FormHelperText>
+						</Grid>
+
+						<Grid item xs={6} className="grid-item">
+							<Item className="item half-quarter-width right">
+								<TextField
+									label="Punto de venta"
+									error={false}
+									id="salesPoint"
+									select
+									name="salesPoint"
+									size="small"
+									value={salesPoint}
+									onChange={handleInputChange}
+									className="form-control"
+								>
+									<MenuItem value="">...</MenuItem>
+									{sortedSalePoints.map((sp) => (
+										<MenuItem key={sp.id} value={sp.id}>
+											{sp.name}
+										</MenuItem>
+									))}
+								</TextField>
+							</Item>
+							<FormHelperText className="helperText half-quarter-width right">
+								{" "}
+								x
+							</FormHelperText>
+						</Grid>
+
+						<Grid item xs={6} className="grid-item">
+							<Item className="item half-width">
+								<TextField
+									label="Porcentaje"
+									type="number"
+									error={false}
+									id="percentage"
+									name="percentage"
+									autoComplete="off"
+									size="small"
+									required
+									value={percentage}
+									onChange={handleInputChange}
+									className="form-control"
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												%
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Item>
+							<FormHelperText> x</FormHelperText>
+						</Grid>
+
+						<Grid item xs={9} className=" right-align">
+							<FormControlLabel
+								className=""
+								control={
+									<Switch
+										id="excluded"
+										name="excluded"
+										checked={excluded}
+										onChange={handleCheckChange}
+									/>
+								}
+								labelPlacement="start"
+								label="Artículo excluido de acumulación"
+							/>
+						</Grid>
+
+						<Grid item xs={9} className=" right-align">
+							<FormControlLabel
+								className="right primary-font"
+								control={
+									<Switch
+										id="all"
+										name="all"
+										checked={all}
+										onChange={handleCheckChange}
+									/>
+								}
+								labelPlacement="start"
+								label="Aplica para todos los puntos de venta"
+							/>
+						</Grid>
 
 						<Grid item xs={12} />
 					</Grid>
@@ -242,6 +325,7 @@ export const Promotion = () => {
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"
+						onClick={handleSubmit}
 					>
 						Guardar
 					</Button>
