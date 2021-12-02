@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
 
 export const DataTable = (props) => {
-	const { columns, rows, pageSize, onSelectionModelChange, onCellClick } =	props;
+	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, components } =	props;
 
 	return (
 		<>
@@ -14,10 +14,14 @@ export const DataTable = (props) => {
 				columns={columns}
 				pageSize={pageSize}
 				rowsPerPageOptions={[5]}
-				checkboxSelection
             onCellClick={(params) => onCellClick(params)}
             disableSelectionOnClick={false}
             onSelectionModelChange={(ids) => onSelectionModelChange(ids)}
+            autoHeight={true}
+            autoPageSize={true}
+            disableExtendRowFullWidth={true}
+            checkboxSelection={checkboxSelection}
+            components = {components}
 			/>
 		</>
 	);

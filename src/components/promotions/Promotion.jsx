@@ -11,7 +11,6 @@ import {
 	FormControlLabel,
 	FormHelperText,
 	Grid,
-	Input,
 	InputAdornment,
 	MenuItem,
 	Switch,
@@ -19,29 +18,18 @@ import {
 } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
 import esLocale from "date-fns/locale/es";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { CalendarTextField } from "../general/CalendarTextField";
 import "../../assets/styles/global.css";
 import { useForm } from "../customHooks/useForm";
 import { DesktopDatePicker } from "@mui/lab";
-import { CustomTextField } from "../general/CustomTextField";
-import { createTheme } from "@mui/system";
-import { Label } from "@mui/icons-material";
+
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
 	padding: 0,
 	paddingTop: theme.spacing(0.7),
-	/*
-	
-	paddingBottom: theme.spacing(1.5),
-	paddingLeft: theme.spacing(2),
-	paddingRight: theme.spacing(2),
-   color: theme.palette.text.secondary,
-   */
 	textAlign: "left",
 	color: theme.palette.text.secondary,
 }));
@@ -65,27 +53,27 @@ export const Promotion = () => {
 		path: "/promotionsList",
 	});
 
-	const [formValues, handleInputChange, handleDateChange, handleCheckChange] =
+	const [formValues, handleInputChange, handleValueChange, handleCheckChange] =
 		useForm({
 			name: promo?.name ? promo.name : "",
-			startDate: promo?.fechaInicio ? promo.fechaInicio : "",
-			endDate: promo?.fechaFin ? promo.fechaFin : "",
-			article: promo?.idArticulo ? promo.idArticulo : "",
-			salesPoint: promo?.idPuntoVenta ? promo.idPuntoVenta : "",
-			percentage: promo?.pctPromo ? promo.pctPromo : "",
-			excluded: promo?.flagExclusion ? promo.flagExclusion : false,
-			all: promo?.flagTodos ? promo.flagTodos : false,
+			fechaInicio: promo?.fechaInicio ? promo.fechaInicio : "",
+			fechaFin: promo?.fechaFin ? promo.fechaFin : "",
+			idArticulo: promo?.idArticulo ? promo.idArticulo : "",
+			idPuntoVenta: promo?.idPuntoVenta ? promo.idPuntoVenta : "",
+			pctPromo: promo?.pctPromo ? promo.pctPromo : "",
+			flagExclusion: promo?.flagExclusion ? promo.flagExclusion : false,
+			flagTodos: promo?.flagTodos ? promo.flagTodos : false,
 		});
 
 	const {
 		name,
-		startDate,
-		endDate,
-		article,
-		salesPoint,
-		percentage,
-		excluded,
-		all,
+		fechaInicio,
+		fechaFin,
+		idArticulo,
+		idPuntoVenta,
+		pctPromo,
+		flagExclusion,
+		flagTodos,
 	} = formValues;
 
 	const handleSubmit = (e) => {
@@ -96,7 +84,6 @@ export const Promotion = () => {
 	return (
 		<div
 			className={"d-flex flex-column container animate__animated " + animatedStyle}
-			style={{ overflow: "hidden" }}
 		>
 			<h4 className="title align-self-center"  style={{ width: "80%" }}>
 				Promoción / Exclusión {promo?.id ? promo.name : "nueva"}
@@ -136,20 +123,20 @@ export const Promotion = () => {
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item className="item half-width">
+							<Item className="item half-quarter-width">
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
 								>
 									<DesktopDatePicker
 										label="Fecha inicio vigencia"
-										id="startDate"
-										value={startDate}
+										id="fechaInicio"
+										value={fechaInicio}
 										minDate={new Date()}
 										onChange={(newValue) => {
-											handleDateChange("startDate", newValue);
+											handleValueChange("fechaInicio", newValue);
 										}}
-										className="form__control"
+										className="form-control"
 										renderInput={(params) => (
 											<TextField
 												{...params}
@@ -164,7 +151,7 @@ export const Promotion = () => {
 							</Item>
 							<FormHelperText className="helperText">
 								{" "}
-								xilofoniando
+								
 							</FormHelperText>
 						</Grid>
 
@@ -173,36 +160,36 @@ export const Promotion = () => {
 								<TextField
 									label="Artículo"
 									error={false}
-									id="article"
+									id="idArticulo"
 									type="text"
-									name="article"
+									name="idArticulo"
 									autoComplete="off"
 									size="small"
 									required
-									value={article}
+									value={idArticulo}
 									onChange={handleInputChange}
 									className="form-control"
 								/>
 							</Item>
 							<FormHelperText className="helperText">
 								{" "}
-								xilofoniando
+								
 							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={6} className="grid-item">
-							<Item className="item half-width">
+							<Item className="item half-quarter-width">
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
 								>
 									<DesktopDatePicker
 										label="Fecha final vigencia"
-										id="endDate"
-										value={endDate}
+										id="fechaFin"
+										value={fechaFin}
 										minDate={new Date()}
 										onChange={(newValue) => {
-											handleDateChange("endDate", newValue);
+											handleValueChange("fechaFin", newValue);
 										}}
 										renderInput={(params) => (
 											<TextField
@@ -216,7 +203,7 @@ export const Promotion = () => {
 									/>
 								</LocalizationProvider>
 							</Item>
-							<FormHelperText className="helperText">x </FormHelperText>
+							<FormHelperText className="helperText">{" "} </FormHelperText>
 						</Grid>
 
 						<Grid item xs={6} className="grid-item">
@@ -228,7 +215,7 @@ export const Promotion = () => {
 									select
 									name="salesPoint"
 									size="small"
-									value={salesPoint}
+									value={idPuntoVenta}
 									onChange={handleInputChange}
 									className="form-control"
 								>
@@ -242,7 +229,6 @@ export const Promotion = () => {
 							</Item>
 							<FormHelperText className="helperText half-quarter-width right">
 								{" "}
-								x
 							</FormHelperText>
 						</Grid>
 
@@ -252,12 +238,12 @@ export const Promotion = () => {
 									label="Porcentaje"
 									type="number"
 									error={false}
-									id="percentage"
-									name="percentage"
+									id="pctPromo"
+									name="pctPromo"
 									autoComplete="off"
 									size="small"
 									required
-									value={percentage}
+									value={pctPromo}
 									onChange={handleInputChange}
 									className="form-control"
 									InputProps={{
@@ -269,7 +255,7 @@ export const Promotion = () => {
 									}}
 								/>
 							</Item>
-							<FormHelperText> x</FormHelperText>
+							<FormHelperText> {" "}</FormHelperText>
 						</Grid>
 
 						<Grid item xs={9} className=" right-align">
@@ -277,9 +263,9 @@ export const Promotion = () => {
 								className=""
 								control={
 									<Switch
-										id="excluded"
-										name="excluded"
-										checked={excluded}
+										id="flagExclusion"
+										name="flagExclusion"
+										checked={flagExclusion}
 										onChange={handleCheckChange}
 									/>
 								}
@@ -293,9 +279,9 @@ export const Promotion = () => {
 								className="right primary-font"
 								control={
 									<Switch
-										id="all"
-										name="all"
-										checked={all}
+										id="flagTodos"
+										name="flagTodos"
+										checked={flagTodos}
 										onChange={handleCheckChange}
 									/>
 								}

@@ -7,6 +7,8 @@ import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { Button } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
+import { getPromoById } from "./selectors/getPromoById";
 
 const columns = getPromosColumns();
 const rows = getPromos();
@@ -14,6 +16,9 @@ const rows = getPromos();
 export const PromotionsList = () => {
 	const history = useHistory();
 	const [selectedIds, setSelectedIds] = useState([]);
+	const [openModal, setOpenModal] = useState(false);
+	const handleOpenModal = () => setOpenModal(true);
+	const handleCloseModal = () => setOpenModal(false);   
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
@@ -28,6 +33,15 @@ export const PromotionsList = () => {
 		}
 	};
 
+   const deleteItems = () => {
+      selectedIds.map((sId)=> {
+         let p = getPromoById(sId);
+         console.log(JSON.stringify(p), " eliminated");
+         
+      });
+      handleCloseModal();
+   }
+
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		history,
 		path: "/promotion",
@@ -39,12 +53,8 @@ export const PromotionsList = () => {
 		>
 			<h4 className="title ">Promociones / Exclusiones</h4>
 			<div
-				className="align-self-center"
-				style={{
-					height: 460,
-					width: "100%",
-					backgroundColor: "whitesmoke",
-				}}
+				className="align-self-center dataTableContainer"
+
 			>
 				{
 					<DataTable
@@ -64,6 +74,7 @@ export const PromotionsList = () => {
 					style={{ textTransform: "none" }}
 					startIcon={<DeleteForeverIcon />}
 					disabled={!selectedIds.length > 0}
+               onClick={handleOpenModal}
 				>
 					Eliminar promoción(es) / exclusión(es) seleccionada(s)
 				</Button>
@@ -75,9 +86,16 @@ export const PromotionsList = () => {
 					startIcon={<PriceCheckIcon />}
 					onClick={handleClickOut}
 				>
-					Crear nuevo punto de venta
+					Crear nueva promoción/exclusión
 				</Button>
 			</div>
+
+         <DeleteConfirmationModal 
+            handleClose={handleCloseModal} 
+            handleAction={deleteItems}
+            open={openModal}
+            items={selectedIds}
+         />
 		</div>
 	);
 };

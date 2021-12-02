@@ -11,7 +11,7 @@ export const ClientList = (history) => {
    )
 
    return (
-		<div className={"text-center animate__animated " + animatedStyle} style={{'overflow': 'hidden'}}>
+		<div className={"text-center animate__animated " + animatedStyle} >
          <h4 className="title">Clientes</h4>
       </div>
    )

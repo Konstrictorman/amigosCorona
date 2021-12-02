@@ -25,7 +25,7 @@ export const getPromosColumns = () => {
       { 
          field: "name", 
          headerName: "Nombre", 
-         width: 110, 
+         width: 120, 
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
@@ -43,7 +43,7 @@ export const getPromosColumns = () => {
       {
           field: "fechaInicio", 
           headerName: "F. inicial vigencia", 
-          width: 130, 
+          width: 155, 
           headerClassName: 'headerCol',
           headerAlign: 'center',
           align: 'center',          
@@ -53,7 +53,7 @@ export const getPromosColumns = () => {
       { 
          field: "fechaFin", 
          headerName: "F. final vigencia", 
-         width: 130, 
+         width: 155, 
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',         

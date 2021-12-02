@@ -8,14 +8,13 @@ export const useForm = (initialState={}) => {
 
    //Desestructura del event, el objeto target en el argumento
    const handleInputChange = ({target}) => {
-      
       setFormState({
          ...formState,
          [target.name]: target.value,
       })
    }   
 
-   const handleDateChange = (name, value) => {
+   const handleValueChange = (name, value) => {
       setFormState({
          ...formState,
          [name]: value,
@@ -37,5 +36,5 @@ export const useForm = (initialState={}) => {
       console.log(formState)
    }, [formState])
 
-   return [formState, handleInputChange, handleDateChange, handleCheckChange, reset];
+   return [formState, handleInputChange, handleValueChange, handleCheckChange, reset];
 }

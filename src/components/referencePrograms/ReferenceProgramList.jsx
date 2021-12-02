@@ -1,47 +1,48 @@
-import React, { useState } from "react";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import { DataTable } from "../general/DataTable";
 import { Button } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import React, { useState } from "react";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { getSalesPointsColumns } from "./selectors/getSalesPointColumns";
-import { getSalesPoints } from "./selectors/getSalesPoints";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
-import { getSalesPointById } from "./selectors/getSalesPointById";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { getReferenceProgramColumns } from "./selectors/getReferenceProgramColumns";
+import { useHistory } from "react-router";
+import { getReferencePrograms } from "./selectors/getReferencePrograms";
+import { getReferenceProgramById } from "./selectors/getReferenceProgramById";
+import LocalPlayIcon from '@mui/icons-material/LocalPlay';
+import { DataTable } from "../general/DataTable";
 
-const columns = getSalesPointsColumns();
+const columns = getReferenceProgramColumns();
+const rows = getReferencePrograms();
 
-const rows = getSalesPoints();
-
-export const SalesPointList = ({ history }) => {
+export const ReferenceProgramList = () => {
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
+   const history = useHistory();
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
 		setSelectedIds(ids);
 	};
 
-	const handleClick = (params) => {
+   const handleClick = (params) => {
 		const { field, row } = params;
-		if (field === "name") {
-			history.replace(`/salesPoint?id=${row.id}`);
+		if (field === "programa") {
+			history.replace(`/referenceProgram?id=${row.id}`);
 		}
 	};
 
 	const deleteItems = () => {
 		selectedIds.map((sId) => {
-			let sp = getSalesPointById(sId);
-			console.log(JSON.stringify(sp), " eliminated");
+			let rp = getReferenceProgramById(sId);
+			console.log(JSON.stringify(rp), " eliminated");
 		});
 		handleCloseModal();
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		history,
-		path: "/salesPoint",
+		path: "/referenceProgram",
 	});
 
 	return (
@@ -49,19 +50,21 @@ export const SalesPointList = ({ history }) => {
 			className={" d-flex flex-column   animate__animated " + animatedStyle}
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
-				Puntos de venta
+				Programas de referenciación
 			</h4>
 			<div
-				className="align-self-center dataTableContainer">
+				className="align-self-center dataTableContainer"
+
+			>
 				{
-					<DataTable
-						rows={rows}
-						columns={columns}
-						pageSize={10}
-						onCellClick={handleClick}
-						onSelectionModelChange={handleRowChange}
-					/>
-				}
+         <DataTable
+            rows={rows}
+            columns={columns}
+            pageSize={10}
+            onCellClick={handleClick}
+            onSelectionModelChange={handleRowChange}
+         />
+         }
 			</div>
 			<div className="align-self-center">
 				<Button
@@ -73,17 +76,17 @@ export const SalesPointList = ({ history }) => {
 					disabled={!selectedIds.length > 0}
 					onClick={handleOpenModal}
 				>
-					Eliminar punto(s) de venta seleccionado(s)
+					Eliminar programa(s) de referedo(s) seleccionado(s)
 				</Button>
 				<Button
 					className="mt-3 mx-2"
 					color="primary"
 					variant="contained"
 					style={{ textTransform: "none" }}
-					startIcon={<PointOfSaleIcon />}
+					startIcon={<LocalPlayIcon />}
 					onClick={handleClickOut}
 				>
-					Crear nuevo punto de venta
+					Crear nuevo programa de referidos
 				</Button>
 			</div>
 

@@ -2,6 +2,14 @@
    border: 1px solid black;
 }
 
+.center {
+   display: flex;
+   margin-left: auto;
+   margin-right: auto;
+   text-align: center;
+
+}
+
 .centerItem {
    position: absolute;
    left: 50%;
@@ -22,12 +30,29 @@
    cursor: pointer;
 }
 
+.dataTableContainer {
+   background-color: whitesmoke;
+   width: 100%;
+}
+
 .error {
    color: red;
    text-align: left;
    margin-left: 0.5rem;
    font-size: small;
    font-weight: 400;
+}
+
+.footerModal {
+   display: flex;
+   border-top: 2px solid whitesmoke;
+   text-align: right;
+   font-size: 16px;
+   font-weight: bolder;
+   align-items: right;
+   padding-top: 8px;
+   padding-bottom: 8px;
+   background-color: whitesmoke;   
 }
 
 .form {
@@ -48,6 +73,16 @@
 
 .grid-item {
    padding-top: 8px !important;
+}
+
+.headerModal {
+   display: flex;
+   border-bottom: 2px solid whitesmoke;
+   text-align: center;
+   font-size: 16px;
+   font-weight: bolder;
+   align-items: center;
+   background-color: whitesmoke;
 }
 
 .headerCol {
@@ -98,8 +133,8 @@
 
 .test {
 
+   border: 1px solid;
 
-   text-align: right;
 }
 
 .title {

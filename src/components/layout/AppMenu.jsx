@@ -7,6 +7,8 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import LocalPlayIcon from '@mui/icons-material/LocalPlay';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 
 export const AppMenu = () => {
@@ -74,6 +76,20 @@ export const AppMenu = () => {
                </ListItemIcon>          
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
+
+            <MenuItem onClick={() => {handleMenuClick('/benefitsList')}}>
+               <ListItemIcon>
+                  <EmojiEventsIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Nivel de beneficios</ListItemText>
+            </MenuItem>               
+
+            <MenuItem onClick={() => {handleMenuClick('/referenceProgramList')}}>
+               <ListItemIcon>
+                  <LocalPlayIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Programas de referenciación </ListItemText>
+            </MenuItem>              
             
             <MenuItem onClick={() => {handleMenuClick('/promotionsList')}}>
                <ListItemIcon>
