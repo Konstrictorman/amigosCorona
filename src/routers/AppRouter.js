@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginView } from "../components/login/LoginView";
 import { DashRouter } from "./DashRouter";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -10,10 +10,10 @@ export const AppRouter = () => {
 		<LocalizationProvider dateAdapter={AdapterDateFns}>
 			<Router>
 				<div>
-					<Switch>
-						<Route exact path="/login" component={LoginView} />
-						<Route path="/" component={DashRouter} />
-					</Switch>
+					<Routes>
+						<Route exact path="/login" element={<LoginView/>} />
+						<Route path="/*" element={<DashRouter/>} />
+					</Routes>
 				</div>
 			</Router>
 		</LocalizationProvider>

@@ -14,14 +14,11 @@ import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import queryString from "query-string";
 import { getSalesPointsStatusSelect } from "./selectors/getSalesPointStatusSelect";
-import { CheckList } from "../general/CheckList";
-import { getPromos } from "../promotions/selectors/getPromos";
 import { getSalesPointById } from "./selectors/getSalesPointById";
 import { useForm } from "../customHooks/useForm";
-import Box from '@mui/material/Box';
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -32,17 +29,17 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 //Aún no se sabe si se van a usar las promociones en esta pantalla.  Lo más probable es que no
-const promos = getPromos();
+//const promos = getPromos();
 
 export const SalesPoint = () => {
-	const history = useHistory();
+	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const sp = useMemo(() => getSalesPointById(id), [id]);
 	const statusMenuItems = getSalesPointsStatusSelect();
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
+		navigate,
 		path: "/salesPointList",
 	});
 
@@ -100,7 +97,7 @@ export const SalesPoint = () => {
 						</Grid>
 
 						<Grid item xs={4}>
-							<Item className="item ">
+							<Item>
 								<TextField
 									label="Estado"
 									error={false}
@@ -126,7 +123,7 @@ export const SalesPoint = () => {
 						</Grid>
 
 						<Grid item xs={12}>
-							<Item className="item">
+							<Item>
 								<TextField
 									label="Descripción"
 									error={false}

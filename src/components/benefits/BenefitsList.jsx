@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { DataTable } from "../general/DataTable";
 import { Button } from "@mui/material";
 import { getBenefitById} from "./selectors/getBenefitById";
@@ -10,6 +9,8 @@ import { getBenefitsColumns } from './selectors/getBenefitsColumns';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { NoRowsOverlay } from '../general/NoRowsOverlay';
 import { getBenefits } from './selectors/getBenefits';
+import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const columns = getBenefitsColumns();
 const rows = getBenefits();
@@ -19,7 +20,17 @@ export const BenefitsList = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
-   const history = useHistory();
+   const navigate = useNavigate();
+
+   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/home",
+	});  
+
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+		navigate,
+		path: "/benefit",
+	});    
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
@@ -28,8 +39,8 @@ export const BenefitsList = () => {
 
    const handleClick = (params) => {
 		const { field, row } = params;
-		if (field === "programa") {
-			history.replace(`/benefit?id=${row.id}`);
+		if (field === "nivelBeneficio") {
+			navigate(`/benefit?id=${row.id}`);
 		}
 	};
 
@@ -37,18 +48,15 @@ export const BenefitsList = () => {
 		selectedIds.map((sId) => {
 			let rp = getBenefitById(sId);
 			console.log(JSON.stringify(rp), " eliminated");
+         return rp;
 		});
 		handleCloseModal();
 	};   
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
-		path: "/benefit",
-	});   
-   
+    
    
    return (
-      <div className={" d-flex flex-column   animate__animated " + animatedStyle}>
+      <div className={" d-flex flex-column   animate__animated " + animatedStyle +" " +animatedStyle2}>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Nivel de beneficios
 			</h4>
@@ -70,6 +78,17 @@ export const BenefitsList = () => {
          }
 			</div>
 			<div className="align-self-center">
+					<Button
+						className="mt-3 mx-2"
+						color="warning"
+						variant="contained"
+						style={{ textTransform: "none" }}
+						startIcon={<ArrowBackIcon />}
+						onClick={handleClickOut}
+					>
+						Volver
+					</Button>
+				            
 				<Button
 					className="mt-3 mx-2"
 					color="error"
@@ -87,7 +106,7 @@ export const BenefitsList = () => {
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<EmojiEventsIcon />}
-					onClick={handleClickOut}
+					onClick={handleClickCreate}
 				>
 					Crear nuevo nivel de beneficios
 				</Button>

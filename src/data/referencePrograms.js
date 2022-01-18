@@ -29,7 +29,13 @@ export const referencePrograms = [
             fechaReferencia: "2021-09-20T16:09:03.590Z",
             idProgramaEstado: 4,
             idProgramaReferenciacion: 1
-          },                          
+          },        
+          {
+            estado: "inactivo",
+            fechaReferencia: "2021-02-15T05:00:00.000Z",
+            idProgramaEstado: 5,
+            idProgramaReferenciacion: 1
+          },                              
        ],
       programaPuntoVentas: [
          {

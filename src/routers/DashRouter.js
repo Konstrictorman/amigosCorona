@@ -1,6 +1,7 @@
 import React from 'react'
-import { Switch, Route, Redirect } from "react-router-dom";
-import { Bills } from '../components/bills/Bills';
+import { Routes, Route } from "react-router-dom";
+import { BillsList } from '../components/bills/BillsList';
+import { Client } from '../components/clients/Client';
 import { ClientList } from '../components/clients/ClientList';
 import { Home } from '../components/general/Home';
 import { PageNotFound } from '../components/general/PageNotFound';
@@ -13,6 +14,7 @@ import { SalesPoint } from '../components/salesPoint/SalesPoint';
 import { SalesPointList } from '../components/salesPoint/SalesPointList';
 import { Benefit } from '../components/benefits/Benefit';
 import { BenefitsList } from '../components/benefits/BenefitsList';
+import { Bill } from '../components/bills/Bill';
 
 
 
@@ -20,30 +22,27 @@ import { BenefitsList } from '../components/benefits/BenefitsList';
 export const DashRouter = () => {
    return (
       <>
-      
          <Layout>
-         
             <div>
-               <Switch>
-                  <Route exact path="/home" component={Home}/>
-                  <Route exact path="/benefit" component={Benefit}/>
-                  <Route exact path="/benefitsList" component={BenefitsList}/>
-                  <Route exact path="/bills" component={Bills}/>
-                  <Route exact path="/clientList" component={ClientList}/>
-                  <Route exact path="/promotionsList" component={PromotionsList}/>
-                  <Route exact path="/promotion" component={Promotion}/>
-                  <Route exact path="/referenceProgram" component={ReferenceProgram}/>
-                  <Route exact path="/referenceProgramList" component={ReferenceProgramList}/>
-                  <Route exact path="/salesPoint" component={SalesPoint}/>
-                  <Route exact path="/salesPointList" component={SalesPointList}/>
-                  <Route exact path="/" component={Home}/>
-                  <Route component={PageNotFound}/>
-                
-               </Switch>   
+               <Routes>
+                  <Route exact path="/home" element={<Home/>}/>
+                  <Route exact path="/benefit" element={<Benefit/>}/>
+                  <Route exact path="/benefitsList" element={<BenefitsList/>}/>
+                  <Route exact path="/billsList" element={<BillsList/>}/>
+                  <Route exact path="/bill" element={<Bill/>}/>
+                  <Route exact path="/client" element={<Client/>}/>
+                  <Route exact path="/clientList" element={<ClientList/>}/>
+                  <Route exact path="/promotionsList" element={<PromotionsList/>}/>
+                  <Route exact path="/promotion" element={<Promotion/>}/>
+                  <Route exact path="/referenceProgram" element={<ReferenceProgram/>}/>
+                  <Route exact path="/referenceProgramList" element={<ReferenceProgramList/>}/>
+                  <Route exact path="/salesPoint" element={<SalesPoint/>}/>
+                  <Route exact path="/salesPointList" element={<SalesPointList/>}/>
+                  <Route exact path="/" element={<Home/>}/>
+                  <Route element={<PageNotFound/>}/>
+               </Routes>   
             </div>
-            
          </Layout> 
-            
       </>
    )
 }

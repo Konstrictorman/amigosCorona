@@ -1,7 +1,7 @@
 import React from "react";
 import { Divider, IconButton, ListItemIcon, ListItemText,Menu, MenuItem} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
@@ -15,7 +15,7 @@ export const AppMenu = () => {
    
    const [anchorEl, setAnchorEl] = React.useState(null);
 
-   const history = useHistory();
+   const navigate = useNavigate();
  
    const handleMenu = (event) => {
      setAnchorEl(event.currentTarget);
@@ -26,7 +26,7 @@ export const AppMenu = () => {
    };
 
    const handleMenuClick = (page) => {
-      history.replace(page);
+      navigate(page);
       setAnchorEl(null);
    }
 
@@ -70,7 +70,7 @@ export const AppMenu = () => {
                <ListItemText>Clientes</ListItemText>
             </MenuItem>  
 
-            <MenuItem onClick={() => {handleMenuClick('/bills')}}>
+            <MenuItem onClick={() => {handleMenuClick('/billsList')}}>
                <ListItemIcon>
                   <ReceiptIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          

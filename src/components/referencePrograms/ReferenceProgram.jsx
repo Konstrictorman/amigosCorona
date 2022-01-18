@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useCallback } from "react";
-import { useHistory, useLocation } from "react-router";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router";
 import queryString from "query-string";
 import { getReferenceProgramById } from "./selectors/getReferenceProgramById";
 import { getReferenceProgramPeriodSelect } from "./selectors/getReferenceProgramPeriodSelect";
@@ -11,7 +11,6 @@ import { styled } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import {
 	Button,
-	FormControlLabel,
 	FormHelperText,
 	Grid,
 	MenuItem,
@@ -24,8 +23,6 @@ import {
 import { useForm } from "../customHooks/useForm";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { DataTable } from "../general/DataTable";
-import { OnOffSwitch } from "../../components/general/OnOffSwitch";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -37,7 +34,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const ReferenceProgram = () => {
-	const history = useHistory();
+	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const refProgram = useMemo(() => getReferenceProgramById(id), [id]);
@@ -66,19 +63,17 @@ export const ReferenceProgram = () => {
     }, [activeSalesPoints]);
 
 
-	const sortPeriodValues = () => {
-		const array = periodValues.sort((a, b) => a.label.localeCompare(b.label));
+	const sortedPeriodValues = useMemo(() => {
+		const array = periodValues.slice().sort((a, b) => a.label.localeCompare(b.label));
 		return array;
-	};
-
-	const sortedPeriodValues = useMemo(() => sortPeriodValues(), [periodValues]);
+   }, [periodValues]);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
+		navigate,
 		path: "/referenceProgramList",
 	});
 
-	const [formValues, handleInputChange, handleValueChange, handleCheckChange] =
+	const [formValues, handleInputChange, handleValueChange] =
 		useForm({
 			programa: refProgram?.programa ? refProgram.programa : "",
 			descripcion: refProgram?.descripcion ? refProgram.descripcion : "",
@@ -98,6 +93,10 @@ export const ReferenceProgram = () => {
 	const handleChange = (e) => {
 		setActivo(e.target.checked);
 	};
+
+   useEffect(() => {
+      handleValueChange("estado", activo ? "activo" : "inactivo");
+ }, [activo]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

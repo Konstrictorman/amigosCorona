@@ -55,7 +55,7 @@ export const salesPoints = [
    },
    {
       'id': 10,
-      'name': 'Calendaria',
+      'name': 'Candenlaria',
       'description': 'Punto de venta en barrio la Candenlaria',
       'status': 'Activo'
    },   

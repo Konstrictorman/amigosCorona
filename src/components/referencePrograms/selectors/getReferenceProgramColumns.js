@@ -25,14 +25,7 @@ export const getReferenceProgramColumns = () => {
          headerAlign: 'center',
          align: 'center'
       },      
-      {
-         field: "estado",
-         headerName: "Estado",
-         flex:1,
-         headerClassName: 'headerCol',
-         headerAlign: 'center',
-         align: 'center'
-      },        
+      
    ];
    return columns;
 }

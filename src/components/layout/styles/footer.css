@@ -1,5 +1,5 @@
-body {
-   padding-bottom: 70px;
+.container {
+   padding-bottom: 20px;
 }
 
 .footerBox {
@@ -8,6 +8,7 @@ body {
    display: flex;
    max-width: 100%;
    text-align: center;
+
 }
 
 .border {

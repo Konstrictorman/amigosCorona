@@ -2,6 +2,10 @@
    border: 1px solid black;
 }
 
+.box {
+
+}
+
 .center {
    display: flex;
    margin-left: auto;
@@ -66,7 +70,15 @@
 
 
 
-.grid {
+.grid-container {
+   border: 1px solid orchid;   
+   border-radius: 5px;
+   margin-top:6px;
+   padding-top:0px !important;
+   padding-left: 0px !important;
+   padding-bottom: 16px !important;
+   margin-left: 16px !important;
+   margin-top: 32px !important;   
    /*background-color: whitesmoke;   */
    /*background-color: white;*/
 }
@@ -75,6 +87,15 @@
    padding-top: 8px !important;
 }
 
+
+.grid-item-noPadding {
+   padding-top: 2px !important;
+}
+
+.grid-item-rightPadding {
+   padding-top: 8px !important;
+   padding-right: 16px !important;
+}
 .headerModal {
    display: flex;
    border-bottom: 2px solid whitesmoke;
@@ -108,9 +129,13 @@
 
 .item {
    display: flex;   
+   margin-left: 16px !important;
+   margin-top: 16px !important;
+   width: 80%;
+   border: 1px solid black;
 }
 
-.left {
+.left-align {
    text-align: left;
 }
 
@@ -131,6 +156,8 @@
    text-align: right;
 }
 
+
+
 .test {
 
    border: 1px solid;
@@ -146,4 +173,8 @@
    border: 2px solid orchid;
    border-radius: 5px;
    margin-bottom: 5px;
+}
+
+.topMargin {
+   margin-top: 32px;
 }

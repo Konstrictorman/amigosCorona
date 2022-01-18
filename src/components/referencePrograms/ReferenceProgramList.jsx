@@ -4,11 +4,12 @@ import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { getReferenceProgramColumns } from "./selectors/getReferenceProgramColumns";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { getReferencePrograms } from "./selectors/getReferencePrograms";
 import { getReferenceProgramById } from "./selectors/getReferenceProgramById";
 import LocalPlayIcon from '@mui/icons-material/LocalPlay';
 import { DataTable } from "../general/DataTable";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const columns = getReferenceProgramColumns();
 const rows = getReferencePrograms();
@@ -18,7 +19,7 @@ export const ReferenceProgramList = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
-   const history = useHistory();
+   const navigate = useNavigate();
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
@@ -28,7 +29,7 @@ export const ReferenceProgramList = () => {
    const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "programa") {
-			history.replace(`/referenceProgram?id=${row.id}`);
+			navigate(`/referenceProgram?id=${row.id}`);
 		}
 	};
 
@@ -36,18 +37,24 @@ export const ReferenceProgramList = () => {
 		selectedIds.map((sId) => {
 			let rp = getReferenceProgramById(sId);
 			console.log(JSON.stringify(rp), " eliminated");
+         return rp;
 		});
 		handleCloseModal();
 	};
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
+   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/home",
+	}); 
+
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+		navigate,
 		path: "/referenceProgram",
 	});
 
 	return (
 		<div
-			className={" d-flex flex-column   animate__animated " + animatedStyle}
+			className={" d-flex flex-column   animate__animated " + animatedStyle+ " "+animatedStyle2}
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Programas de referenciación
@@ -67,6 +74,16 @@ export const ReferenceProgramList = () => {
          }
 			</div>
 			<div className="align-self-center">
+         <Button
+						className="mt-3 mx-2"
+						color="warning"
+						variant="contained"
+						style={{ textTransform: "none" }}
+						startIcon={<ArrowBackIcon />}
+						onClick={handleClickOut}
+					>
+						Volver
+					</Button>
 				<Button
 					className="mt-3 mx-2"
 					color="error"
@@ -76,7 +93,7 @@ export const ReferenceProgramList = () => {
 					disabled={!selectedIds.length > 0}
 					onClick={handleOpenModal}
 				>
-					Eliminar programa(s) de referedo(s) seleccionado(s)
+					Eliminar programa(s) de referido(s) seleccionado(s)
 				</Button>
 				<Button
 					className="mt-3 mx-2"
@@ -84,7 +101,7 @@ export const ReferenceProgramList = () => {
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<LocalPlayIcon />}
-					onClick={handleClickOut}
+					onClick={handleClickCreate}
 				>
 					Crear nuevo programa de referidos
 				</Button>

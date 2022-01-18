@@ -3,13 +3,13 @@ import { useState } from 'react'
 export const useAnimatedStyle = (initialValues={}) => {
 
    const [style, setstyle] = useState('animate__fadeIn');
-   const {history, path} = initialValues;
+   const {navigate, path} = initialValues;
 
    const handleClickOut = (e) => {
       setstyle('animate__fadeOut');
       
       setTimeout(() => {
-         history.push(path)
+         navigate(path)
       }, 200);
    }
 

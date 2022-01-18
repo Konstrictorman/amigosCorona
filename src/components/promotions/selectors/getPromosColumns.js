@@ -1,7 +1,4 @@
-import dateFormat from "dateformat";
-import { format, compareAsc, parseISO } from 'date-fns';
-import {utcToZonedTime, zonedTimeToUtc} from 'date-fns-tz';
-import esLocale from 'date-fns/locale/es';
+import { format, parseISO } from 'date-fns';
 import { getSalesPointById } from "../../salesPoint/selectors/getSalesPointById";
 
 const dateFormatter = (date) => {
@@ -25,7 +22,8 @@ export const getPromosColumns = () => {
       { 
          field: "name", 
          headerName: "Nombre", 
-         width: 120, 
+         //width: 120, 
+         flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
@@ -35,7 +33,8 @@ export const getPromosColumns = () => {
       { 
          field: "idArticulo", 
          headerName: "Artículo", 
-         width: 100, 
+         flex:0.8,
+         //width: 100, 
          headerClassName: 'headerCol',
          headerAlign: 'center',
          type: 'number'
@@ -43,7 +42,8 @@ export const getPromosColumns = () => {
       {
           field: "fechaInicio", 
           headerName: "F. inicial vigencia", 
-          width: 155, 
+          flex:1,
+          //width: 155, 
           headerClassName: 'headerCol',
           headerAlign: 'center',
           align: 'center',          
@@ -53,7 +53,8 @@ export const getPromosColumns = () => {
       { 
          field: "fechaFin", 
          headerName: "F. final vigencia", 
-         width: 155, 
+         flex:1,
+         //width: 155, 
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',         
@@ -63,7 +64,8 @@ export const getPromosColumns = () => {
       {
          field: "tipoPromo",
          headerName: "Tipo prom.",
-         width: 120,
+         flex:0.8,
+         //width: 120,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
@@ -72,7 +74,8 @@ export const getPromosColumns = () => {
       {
          field: "pctPromo",
          headerName: "%",
-         width: 50,
+         flex:0.4,
+         //width: 50,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
@@ -81,7 +84,8 @@ export const getPromosColumns = () => {
       {
          field: "flagExclusion",
          headerName: "Excluido",
-         width: 90,
+         flex:0.8,
+         //width: 90,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
@@ -90,7 +94,8 @@ export const getPromosColumns = () => {
       {
          field: "flagTodos",
          headerName: "Todos",
-         width: 70,
+         flex:0.7,
+         //width: 70,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
@@ -99,7 +104,8 @@ export const getPromosColumns = () => {
       {
          field: "idPuntoVenta",
          headerName: "Pto de venta",
-         width: 120,
+         flex:1,
+         //width: 120,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',

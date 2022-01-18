@@ -7,17 +7,19 @@ import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getSalesPointsColumns } from "./selectors/getSalesPointColumns";
 import { getSalesPoints } from "./selectors/getSalesPoints";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
-import { getSalesPointById } from "./selectors/getSalesPointById";
+import { useNavigate } from "react-router";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const columns = getSalesPointsColumns();
 
-const rows = getSalesPoints();
-
-export const SalesPointList = ({ history }) => {
+export const SalesPointList = () => {
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
+	const [rows, setRows] = useState(getSalesPoints());
+	const [loading, setLoading] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
+	const navigate = useNavigate();
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
@@ -27,32 +29,36 @@ export const SalesPointList = ({ history }) => {
 	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "name") {
-			history.replace(`/salesPoint?id=${row.id}`);
+			navigate(`/salesPoint?id=${row.id}`);
 		}
 	};
 
 	const deleteItems = () => {
-		selectedIds.map((sId) => {
-			let sp = getSalesPointById(sId);
-			console.log(JSON.stringify(sp), " eliminated");
-		});
 		handleCloseModal();
+		setLoading(true);
+		setRows(rows.filter((r) => !selectedIds.includes(r.id)));
+		setSelectedIds([]);
+		setLoading(false);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
+		navigate,
+		path: "/home",
+	});
+
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+		navigate,
 		path: "/salesPoint",
 	});
 
 	return (
 		<div
-			className={" d-flex flex-column   animate__animated " + animatedStyle}
-		>
+         className={" d-flex flex-column   animate__animated " + animatedStyle +" " +animatedStyle2}>
+		
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Puntos de venta
 			</h4>
-			<div
-				className="align-self-center dataTableContainer">
+			<div className="align-self-center dataTableContainer">
 				{
 					<DataTable
 						rows={rows}
@@ -60,10 +66,22 @@ export const SalesPointList = ({ history }) => {
 						pageSize={10}
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
+						checkboxSelection={true}
+						loading={loading}
 					/>
 				}
 			</div>
 			<div className="align-self-center">
+				<Button
+					className="mt-3 mx-2"
+					color="warning"
+					variant="contained"
+					style={{ textTransform: "none" }}
+					startIcon={<ArrowBackIcon />}
+					onClick={handleClickOut}
+				>
+					Volver
+				</Button>
 				<Button
 					className="mt-3 mx-2"
 					color="error"
@@ -81,7 +99,7 @@ export const SalesPointList = ({ history }) => {
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<PointOfSaleIcon />}
-					onClick={handleClickOut}
+					onClick={handleClickCreate}
 				>
 					Crear nuevo punto de venta
 				</Button>

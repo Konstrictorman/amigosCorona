@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 import { getPromoById } from "./selectors/getPromoById";
-import { useHistory, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
@@ -35,21 +35,21 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const Promotion = () => {
-	const history = useHistory();
+   const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const promo = useMemo(() => getPromoById(id), [id]);
 	const salePoints = getSalesPoints();
 
-	const sortSalesPoints = () => {
-		const array = salePoints.sort((a, b) => a.name.localeCompare(b.name));
-		return array;
-	};
 
-	const sortedSalePoints = useMemo(() => sortSalesPoints(), [salePoints]);
+
+	const sortedSalePoints = useMemo(() => {
+		const array = salePoints.slice().sort((a, b) => a.name.localeCompare(b.name));
+		return array;
+   }, [salePoints]);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		history,
+		navigate,
 		path: "/promotionsList",
 	});
 
@@ -123,7 +123,7 @@ export const Promotion = () => {
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item className="item half-quarter-width">
+							<Item className="half-quarter-width">
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
@@ -155,7 +155,7 @@ export const Promotion = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={6} className="grid-item">
+						<Grid item xs={6}>
 							<Item>
 								<TextField
 									label="Artículo"
@@ -177,8 +177,8 @@ export const Promotion = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={6} className="grid-item">
-							<Item className="item half-quarter-width">
+						<Grid item xs={6} >
+							<Item className=" half-quarter-width">
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
@@ -206,8 +206,8 @@ export const Promotion = () => {
 							<FormHelperText className="helperText">{" "} </FormHelperText>
 						</Grid>
 
-						<Grid item xs={6} className="grid-item">
-							<Item className="item half-quarter-width right">
+						<Grid item xs={6} >
+							<Item className="half-quarter-width right">
 								<TextField
 									label="Punto de venta"
 									error={false}
@@ -232,8 +232,8 @@ export const Promotion = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={6} className="grid-item">
-							<Item className="item half-width">
+						<Grid item xs={6}>
+							<Item className="half-width">
 								<TextField
 									label="Porcentaje"
 									type="number"
