@@ -18,6 +18,7 @@ export const Layout = ({children}) => {
 					</div>
 				</div>
 			</div>
+         
 			<div className="row">
 				<Footer />
 			</div>         

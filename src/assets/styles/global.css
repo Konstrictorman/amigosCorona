@@ -2,8 +2,12 @@
    border: 1px solid black;
 }
 
-.box {
 
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+   background-color: #1976D2 !important;
+   font-weight: 500 !important;
+   min-width: none !important;
 }
 
 .center {
@@ -136,7 +140,7 @@
 }
 
 .left-align {
-   text-align: left;
+   text-align: left !important;
 }
 
 .primary-font {

@@ -15,9 +15,9 @@ import { SalesPointList } from '../components/salesPoint/SalesPointList';
 import { Benefit } from '../components/benefits/Benefit';
 import { BenefitsList } from '../components/benefits/BenefitsList';
 import { Bill } from '../components/bills/Bill';
-
-
-
+import { MovementsList } from '../components/movements/MovementsList';
+import { RedemptionsList } from '../components/redemptions/RedemptionsList';
+import { Redemption } from '../components/redemptions/Redemption';
 
 export const DashRouter = () => {
    return (
@@ -32,8 +32,11 @@ export const DashRouter = () => {
                   <Route exact path="/bill" element={<Bill/>}/>
                   <Route exact path="/client" element={<Client/>}/>
                   <Route exact path="/clientList" element={<ClientList/>}/>
+                  <Route exact path="/movementList" element={<MovementsList/>}/>
                   <Route exact path="/promotionsList" element={<PromotionsList/>}/>
                   <Route exact path="/promotion" element={<Promotion/>}/>
+                  <Route exact path="/redemptionsList" element={<RedemptionsList/>}/>
+                  <Route exact path="/redemption" element={<Redemption/>}/>
                   <Route exact path="/referenceProgram" element={<ReferenceProgram/>}/>
                   <Route exact path="/referenceProgramList" element={<ReferenceProgramList/>}/>
                   <Route exact path="/salesPoint" element={<SalesPoint/>}/>

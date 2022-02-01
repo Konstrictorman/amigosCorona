@@ -9,7 +9,8 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import LocalPlayIcon from '@mui/icons-material/LocalPlay';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import SellIcon from '@mui/icons-material/Sell';
 
 export const AppMenu = () => {
    
@@ -77,6 +78,13 @@ export const AppMenu = () => {
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
 
+            <MenuItem onClick={() => {handleMenuClick('/movementList')}}>
+               <ListItemIcon>
+                  <DirectionsRunIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Movimientos</ListItemText>
+            </MenuItem>  
+
             <MenuItem onClick={() => {handleMenuClick('/benefitsList')}}>
                <ListItemIcon>
                   <EmojiEventsIcon color="primary" fontSize="medium"/>
@@ -104,6 +112,13 @@ export const AppMenu = () => {
                </ListItemIcon>          
                <ListItemText>Puntos de venta</ListItemText>
             </MenuItem>    
+
+            <MenuItem onClick={() => {handleMenuClick('/redemptionsList')}}>
+               <ListItemIcon>
+                  <SellIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Redenciones</ListItemText>
+            </MenuItem>                
           
 			</Menu>
 		</div>

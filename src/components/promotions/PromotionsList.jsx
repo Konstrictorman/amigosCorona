@@ -92,7 +92,7 @@ export const PromotionsList = () => {
 				</Button>
 				<Button
 					className="mt-3 mx-2"
-					color="primary"
+					color="secondary"
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<PriceCheckIcon />}

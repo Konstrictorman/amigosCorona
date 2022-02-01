@@ -102,13 +102,13 @@ export const BenefitsList = () => {
 				</Button>
 				<Button
 					className="mt-3 mx-2"
-					color="primary"
+					color="secondary"
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<EmojiEventsIcon />}
 					onClick={handleClickCreate}
 				>
-					Crear nuevo nivel de beneficios
+					Crear nivel de beneficios
 				</Button>
 			</div>
 
