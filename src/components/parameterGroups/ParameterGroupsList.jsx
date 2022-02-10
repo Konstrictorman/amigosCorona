@@ -1,27 +1,24 @@
-import React, { useState } from "react";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import { DataTable } from "../general/DataTable";
 import { Button } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { getSalesPointsColumns } from "./selectors/getSalesPointColumns";
-import { getSalesPoints } from "./selectors/getSalesPoints";
-import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
-import { useNavigate } from "react-router";
+import { DataTable } from "../general/DataTable";
+import { getParameterGroupColumns } from "./selectors/getParameterGroupColumns";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import { getParameterGroups } from "./selectors/getParameterGroups";
+import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 
-
-
-export const SalesPointList = () => {
-
-   const columns = getSalesPointsColumns();
+export const ParameterGroupsList = () => {
+	const navigate = useNavigate();
+	const columns = getParameterGroupColumns();
+	const [rows, setRows] = useState(getParameterGroups());   
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
-	const [rows, setRows] = useState(getSalesPoints());
-	const [loading, setLoading] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
-	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);   
 
 	const handleRowChange = (ids) => {
 		console.log("Ids:", ids);
@@ -30,12 +27,13 @@ export const SalesPointList = () => {
 
 	const handleClick = (params) => {
 		const { field, row } = params;
-		if (field === "name") {
-			navigate(`/salesPoint?id=${row.id}`);
+      console.log(field, row);
+		if (field === "grupoParametros") {
+			navigate(`/parameterGroup?id=${row.id}`);
 		}
 	};
 
-	const deleteItems = () => {
+   const deleteItems = () => {
 		handleCloseModal();
 		setLoading(true);
 		setRows(rows.filter((r) => !selectedIds.includes(r.id)));
@@ -43,27 +41,22 @@ export const SalesPointList = () => {
 		setLoading(false);
 	};
 
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+		navigate,
+		path: "/parameterGroup",
+	});
+
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
 
-	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
-		navigate,
-		path: "/salesPoint",
-	});
-
 	return (
 		<div
-			className={
-				" d-flex flex-column   animate__animated " +
-				animatedStyle +
-				" " +
-				animatedStyle2
-			}
+			className={" d-flex flex-column   animate__animated " + animatedStyle}
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
-				Puntos de venta
+				Grupos de parámetros 
 			</h4>
 			<div className="align-self-center dataTableContainer">
 				{
@@ -74,7 +67,6 @@ export const SalesPointList = () => {
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
 						checkboxSelection={true}
-						loading={loading}
 					/>
 				}
 			</div>
@@ -98,17 +90,17 @@ export const SalesPointList = () => {
 					disabled={!selectedIds.length > 0}
 					onClick={handleOpenModal}
 				>
-					Eliminar punto(s) de venta seleccionado(s)
+					Eliminar grupo(s) de parámetros seleccionado(s)
 				</Button>
 				<Button
 					className="mt-3 mx-2"
 					color="secondary"
 					variant="contained"
 					style={{ textTransform: "none" }}
-					startIcon={<PointOfSaleIcon />}
+					startIcon={<Inventory2Icon />}
 					onClick={handleClickCreate}
 				>
-					Crear punto de venta
+					Crear grupo de parámetros
 				</Button>
 			</div>
 

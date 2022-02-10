@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
+import { NoRowsOverlay } from '../general/NoRowsOverlay';
 
 export const DataTable = (props) => {
 	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, disableSelectionOnClick, components, loading } =	props;
@@ -23,6 +24,9 @@ export const DataTable = (props) => {
             components = {components}
             loading = {loading}
             disableSelectionOnClick = {disableSelectionOnClick}
+            components={{
+               NoRowsOverlay: NoRowsOverlay,
+            }}            
 			/>
 		</>
 	);

@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import BackspaceIcon from '@mui/icons-material/Backspace';
+import { getSalesPointById } from '../../salesPoint/selectors/getSalesPointById';
 
 const dateFormatter = (date) => {
    let d = parseISO(date);
@@ -7,6 +7,11 @@ const dateFormatter = (date) => {
    d = new Date(d.valueOf() + offSet * 60 * 1000);
    d = format(d, 'dd/MM/yyyy');
    return d;
+}
+
+const getSalesPointName = (id) => {
+   const sp = getSalesPointById(id);
+   return sp?.name? sp.name : '';
 }
 
 export const getRedemptionBasicColumns = () => {
@@ -35,8 +40,9 @@ export const getRedemptionBasicColumns = () => {
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
-         align: 'left' ,
-         type: 'string'         
+         align: 'center' ,
+         type: 'string',
+         valueFormatter: ({ value }) => getSalesPointName(value),           
       },      
       {
          field: "fecha", 

@@ -7,7 +7,6 @@ import { Button } from "@mui/material";
 import { getBenefitById} from "./selectors/getBenefitById";
 import { getBenefitsColumns } from './selectors/getBenefitsColumns';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import { NoRowsOverlay } from '../general/NoRowsOverlay';
 import { getBenefits } from './selectors/getBenefits';
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -71,9 +70,6 @@ export const BenefitsList = () => {
             pageSize={10}
             onCellClick={handleClick}
             onSelectionModelChange={handleRowChange}
-            components={{
-               NoRowsOverlay: NoRowsOverlay,
-             }}   
          />
          }
 			</div>

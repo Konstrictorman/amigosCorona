@@ -110,14 +110,14 @@ export const ReferenceProgram = () => {
 				"d-flex flex-column container animate__animated " + animatedStyle
 			}
 		>
-			<h4 className="title align-self-center" style={{ width: "80%" }}>
+			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Programa de referenciación{" "}
 				{refProgram?.id ? refProgram.programa : "nueva"}
 			</h4>
 			<div
 				className="align-self-center"
 				style={{
-					width: "80%",
+					width: "100%",
 				}}
 			>
 				<form
@@ -125,7 +125,7 @@ export const ReferenceProgram = () => {
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>
-						<Grid item xs={6}>
+						<Grid item xs={8}>
 							<Item>
 								<TextField
 									label="Nombre del programa de referenciación"
@@ -143,7 +143,7 @@ export const ReferenceProgram = () => {
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
-						<Grid item xs={6}>
+						<Grid item xs={4}>
 							<Item>
 								<TextField
 									select

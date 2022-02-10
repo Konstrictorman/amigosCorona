@@ -1,6 +1,6 @@
 import { styled } from "@mui/material/styles";
 import {
-   Autocomplete,
+	Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
@@ -33,21 +33,23 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const Redemption = () => {
 	const navigate = useNavigate();
-   const salesPoints = getSalesPoints();
-   const [idRef, setIdRef] = useState(null);
+	const salesPoints = getSalesPoints();
+	const [idRef, setIdRef] = useState(null);
 
-   const sortedSalePoints = useMemo(() => {      
-		const array = salesPoints.slice().sort((a, b) => a.name.localeCompare(b.name));
-      
-      let options = [];
-      array.map((i) => {
-         let obj = {}
-         obj['id'] = i.id;
-         obj['label'] =i.name;
-         options.push(obj);
-      })
+	const sortedSalesPoints = useMemo(() => {
+		const array = salesPoints
+			.slice()
+			.sort((a, b) => a.name.localeCompare(b.name));
+
+		let options = [];
+		array.map((i) => {
+			let obj = {};
+			obj["id"] = i.id;
+			obj["label"] = i.name;
+			options.push(obj);
+		});
 		return options;
-   }, [salesPoints]);
+	}, [salesPoints]);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -69,14 +71,8 @@ export const Redemption = () => {
 			newBalance: "",
 		});
 
-	const {
-		codReferrer,
-		redemptionType,		
-		amount,
-		salesPoint,
-		ref,
-		newBalance,
-	} = formValues;
+	const { codReferrer, redemptionType, amount, salesPoint, ref, newBalance } =
+		formValues;
 
 	//const referrer = useMemo(() => getClientByCode(codReferrer), [codReferrer]);
 	const [referrer, setReferrer] = useState(null);
@@ -97,17 +93,16 @@ export const Redemption = () => {
 		}
 	}, [referrer]);
 
-   const getIdReference = () => {
-      let n = Math.floor(100000 + Math.random() * 900000);
-      return "BON"+n;
-   }
+	const getIdReference = () => {
+		let n = Math.floor(100000 + Math.random() * 900000);
+		return "BON" + n;
+	};
 
 	const handleClick = (e) => {
 		//e.preventDefault();
 		setReferrer(getClientByCode(codReferrer));
-      setIdRef(getIdReference());
+		setIdRef(getIdReference());
 	};
-
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -315,42 +310,22 @@ export const Redemption = () => {
 
 								<Grid item xs={4} className="">
 									<Item className="">
-                              {/*
-										<TextField
-											label="Punto de venta"
-											error={false}
+										<Autocomplete
+											disablePortal
 											id="salesPoint"
-                                 select
-											name="salesPoint"											
-											size="small"
-											value={salesPoint}
-											onChange={handleInputChange}
-											className="form-control"                                 
-											required
-										>
-											<MenuItem value="">...</MenuItem>
-											{sortedSalePoints.map((sp) => (
-												<MenuItem key={sp.id} value={sp.name}>
-													{sp.name}
-												</MenuItem>
-											))}
-                                 </TextField>
-                              */}                                 
-
-
-                           <Autocomplete
-                              disablePortal
-                              id="salesPoint"
-                              options={sortedSalePoints}
-
-                              renderInput={(params) => <TextField {...params} 
-                                 className="form-control" 
-                                 size="small" 
-                                 label="Punto de venta" 
-                                 //onChange={handleInputChange}                                                               
-                                 value={salesPoint}                                 
-                                 required />}
-                           />
+											options={sortedSalesPoints}
+											renderInput={(params) => (
+												<TextField
+													{...params}
+													className="form-control"
+													size="small"
+													label="Punto de venta"
+													onChange={handleInputChange}
+													value={salesPoint}
+													required
+												/>
+											)}
+										/>
 									</Item>
 									<FormHelperText className="helperText">
 										{" "}

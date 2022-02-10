@@ -11,6 +11,7 @@ import LocalPlayIcon from '@mui/icons-material/LocalPlay';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import SellIcon from '@mui/icons-material/Sell';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 export const AppMenu = () => {
    
@@ -77,6 +78,13 @@ export const AppMenu = () => {
                </ListItemIcon>          
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
+
+            <MenuItem onClick={() => {handleMenuClick('/parameterGroupsList')}}>
+               <ListItemIcon>
+                  <Inventory2Icon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Grupos de parámetros</ListItemText>
+            </MenuItem>              
 
             <MenuItem onClick={() => {handleMenuClick('/movementList')}}>
                <ListItemIcon>

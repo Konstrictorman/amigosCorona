@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
+   Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
+	MenuItem,
 	Paper,
 	TextField,
 	Typography,
@@ -17,10 +19,10 @@ import esLocale from "date-fns/locale/es";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { DataTable } from "../general/DataTable";
-import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { getBillColumns } from "./selectors/getBillColumns";
 import { getBills } from "./selectors/getBills";
+import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -32,25 +34,40 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const BillsList = () => {
 	const navigate = useNavigate();
-	
-   const handleClick = (params) => {
+
+	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "numeroFactura") {
 			navigate(`/bill?id=${row.id}`);
 		}
 	};
-
+   const salesPoints = getSalesPoints();
 	const columns = getBillColumns();
-   const [rows, setRows] = useState([])
+	const [rows, setRows] = useState([]);
 
-   const search = () => {
-      setRows(getBills());      
-   }
+	const sortedSalesPoints = useMemo(() => {
+		const array = salesPoints
+			.slice()
+			.sort((a, b) => a.name.localeCompare(b.name));
 
-   const clear = () => {
-      setRows([]);
-      reset();
-   }
+		let options = [];
+		array.map((i) => {
+			let obj = {};
+			obj["id"] = i.id;
+			obj["label"] = i.name;
+			options.push(obj);
+		});
+		return options;
+	}, [salesPoints]);
+
+	const search = () => {
+		setRows(getBills());
+	};
+
+	const clear = () => {
+		setRows([]);
+		reset();
+	};
 
 	const [
 		formValues,
@@ -58,7 +75,7 @@ export const BillsList = () => {
 		handleValueChange,
 		handleCheckChange,
 		handleComplexInputChange,
-      reset,
+		reset,
 	] = useForm({
 		puntoDeVenta: "",
 		fechaInicial: "",
@@ -81,7 +98,7 @@ export const BillsList = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-      search();
+		search();
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
@@ -95,13 +112,13 @@ export const BillsList = () => {
 				"d-flex flex-column container animate__animated " + animatedStyle
 			}
 		>
-			<h4 className="title align-self-center" style={{ width: "80%" }}>
+			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Consulta de facturas
 			</h4>
 			<div
 				className="align-self-center"
 				style={{
-					width: "80%",
+					width: "100%",
 				}}
 			>
 				<form
@@ -145,9 +162,9 @@ export const BillsList = () => {
 									locale={esLocale}
 								>
 									<DesktopDatePicker
-											label="Fecha final"
+										label="Fecha final"
 										id="fechaFinal"
-									value={fechaFinal}
+										value={fechaFinal}
 										maxDate={new Date()}
 										onChange={(newValue) => {
 											handleValueChange("fechaFinal", newValue);
@@ -169,11 +186,28 @@ export const BillsList = () => {
 
 						<Grid item xs={3}>
 							<Item className="">
+                     <Autocomplete
+											disablePortal
+											id="puntoDeVenta"
+											options={sortedSalesPoints}
+											renderInput={(params) => (
+												<TextField
+													{...params}
+													className="form-control"
+													size="small"
+													label="Punto de venta"
+													onChange={handleInputChange}
+													value={puntoDeVenta}
+													required
+												/>
+											)}
+										/>
+{/*
 								<TextField
 									label="Punto de venta"
 									error={false}
 									id="puntoDeVenta"
-									type="text"
+									select
 									name="puntoDeVenta"
 									autoComplete="off"
 									size="small"
@@ -181,7 +215,15 @@ export const BillsList = () => {
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
-								/>
+                        >
+									<MenuItem value="">...</MenuItem>
+									{sortedSalesPoints.map((sp) => (
+										<MenuItem key={sp.id} value={sp.id}>
+											{sp.name}
+										</MenuItem>
+									))}                           
+                        </TextField>
+*/}								
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -314,9 +356,6 @@ export const BillsList = () => {
 								pageSize={10}
 								onCellClick={handleClick}
 								disableSelectionOnClick={true}
-								components={{
-									NoRowsOverlay: NoRowsOverlay,
-								}}
 							/>
 						}
 					</div>

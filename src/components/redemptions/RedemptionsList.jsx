@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
+	Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
+	MenuItem,
 	Paper,
 	Tab,
 	TextField,
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { getRedemptionBasicColumns} from "./selectors/getRedemptionBasicColumns";
+
 import { getRedemptions } from "./selectors/getRedemptions";
 import { useForm } from "../customHooks/useForm";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
@@ -18,7 +20,6 @@ import {
 	LocalizationProvider,
 	TabContext,
 	TabList,
-	TabPanel,
 } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -26,12 +27,14 @@ import esLocale from "date-fns/locale/es";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import { DataTable } from "../general/DataTable";
-import { NoRowsOverlay } from "../general/NoRowsOverlay";
-import { Box } from "@mui/system";
-import { getRedemptionAuditColumns } from "./selectors/getRedemptionAuditColumns";
+import Box from "@mui/material/Box";
 import { withStyles } from "@mui/styles";
-import SellIcon from '@mui/icons-material/Sell';
+import SellIcon from "@mui/icons-material/Sell";
+import { RedemptionBasicDataTab } from "./tabs/RedemptionBasicDataTab";
+import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
+import ArticleIcon from "@mui/icons-material/Article";
+import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
+import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -42,16 +45,31 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const StyledTabs = withStyles({
-   indicator: {
-     backgroundColor: 'orange'
-   }
- })(TabList);
+	indicator: {
+		backgroundColor: "orange",
+	},
+})(TabList);
 
 export const RedemptionsList = () => {
-	const navigate = useNavigate();	
+	const navigate = useNavigate();
 	const [tabIndex, setTabIndex] = useState("0");
 	const [rows, setRows] = useState([]);
-   const [columns, setcolumns] = useState(getRedemptionBasicColumns());
+	const salesPoints = getSalesPoints();
+
+	const sortedSalesPoints = useMemo(() => {
+		const array = salesPoints
+			.slice()
+			.sort((a, b) => a.name.localeCompare(b.name));
+
+		let options = [];
+		array.map((i) => {
+			let obj = {};
+			obj["id"] = i.id;
+			obj["label"] = i.name;
+			options.push(obj);
+		});
+		return options;
+	}, [salesPoints]);
 
 	const search = () => {
 		setRows(getRedemptions());
@@ -85,33 +103,41 @@ export const RedemptionsList = () => {
 
 	const handleTabChange = (e, newValue) => {
 		setTabIndex(newValue);
+		/*
       if (newValue === "1") {
          setcolumns(getRedemptionAuditColumns());
       } else {
          setcolumns(getRedemptionBasicColumns());
       }
-      
+      */
 	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "revertir") {
-			console.log("Se revirtió el ítem con id:"+row.id);
+			console.log("Se revirtió el ítem con id:" + row.id);
 		}
-	};   
+	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
 
-   const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
 		navigate,
 		path: "/redemption",
 	});
 
 	return (
-		<div className={" d-flex flex-column   animate__animated " + animatedStyle +" " +animatedStyle2}>
+		<div
+			className={
+				" d-flex flex-column   animate__animated " +
+				animatedStyle +
+				" " +
+				animatedStyle2
+			}
+		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Consulta de redenciones
 			</h4>
@@ -146,14 +172,12 @@ export const RedemptionsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
-												required={true}
 											/>
 										)}
 										disabled={false}
 									/>
 								</LocalizationProvider>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
@@ -176,34 +200,33 @@ export const RedemptionsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
-												required={true}
 											/>
 										)}
 										disabled={false}
 									/>
 								</LocalizationProvider>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
 							<Item className="">
-								<TextField
-									label="Punto de venta"
-									error={false}
+								<Autocomplete
+									disablePortal
 									id="puntoDeVenta"
-									type="text"
-									name="puntoDeVenta"
-									autoComplete="off"
-									size="small"
-									value={puntoDeVenta}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-									required={true}
+									options={sortedSalesPoints}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											className="form-control"
+											size="small"
+											label="Punto de venta"
+											onChange={handleInputChange}
+											value={puntoDeVenta}
+											required
+										/>
+									)}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
@@ -220,10 +243,8 @@ export const RedemptionsList = () => {
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
-									required={true}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={12}>
@@ -274,49 +295,45 @@ export const RedemptionsList = () => {
 					</Grid>
 				</form>
 
-				{rows.length>0 && (
+				{rows.length > 0 && (
 					<div className="topMargin">
 						<Typography variant="h6" className="left-align">
 							{rows.length} Resultados
 						</Typography>
-						<Box className="align-self-center dataTableContainer ">
+						<Box
+							className="align-self-center dataTableContainer "
+							sx={{
+								border: 1,
+								borderColor: "orange",
+								borderRadius: "5px",
+							}}
+						>
 							<TabContext value={tabIndex}>
-								<StyledTabs onChange={handleTabChange} TabIndicatorProps={{ sx: { backgroundColor: 'green'} }} >
+								<StyledTabs
+									onChange={handleTabChange}
+									sx={{ backgroundColor: "#e6e6e6" }}
+								>
 									<Tab
 										value="0"
 										label="Datos básicos"
 										style={{ textTransform: "none" }}
+										icon={<ArticleIcon />}
+										wrapped
 									/>
 									<Tab
 										value="1"
 										label="Auditoría"
 										style={{ textTransform: "none" }}
+										icon={<LocationSearchingIcon />}
+										wrapped
 									/>
 								</StyledTabs>
-								<TabPanel value="0" style={{ padding: "0" }}>
-									<DataTable
-										rows={rows}
-										columns={columns}
-										pageSize={10}
-										onCellClick={handleClick}
-										disableSelectionOnClick={true}
-										components={{
-											NoRowsOverlay: NoRowsOverlay,
-										}}
-									/>
-								</TabPanel>
-								<TabPanel value="1" style={{ padding: "0" }}>
-									<DataTable
-										rows={rows}
-										columns={columns}
-										pageSize={10}
-										onCellClick={() => {}}
-										disableSelectionOnClick={true}
-										components={{
-											NoRowsOverlay: NoRowsOverlay,
-										}}
-									/>
-								</TabPanel>
+								<RedemptionBasicDataTab
+									index="0"
+									rows={rows}
+									handleClick={handleClick}
+								/>
+								<RedemptionAuditTab index="1" rows={rows} />
 							</TabContext>
 						</Box>
 					</div>

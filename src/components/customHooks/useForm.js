@@ -32,6 +32,7 @@ export const useForm = (initialState={}) => {
    }    
 
    const handleCheckChange = ({target}) => {
+      console.log("target:", target.name);
       setFormState({
          ...formState,
          [target.name]: target.checked,

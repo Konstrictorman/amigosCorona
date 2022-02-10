@@ -15,18 +15,7 @@ export const getClientAddressColumns = () => {
 			headerClassName: "headerCol",
 			headerAlign: "center",
 			align: "left",
-/*
-			renderCell: (params) => (
-				<div>
-					<Tooltip title={params.value}>
-						<IconButton>
-							<LocationOnIcon />
-						</IconButton>
-					</Tooltip>
-					{params.value}
-				</div>
-			),
-*/
+
          valueGetter: (params)=>
             `${params.getValue(params.id, 'direccion')  || ''},
             ${params.getValue(params.id, 'barrio') || ''} -
@@ -36,33 +25,6 @@ export const getClientAddressColumns = () => {
 
          
 		},
-      /*
-		{
-			field: "ciudad",
-			headerName: "Ciudad",
-			flex: 1,
-			headerClassName: "headerCol",
-			headerAlign: "center",
-			align: "left",
-		},
-		{
-			field: "departamento",
-			headerName: "Departamento",
-			flex: 1,
-			headerClassName: "headerCol",
-			headerAlign: "center",
-			align: "left",
-		},
-
-		{
-			field: "barrio",
-			headerName: "Barrio",
-			flex: 1,
-			headerClassName: "headerCol",
-			headerAlign: "center",
-			align: "left",
-		},
-      */
 		{
 			field: "principal",
 			headerName: "Principal",

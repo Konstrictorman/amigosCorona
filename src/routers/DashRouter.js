@@ -18,6 +18,8 @@ import { Bill } from '../components/bills/Bill';
 import { MovementsList } from '../components/movements/MovementsList';
 import { RedemptionsList } from '../components/redemptions/RedemptionsList';
 import { Redemption } from '../components/redemptions/Redemption';
+import { ParameterGroupsList } from '../components/parameterGroups/ParameterGroupsList';
+import { ParameterGroup } from '../components/parameterGroups/ParameterGroup';
 
 export const DashRouter = () => {
    return (
@@ -33,6 +35,8 @@ export const DashRouter = () => {
                   <Route exact path="/client" element={<Client/>}/>
                   <Route exact path="/clientList" element={<ClientList/>}/>
                   <Route exact path="/movementList" element={<MovementsList/>}/>
+                  <Route exact path="/parameterGroupsList" element={<ParameterGroupsList/>}/>
+                  <Route exact path="/parameterGroup" element={<ParameterGroup/>}/>
                   <Route exact path="/promotionsList" element={<PromotionsList/>}/>
                   <Route exact path="/promotion" element={<Promotion/>}/>
                   <Route exact path="/redemptionsList" element={<RedemptionsList/>}/>

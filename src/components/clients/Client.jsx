@@ -1,79 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { useForm } from "../customHooks/useForm";
 import queryString from "query-string";
 import { getClientById } from "./selectors/getClientById";
-import { DataGrid } from "@mui/x-data-grid";
-import { styled } from "@mui/material/styles";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import esLocale from "date-fns/locale/es";
+
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
-
-import {
-	Button,
-	FormHelperText,
-	Grid,
-	Paper,
-	TextField,
-	Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import { NoRowsOverlay } from "../general/NoRowsOverlay";
-import { getDocumentTypes } from "../documentTypes/selectors/getDocumentTypes";
-import { getClientAddressColumns } from "./selectors/getClientAddressColumns";
-import { getClientMailColumns } from "./selectors/getClientMailColumns";
-import { getClientPhoneColumns } from "./selectors/getClientPhoneColumns";
-import { getReferrerLevelColumns } from "./selectors/getReferrerLevelColumns";
-import { DesktopDatePicker, TimelineOppositeContent } from "@mui/lab";
-import { getReferencePrograms } from "../referencePrograms/selectors/getReferencePrograms";
-import { getClientStatusList } from "./selectors/getClientStatusList";
-import { getReferrerLevelsByClientId } from "./selectors/getReferrerLevelsByClientId";
-import { getStatusHistoryColumns } from "./selectors/getStatusHistoryColumns";
-import { getStatusHistoryByClientId } from "./selectors/getStatusHistoryByClientId";
+import { TabContext, TabList } from "@mui/lab";
+import { withStyles } from "@mui/styles";
+import { ClientAuditTab } from "./tabs/ClientAuditTab";
+import { ClientBenefitsTab } from "./tabs/ClientBenefitsTab";
+import { ClientStateHistoryTab } from "./tabs/ClientStateHistoryTab";
+import { ClientMailsTab } from "./tabs/ClientMailsTab";
+import { ClientAddressTab } from "./tabs/ClientAddressTab";
+import { ClientPhonesTab } from "./tabs/ClientPhonesTab";
+import { ClientReferrerTab } from "./tabs/ClientReferrerTab";
 
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+const StyledTabs = withStyles({
+	indicator: {
+		backgroundColor: "orange",
+	},
+})(TabList);
 
 export const Client = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const cliente = useMemo(() => getClientById(id), [id]);
-	const phoneColumns = getClientPhoneColumns();
-	const addressColumns = getClientAddressColumns();
-	const mailColumns = getClientMailColumns();
-	const statusList = getClientStatusList();
-	const docTypeSelect = getDocumentTypes();
-	const referrerLevelColumns = getReferrerLevelColumns();
-	const referrerLevels = useMemo(() => getReferrerLevelsByClientId(id), [id]);
-   const statusHistoryColumns = getStatusHistoryColumns();
-   const statusHistory = useMemo(() => getStatusHistoryByClientId(id), [id]);
+	const client = useMemo(() => getClientById(id), [id]);
 
-	const sortedRefPrograms = useMemo(() => {
-		const rp = getReferencePrograms();
-		const array = rp
-			.slice()
-			.sort((a, b) => a.programa.localeCompare(b.programa));
-		return array;
-	}, [getReferencePrograms]);
-
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/clientList",
-	});
+	const {
+		primerNombre,
+		segundoNombre,
+		primerApellido,
+		segundoApellido,
+		tipoDocumento,
+		documento,
+	} = client;
 
 	const [
 		formValues,
@@ -81,50 +54,41 @@ export const Client = () => {
 		handleValueChange,
 		handleCheckChange,
 		handleComplexInputChange,
+		reset,
 	] = useForm({
-		codigoCliente: cliente?.codigoCliente ? cliente.codigoCliente : "",
-		documento: cliente?.documento ? cliente.documento : "",
-		primerApellido: cliente?.primerApellido ? cliente.primerApellido : "",
-		primerNombre: cliente?.primerNombre ? cliente.primerNombre : "",
-		segundoApellido: cliente?.segundoApellido ? cliente.segundoApellido : "",
-		segundoNombre: cliente?.segundoNombre ? cliente.segundoNombre : "",
-		telefonosCliente: cliente?.telefonosCliente
-			? cliente.telefonosCliente
-			: [],
-		direccionesCliente: cliente?.direccionesCliente
-			? cliente.direccionesCliente
-			: [],
-		tipoDocumento: cliente?.tipoDocumento ? cliente.tipoDocumento : "",
-		emailsCliente: cliente?.emailsCliente ? cliente.emailsCliente : [],
-		referenciador: cliente?.referenciador ? cliente.referenciador : {},
+		fechaMat: client?.referenciador?.fechaMat ? client?.referenciador?.fechaMat : "",
+		idProgramaReferenciacion: client?.referenciador?.idProgramaReferenciacion
+			? client.referenciador?.idProgramaReferenciacion
+			: "",
+		especialidad: client?.referenciador?.especialidad ? client.referenciador?.especialidad : "",
+		numHijos: client?.referenciador?.numHijos ? client.referenciador?.numHijos : 0,
+		idLifeMiles: client?.referenciador?.idLifeMiles ? client.referenciador?.idLifeMiles : "",
+		estadoRef: client?.referenciador?.estadoRef ? client.referenciador?.estadoRef : "",
+		referencia1: client?.referenciador?.referencia1 ? client.referenciador?.referencia1 : "",
+	});
+/*
+	const {
+		fechaMat,
+		idProgramaReferenciacion,
+		especialidad,
+		numHijos,
+		idLifeMiles,
+		estadoRef,
+		referencia1,
+	} = formValues;   
+*/
+	const [tabIndex, setTabIndex] = useState("0");
+	const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
+
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/clientList",
 	});
 
-	const {
-		codigoCliente,
-		documento,
-		primerApellido,
-		primerNombre,
-		segundoApellido,
-		segundoNombre,
-		telefonosCliente,
-		direccionesCliente,
-		tipoDocumento,
-		emailsCliente,
-		referenciador: {
-			especialidad,
-			estadoRef,
-			fechaMat,
-			referencia1,
-			idProgramaReferenciacion,
-			numHijos,
-			fechaCreacion,
-			fechaModificacion,
-			usuarioCreacion,
-			usuarioModificacion,
-		},
-	} = formValues;
-
-	//const  = referenciador;
+	const handleTabChange = (e, newValue) => {
+		setTabIndex(newValue);
+		setsaveBtnEnabled(newValue === "0" ? true : false);
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -137,565 +101,120 @@ export const Client = () => {
 				"d-flex flex-column container animate__animated " + animatedStyle
 			}
 		>
-			<h4 className="title align-self-center" style={{ width: "90%" }}>
-				Cliente {cliente.codigoCliente}
+			<h4 className="title align-self-center" style={{ width: "100%" }}>
+				Cliente {client.codigoCliente}
 			</h4>
 			<div
 				className="align-self-center"
 				style={{
-					width: "90%",
+					width: "100%",
 				}}
 			>
-				<form
-					className="form border border-primary rounded"
-					onSubmit={handleSubmit}
-				>
+				<div className="align-self-center basicContainer">
 					<Grid container spacing={2}>
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="Código cliente"
-									error={false}
-									id="codigoCliente"
-									type="text"
-									name="codigoCliente"
-									autoComplete="off"
-									size="small"
-									value={codigoCliente}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+						<Grid item xs={12}>
+							<AssignmentIndIcon color="primary" />
+							<Typography variant="h6">
+								{primerNombre} {segundoNombre} {primerApellido}{" "}
+								{segundoApellido}
+							</Typography>
 						</Grid>
 
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="Tipo documento"
-									error={false}
-									id="tipoDocumento"
-									type="text"
-									name="tipoDocumento"
-									size="small"
-									value={tipoDocumento}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								></TextField>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="Número de documento"
-									error={false}
-									id="documento"
-									type="text"
-									name="documento"
-									autoComplete="off"
-									size="small"
-									value={documento}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+						<Grid item xs={3}>
+							<Typography variant="subtitle2" className="right-align">
+								Tipo documento:
+							</Typography>
 						</Grid>
 						<Grid item xs={3}>
-							<Item>
-								<TextField
-									label="Primer nombre"
-									error={false}
-									id="primerNombre"
-									type="text"
-									name="primerNombre"
-									autoComplete="off"
-									size="small"
-									value={primerNombre}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<Typography variant="body1" className="left-align">
+								{tipoDocumento}
+							</Typography>
+						</Grid>
+
+						<Grid item xs={3}>
+							<Typography variant="subtitle2" className="right-align">
+								Número de documento:
+							</Typography>
 						</Grid>
 						<Grid item xs={3}>
-							<Item>
-								<TextField
-									label="Segundo nombre"
-									error={false}
-									id="segundoNombre"
-									type="text"
-									name="segundoNombre"
-									autoComplete="off"
-									size="small"
-									value={segundoNombre}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-						<Grid item xs={3}>
-							<Item>
-								<TextField
-									label="Primer apellido"
-									error={false}
-									id="primerApellido"
-									type="text"
-									name="primerApellido"
-									autoComplete="off"
-									size="small"
-									required
-									value={primerApellido}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-						<Grid item xs={3}>
-							<Item>
-								<TextField
-									label="Segundo Apellido"
-									error={false}
-									id="segundoApellido"
-									type="text"
-									name="segundoApellido"
-									autoComplete="off"
-									size="small"
-									required
-									value={segundoApellido}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<LocalPhoneIcon color="primary" />
-							<Typography variant="caption" className="left-align">
-								Teléfonos
+							<Typography variant="body1" className="left-align">
+								{documento}
 							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<div className="center">
-								<DataGrid
-									className="rounded border-primary"
-									getRowId={(r) => r.idTelefono}
-									rows={telefonosCliente}
-									columns={phoneColumns}
-									pageSize={5}
-									checkboxSelection={false}
-									density="compact"
-									autoHeight={true}
-									autoPageSize={true}
-									components={{
-										NoRowsOverlay: NoRowsOverlay,
-									}}
-									disableSelectionOnClick={true}
-									disableColumnMenu={true}
-								/>
-							</div>
-						</Grid>
-
-                  <Grid item xs={12}/>                  
-						<Grid item xs={12}>
-							<LocationOnIcon color="primary" />
-							<Typography variant="caption" className="left-align">
-								Direcciones
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<div className="center">
-								<DataGrid
-									className="rounded border-primary"
-									getRowId={(r) => r.idDireccion}
-									rows={direccionesCliente}
-									columns={addressColumns}
-									pageSize={5}
-									checkboxSelection={false}
-									density="compact"
-									autoHeight={true}
-									autoPageSize={true}
-									components={{
-										NoRowsOverlay: NoRowsOverlay,
-									}}
-									disableSelectionOnClick={true}
-									disableColumnMenu={true}
-								/>
-							</div>
-						</Grid>
-
-                  <Grid item xs={12}/>                  
-						<Grid item xs={12}>
-							<EmailIcon color="primary" />
-							<Typography variant="caption" className="left-align">
-								Correos electrónicos
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<div className="center">
-								<DataGrid
-									className="rounded border-primary"
-									getRowId={(r) => r.idMail}
-									rows={emailsCliente}
-									columns={mailColumns}
-									pageSize={5}
-									checkboxSelection={false}
-									density="compact"
-									autoHeight={true}
-									autoPageSize={true}
-									components={{
-										NoRowsOverlay: NoRowsOverlay,
-									}}
-									disableSelectionOnClick={true}
-									disableColumnMenu={true}
-									onCellClick={() => false}
-									isCellEditable={() => false}
-								/>
-							</div>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha de matrícula"
-										id="fechaMat"
-										value={fechaMat}
-										minDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaMat", newValue);
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												required
-												className="form-control"
-												error={false}
-											/>
-										)}
-										disabled={false}
-									/>
-								</LocalizationProvider>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									select
-									label="Programa referenciación"
-									error={false}
-									id="idProgramaReferenciacion"
-									type="text"
-									name="idProgramaReferenciacion"
-									size="small"
-									value={idProgramaReferenciacion}
-									//onChange={handleInputChange}
-									onChange={(e) => {
-										handleComplexInputChange(e, "referenciador");
-									}}
-									className="form-control"
-									disabled={false}
-									SelectProps={{
-										native: true,
-									}}
-								>
-									<option value="">...</option>
-									{sortedRefPrograms.map((rp) => (
-										<option key={rp.id} value={rp.id}>
-											{rp.programa}
-										</option>
-									))}
-								</TextField>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="Especialidad"
-									error={false}
-									id="especialidad"
-									type="text"
-									name="especialidad"
-									autoComplete="off"
-									size="small"
-									required
-									value={especialidad}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="# de hijos"
-									error={false}
-									id="numHijos"
-									type="number"
-									name="numHijos"
-									autoComplete="off"
-									size="small"
-									required
-									value={numHijos}
-									onChange={(e) => {
-										handleComplexInputChange(e, "referenciador");
-									}}
-									className="form-control"
-									disabled={false}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									label="Id Life Miles"
-									error={false}
-									id="referencia1"
-									type="text"
-									name="referencia1"
-									autoComplete="off"
-									size="small"
-									required
-									value={referencia1}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={4}>
-							<Item>
-								<TextField
-									select
-									label="Estado"
-									error={false}
-									id="estadoRef"
-									type="text"
-									name="estadoRef"
-									size="small"
-									value={estadoRef}
-									onChange={(e) => {
-										handleComplexInputChange(e, "referenciador");
-									}}
-									className="form-control"
-									disabled={false}
-									required
-									SelectProps={{
-										native: true,
-									}}
-								>
-									<option value="">...</option>
-									{statusList.map((status) => (
-										<option key={status.label} value={status.value}>
-											{status.label}
-										</option>
-									))}
-								</TextField>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={12}>
-							<Item>
-								<TextField
-									label="Referencias"
-									error={false}
-									id="referencia1"
-									type="text"
-									name="referencia1"
-									autoComplete="off"
-									size="small"
-									required
-									value={referencia1}
-									onChange={(e) => {
-										handleComplexInputChange(e, "referenciador");
-									}}
-									className="form-control"
-									disabled={false}
-									minRows={5}
-									maxRows={5}
-									multiline={true}
-								/>
-							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
-						</Grid>
-
-						<Grid item xs={12} />
-						<Grid item xs={12}>
-							<HistoryToggleOffIcon color="primary" />
-							<Typography variant="caption" className="left-align">
-								Hisotrial de estados
-							</Typography>
-						</Grid>
-
-						<Grid item xs={12}>
-							<div className="center">
-								<DataGrid
-									className="rounded border-warning"
-									rows={statusHistory}
-									columns={statusHistoryColumns}
-									pageSize={5}
-									checkboxSelection={false}
-									density="compact"
-									autoHeight={true}
-									autoPageSize={true}
-									components={{
-										NoRowsOverlay: NoRowsOverlay,
-									}}
-								/>
-							</div>
-						</Grid>                  
-
-                  <Grid item xs={12}/>
-						<Grid item xs={12}>
-							<EmojiEventsIcon color="primary" />
-							<Typography variant="caption" className="left-align">
-								Niveles de beneficios
-							</Typography>
-						</Grid>
-						<Grid item xs={12}>
-							<div className="center">
-								<DataGrid
-									className="rounded border-warning"
-									rows={referrerLevels}
-									columns={referrerLevelColumns}
-									pageSize={5}
-									checkboxSelection={false}
-									density="compact"
-									autoHeight={true}
-									autoPageSize={true}
-									components={{
-										NoRowsOverlay: NoRowsOverlay,
-									}}
-								/>
-							</div>
-						</Grid>
-
-
-                  <Grid item xs={12}/>
-						<Grid container spacing={2} className="grid-container">
-							<Grid item xs={12}>
-								<LocationSearchingIcon color="primary" />
-								<Typography variant="caption" className="left-align">
-									Auditoría
-								</Typography>
-							</Grid>
-
-							<Grid item xs={6} className="grid-item">
-								<Item className="half-quarter-width right">
-									<TextField
-										label="Añadido por"
-										error={false}
-										id="usuarioCreacion"
-										type="text"
-										name="usuarioCreacion"
-										autoComplete="off"
-										size="small"
-										value={usuarioCreacion}
-										onChange={handleInputChange}
-										className="form-control"
-										disabled={true}
-									/>
-								</Item>
-							</Grid>
-							<Grid item xs={6} className="grid-item-rightPadding">
-								<Item className="half-quarter-width ">
-									<LocalizationProvider
-										dateAdapter={AdapterDateFns}
-										locale={esLocale}
-									>
-										<DesktopDatePicker
-											label="Fecha de creación"
-											id="fechaCreacion"
-											value={fechaCreacion}
-											minDate={new Date()}
-											disabled={true}
-											onChange={() => {}}
-											renderInput={(params) => (
-												<TextField
-													{...params}
-													size="small"
-													required
-													className="form-control"
-													error={false}
-												/>
-											)}
-										/>
-									</LocalizationProvider>
-								</Item>
-							</Grid>
-
-							<Grid item xs={6} className="grid-item">
-								<Item className="half-quarter-width right">
-									<TextField
-										label="Modificado por"
-										error={false}
-										id="usuarioModificacion"
-										type="text"
-										name="usuarioModificacion"
-										autoComplete="off"
-										size="small"
-										value={usuarioModificacion}
-										onChange={handleInputChange}
-										className="form-control"
-										disabled={true}
-									/>
-								</Item>
-							</Grid>
-							<Grid item xs={6} className="grid-item-rightPadding">
-								<Item className="half-quarter-width ">
-									<LocalizationProvider
-										dateAdapter={AdapterDateFns}
-										locale={esLocale}
-									>
-										<DesktopDatePicker
-											label="Fecha de modificación"
-											id="fechaModificacion"
-											value={fechaModificacion}
-											minDate={new Date()}
-											disabled={true}
-											onChange={() => {}}
-											renderInput={(params) => (
-												<TextField
-													{...params}
-													size="small"
-													required
-													className="form-control"
-													error={false}
-												/>
-											)}
-										/>
-									</LocalizationProvider>
-								</Item>
-							</Grid>
 						</Grid>
 					</Grid>
-				</form>
+				</div>
+
+				<div className="topMargin">
+					<Box
+						className="align-self-center dataTableContainer"
+						sx={{ border: 1, borderColor: "orange", borderRadius: "5px" }}
+					>
+						<TabContext value={tabIndex}>
+							<StyledTabs
+								onChange={handleTabChange}
+								sx={{ backgroundColor: "#e6e6e6" }}
+							>
+								<Tab
+									value="0"
+									label="Referenciador"
+									style={{ textTransform: "none" }}
+									icon={<AssignmentIndIcon />}
+									wrapped
+								/>
+								<Tab
+									value="1"
+									label="Teléfonos"
+									style={{ textTransform: "none" }}
+									icon={<LocalPhoneIcon />}
+									wrapped
+								/>
+								<Tab
+									value="2"
+									label="Direcciones"
+									style={{ textTransform: "none" }}
+									icon={<LocationOnIcon />}
+									wrapped
+								/>
+								<Tab
+									value="3"
+									label="e-Mails"
+									style={{ textTransform: "none" }}
+									icon={<EmailIcon />}
+									wrapped
+								/>
+								<Tab
+									value="4"
+									label="Historial de estados"
+									style={{ textTransform: "none" }}
+									icon={<HistoryToggleOffIcon />}
+									wrapped
+								/>
+								<Tab
+									value="5"
+									label="Niveles de beneficios"
+									style={{ textTransform: "none" }}
+									icon={<EmojiEventsIcon />}
+									wrapped
+								/>
+								<Tab
+									value="6"
+									label="Auditoría"
+									style={{ textTransform: "none" }}
+									icon={<LocationSearchingIcon />}
+									wrapped
+								/>
+							</StyledTabs>
+
+							<ClientReferrerTab formValues={formValues} index="0" handleInputChange={handleInputChange} handleValueChange={handleValueChange}/>
+							<ClientPhonesTab client={client} index="1" />
+							<ClientAddressTab client={client} index="2" />
+							<ClientMailsTab client={client} index="3" />
+							<ClientStateHistoryTab client={client} index="4" />
+							<ClientBenefitsTab client={client} index="5" />
+							<ClientAuditTab client={client} index="6" />
+						</TabContext>
+					</Box>
+				</div>
 				<div>
 					<Button
 						color="error"
@@ -715,6 +234,7 @@ export const Client = () => {
 						style={{ textTransform: "none" }}
 						type="submit"
 						onClick={handleSubmit}
+						disabled={!saveBtnEnabled}
 					>
 						Guardar
 					</Button>

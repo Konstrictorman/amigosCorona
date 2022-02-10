@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
+   Autocomplete,
 	Button,
 	FormControlLabel,
 	FormHelperText,
@@ -44,9 +45,19 @@ export const Promotion = () => {
 
 
 	const sortedSalePoints = useMemo(() => {
-		const array = salePoints.slice().sort((a, b) => a.name.localeCompare(b.name));
-		return array;
-   }, [salePoints]);
+		const array = salePoints
+			.slice()
+			.sort((a, b) => a.name.localeCompare(b.name));
+
+		let options = [];
+		array.map((i) => {
+			let obj = {};
+			obj["id"] = i.id;
+			obj["label"] = i.name;
+			options.push(obj);
+		});
+		return options;
+	}, [salePoints]);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -208,24 +219,22 @@ export const Promotion = () => {
 
 						<Grid item xs={6} >
 							<Item className="half-quarter-width right">
-								<TextField
-									label="Punto de venta"
-									error={false}
-									id="salesPoint"
-									select
-									name="salesPoint"
-									size="small"
-									value={idPuntoVenta}
-									onChange={handleInputChange}
-									className="form-control"
-								>
-									<MenuItem value="">...</MenuItem>
-									{sortedSalePoints.map((sp) => (
-										<MenuItem key={sp.id} value={sp.id}>
-											{sp.name}
-										</MenuItem>
-									))}
-								</TextField>
+                        <Autocomplete
+											disablePortal
+											id="salesPoint"
+											options={sortedSalePoints}
+											renderInput={(params) => (
+												<TextField
+													{...params}
+													className="form-control"
+													size="small"
+													label="Punto de venta"
+													onChange={handleInputChange}
+													value={idPuntoVenta}
+													required
+												/>
+											)}
+										/>                        
 							</Item>
 							<FormHelperText className="helperText half-quarter-width right">
 								{" "}

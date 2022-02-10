@@ -28,6 +28,8 @@ const Item = styled(Paper)(({ theme }) => ({
 	color: theme.palette.text.secondary,
 }));
 
+
+
 //Aún no se sabe si se van a usar las promociones en esta pantalla.  Lo más probable es que no
 //const promos = getPromos();
 
@@ -62,14 +64,13 @@ export const SalesPoint = () => {
 				"d-flex flex-column container animate__animated " + animatedStyle
 			}
 		>
-			<h4 className="title align-self-center" style={{ width: "80%" }}>
+			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Punto de venta {sp?.name ? sp.name : "nuevo"}
 			</h4>
 			<div
 				className="align-self-center"
-				style={{
-					height: 460,
-					width: "80%",
+				style={{					
+					width: "100%",
 				}}
 			>
 				<form

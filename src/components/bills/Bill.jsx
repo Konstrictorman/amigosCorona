@@ -111,13 +111,13 @@ export const Bill = () => {
 				"d-flex flex-column container animate__animated " + animatedStyle
 			}
 		>
-			<h4 className="title align-self-center" style={{ width: "90%" }}>
+			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Factura {numFactura}
 			</h4>
 			<div
 				className="align-self-center"
 				style={{
-					width: "90%",
+					width: "100%",
 				}}
 			>
 				<form
