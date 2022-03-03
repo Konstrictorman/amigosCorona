@@ -12,6 +12,8 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import SellIcon from '@mui/icons-material/Sell';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 export const AppMenu = () => {
    
@@ -65,6 +67,13 @@ export const AppMenu = () => {
                <ListItemText>Inicio</ListItemText>
             </MenuItem>            
             <Divider />
+            <MenuItem onClick={() => {handleMenuClick('/loadData')}}>
+               <ListItemIcon>
+                  <UploadFileIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Carga de datos</ListItemText>
+            </MenuItem> 
+
             <MenuItem onClick={() => {handleMenuClick('/clientList')}}>
                <ListItemIcon>
                   <GroupsIcon color="primary" fontSize="medium"/>
@@ -128,6 +137,14 @@ export const AppMenu = () => {
                <ListItemText>Redenciones</ListItemText>
             </MenuItem>                
           
+            <MenuItem onClick={() => {handleMenuClick('/recordMovement')}}>
+               <ListItemIcon>
+                  <DriveFileRenameOutlineIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Registrar movimientos</ListItemText>
+            </MenuItem>                
+          
+            
 			</Menu>
 		</div>
 	);

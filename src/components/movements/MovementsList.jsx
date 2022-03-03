@@ -38,11 +38,6 @@ export const MovementsList = () => {
 		setRows(getMovements());
 	};
 
-	const clear = () => {
-		setRows([]);
-		reset();
-	};
-
 	const [
 		formValues,
 		handleInputChange,
@@ -52,13 +47,18 @@ export const MovementsList = () => {
 		reset,
 	] = useForm({
 		codeCliente: "",
-		fechaInicial: "",
-		fechaFinal: "",
+		fechaInicial: null,
+		fechaFinal: null,
 		llaveMaestraFlag: false,
 	});
 
 	const { codeCliente, fechaInicial, fechaFinal, llaveMaestraFlag } =
 		formValues;
+
+	const clear = () => {
+		setRows([]);
+		reset();
+	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,

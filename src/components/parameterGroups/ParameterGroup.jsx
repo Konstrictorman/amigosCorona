@@ -279,7 +279,6 @@ export const ParameterGroup = () => {
 											label="Punto de venta"
 											onChange={handleInputChange}
 											value={paramPtoVenta}
-											required
 										/>
 									)}
 								/>

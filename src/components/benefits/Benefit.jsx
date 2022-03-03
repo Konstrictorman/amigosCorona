@@ -394,7 +394,7 @@ export const Benefit = () => {
 									/>
 								}
 								labelPlacement="start"
-								label="Plan inicial del program"
+								label="Plan inicial del programa"
 							/>
 						</Grid>    
                   <Grid item xs={4}>

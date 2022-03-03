@@ -11,11 +11,13 @@ import LocalPlayIcon from '@mui/icons-material/LocalPlay';
 import { DataTable } from "../general/DataTable";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-const columns = getReferenceProgramColumns();
-const rows = getReferencePrograms();
+
 
 export const ReferenceProgramList = () => {
+   const columns = getReferenceProgramColumns();
+   const [rows, setRows] = useState(getReferencePrograms());
 	const [selectedIds, setSelectedIds] = useState([]);
+	const [loading, setLoading] = useState(false);   
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
@@ -34,12 +36,11 @@ export const ReferenceProgramList = () => {
 	};
 
 	const deleteItems = () => {
-		selectedIds.map((sId) => {
-			let rp = getReferenceProgramById(sId);
-			console.log(JSON.stringify(rp), " eliminated");
-         return rp;
-		});
 		handleCloseModal();
+		setLoading(true);
+		setRows(rows.filter((r) => !selectedIds.includes(r.id)));
+		setSelectedIds([]);
+		setLoading(false);
 	};
 
    const [animatedStyle, handleClickOut] = useAnimatedStyle({

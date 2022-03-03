@@ -226,7 +226,8 @@ export const ReferenceProgram = () => {
 								</Stack>
 							</div>
 						</Grid>
-                           
+{                           
+                  (programaEstados.length > 0 &&
 						<Grid item xs={12}>
 							<div className="center  half-quarter-width">
 								<DataGrid
@@ -244,7 +245,8 @@ export const ReferenceProgram = () => {
                             }}
 								/>
 							</div>
-						</Grid>
+						</Grid>)
+}                  
 					</Grid>
 				</form>
 				<div>

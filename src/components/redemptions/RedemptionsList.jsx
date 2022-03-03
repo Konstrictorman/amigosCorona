@@ -13,6 +13,7 @@ import {
 import { styled } from "@mui/material/styles";
 
 import { getRedemptions } from "./selectors/getRedemptions";
+import { getRedemptionById } from "./selectors/getRedemptionById";
 import { useForm } from "../customHooks/useForm";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
@@ -88,13 +89,13 @@ export const RedemptionsList = () => {
 		handleComplexInputChange,
 		reset,
 	] = useForm({
-		idCliente: "",
+		codeCliente: "",
 		puntoDeVenta: "",
-		fechaInicial: "",
-		fechaFinal: "",
+		fechaInicial: null,
+		fechaFinal: null,
 	});
 
-	const { idCliente, puntoDeVenta, fechaInicial, fechaFinal } = formValues;
+	const { codeCliente, puntoDeVenta, fechaInicial, fechaFinal } = formValues;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -103,18 +104,13 @@ export const RedemptionsList = () => {
 
 	const handleTabChange = (e, newValue) => {
 		setTabIndex(newValue);
-		/*
-      if (newValue === "1") {
-         setcolumns(getRedemptionAuditColumns());
-      } else {
-         setcolumns(getRedemptionBasicColumns());
-      }
-      */
 	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "revertir") {
+         const redem = getRedemptionById(row.id);
+         redem.estado = "Inactivo";
 			console.log("Se revirtió el ítem con id:" + row.id);
 		}
 	};
@@ -232,14 +228,14 @@ export const RedemptionsList = () => {
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
-									label="Id cliente"
+									label="Código cliente"
 									error={false}
-									id="idCliente"
+									id="codeCliente"
 									type="text"
-									name="idCliente"
+									name="codeCliente"
 									autoComplete="off"
 									size="small"
-									value={idCliente}
+									value={codeCliente}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
