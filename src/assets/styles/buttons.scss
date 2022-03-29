@@ -1,0 +1,51 @@
+
+.btn-primary {
+   background-color: $pantone300C !important;
+   border-radius: 5px;
+   font-weight: 500 !important;
+   min-width: none !important;
+   text-decoration: none;
+   text-transform: none;
+
+   &:hover {
+      background-color: darken($color: $pantone300C, $amount: 15) !important;
+      box-shadow: 1px;
+   }
+}
+
+.btn-secondary {
+   background-color: $pantone2955C !important;
+   border-radius: 5px;
+   font-weight: 500 !important;
+   min-width: none !important;
+
+   &:hover {
+      background-color: darken($color: $pantone2955C, $amount: 5) !important;
+      box-shadow: 1px;
+   }
+}
+
+
+.btn-warning {
+   background-color: $pantone123C !important;
+   border-radius: 5px;
+   font-weight: 500 !important;
+   min-width: none !important;
+
+   &:hover {
+      background-color: darken($color: $pantone123C, $amount: 5) !important;
+      box-shadow: 1px;
+   }
+}
+
+.btn-error {
+   background-color: $pantone1925C !important;
+   border-radius: 5px;
+   font-weight: 500 !important;
+   min-width: none !important;
+
+   &:hover {
+      background-color: darken($color: $pantone1925C, $amount: 5) !important;
+      box-shadow: 1px;
+   }
+}

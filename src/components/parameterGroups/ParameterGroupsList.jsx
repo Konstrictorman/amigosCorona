@@ -9,6 +9,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import { getParameterGroups } from "./selectors/getParameterGroups";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
+import { Spinner } from "../general/Spinner";
 
 export const ParameterGroupsList = () => {
 	const navigate = useNavigate();
@@ -51,14 +52,23 @@ export const ParameterGroupsList = () => {
 		path: "/home",
 	});
 
+   if (loading) {
+      return (<Spinner/>);
+   }
+
 	return (
 		<div
-			className={" d-flex flex-column   animate__animated " + animatedStyle}
+      className={
+         " d-flex flex-column   animate__animated " +
+         animatedStyle +
+         " " +
+         animatedStyle2
+      }
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Grupos de parámetros 
 			</h4>
-			<div className="align-self-center dataTableContainer">
+			<div className="container__dataTable">
 				{
 					<DataTable
 						rows={rows}

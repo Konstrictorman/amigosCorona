@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router";
 import queryString from "query-string";
 import { getReferenceProgramById } from "./selectors/getReferenceProgramById";
@@ -92,16 +92,13 @@ export const ReferenceProgram = () => {
 
 	const handleChange = (e) => {
 		setActivo(e.target.checked);
+      handleValueChange("estado", e.target.checked ? "activo":"inactivo");
 	};
 
-   useEffect(() => {
-      handleValueChange("estado", activo ? "activo" : "inactivo");
- }, [activo]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-      console.log(JSON.stringify(activeSalesPoints));
-		console.log(formValues);
+     // console.log(JSON.stringify(activeSalesPoints));
 	};
 
 	return (
@@ -121,7 +118,7 @@ export const ReferenceProgram = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>
@@ -193,7 +190,7 @@ export const ReferenceProgram = () => {
 						<Grid item xs={12}>
 							<div className="center">
 								<DataGrid
-									className="rounded border-primary"
+									className="container__dataTable"
 									rows={activeSalesPoints}
 									columns={activeSalesPointColumns}
 									pageSize={5}
@@ -229,9 +226,9 @@ export const ReferenceProgram = () => {
 {                           
                   (programaEstados.length > 0 &&
 						<Grid item xs={12}>
-							<div className="center  half-quarter-width">
+							<div className="center half-quarter-width">
 								<DataGrid
-									className="rounded border-warning"
+									className="container__dataTable2"
 									getRowId={(r) => r.idProgramaEstado}
 									rows={programaEstados}
 									columns={stateColumns}

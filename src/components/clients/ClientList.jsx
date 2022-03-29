@@ -31,7 +31,7 @@ export const ClientList = () => {
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Clientes
 			</h4>
-			<div className="align-self-center dataTableContainer">
+			<div className="container__dataTable">
 				{
 					<DataTable
 						rows={rows}

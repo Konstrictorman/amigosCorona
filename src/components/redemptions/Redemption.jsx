@@ -47,6 +47,7 @@ export const Redemption = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.name;
 			options.push(obj);
+         return '';
 		});
 		return options;
 	}, [salesPoints]);
@@ -61,7 +62,7 @@ export const Redemption = () => {
 		{ id: 2, label: "Bono" },
 	];
 
-	const [formValues, handleInputChange, handleValueChange, handleCheckChange] =
+	const [formValues, handleInputChange] =
 		useForm({
 			codReferrer: "",
 			redemptionType: "",
@@ -99,7 +100,6 @@ export const Redemption = () => {
 	};
 
 	const handleClick = (e) => {
-		//e.preventDefault();
 		setReferrer(getClientByCode(codReferrer));
 		setIdRef(getIdReference());
 	};
@@ -124,7 +124,7 @@ export const Redemption = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>
@@ -164,7 +164,7 @@ export const Redemption = () => {
 						<Grid item xs={12} />
 
 						{referrer && (
-							<Grid container spacing={2} className="grid-container">
+							<Grid container spacing={2} className="container__grid">
 								<Grid item xs={12}>
 									<AssignmentIndIcon color="primary" />
 									<Typography variant="caption" className="left-align">
@@ -229,7 +229,7 @@ export const Redemption = () => {
 						)}
 
 						{referrer && (
-							<Grid container spacing={2} className="grid-container">
+							<Grid container spacing={2} className="container__grid">
 								<Grid item xs={12}>
 									<SellIcon color="primary" />
 									<Typography variant="caption" className="left-align">

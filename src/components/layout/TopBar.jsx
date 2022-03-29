@@ -12,7 +12,6 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 
-import "./styles/topBar.css";
 
 export const TopBar = () => {
 	const [auth, setAuth] = useState(true);

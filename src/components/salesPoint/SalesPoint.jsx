@@ -9,7 +9,6 @@ import {
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 
-import "../../assets/styles/global.css";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
@@ -74,7 +73,7 @@ export const SalesPoint = () => {
 				}}
 			>
 				<form
-					className="form  border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>

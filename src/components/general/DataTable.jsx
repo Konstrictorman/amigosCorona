@@ -7,9 +7,9 @@ export const DataTable = (props) => {
 	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, disableSelectionOnClick, components, loading } =	props;
 
 	return (
-		<>
+
 			<DataGrid
-            className="border border-primary rounded align-self-center"
+            className='container__dataTable3'
             density="compact"
 				rows={rows}
 				columns={columns}
@@ -24,11 +24,8 @@ export const DataTable = (props) => {
             components = {components}
             loading = {loading}
             disableSelectionOnClick = {disableSelectionOnClick}
-            components={{
-               NoRowsOverlay: NoRowsOverlay,
-            }}            
 			/>
-		</>
+
 	);
 };
 

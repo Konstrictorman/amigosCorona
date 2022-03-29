@@ -13,7 +13,6 @@ import {
 	FormHelperText,
 	Grid,
 	InputAdornment,
-	MenuItem,
 	Switch,
 	TextField,
 } from "@mui/material";
@@ -22,7 +21,6 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import esLocale from "date-fns/locale/es";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import "../../assets/styles/global.css";
 import { useForm } from "../customHooks/useForm";
 import { DesktopDatePicker } from "@mui/lab";
 
@@ -55,6 +53,7 @@ export const Promotion = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.name;
 			options.push(obj);
+         return '';
 		});
 		return options;
 	}, [salePoints]);
@@ -107,7 +106,7 @@ export const Promotion = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>

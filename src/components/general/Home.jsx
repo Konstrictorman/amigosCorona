@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { Spinner } from "./Spinner";
 import GroupsIcon from "@mui/icons-material/Groups";
-import { Grid, Link, Typography } from "@mui/material";
+import {
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	CardMedia,
+	Grid,
+	IconButton,
+	Link,
+	Typography,
+} from "@mui/material";
 import Title from "../../assets/images/Title.png";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import ReceiptIcon from "@mui/icons-material/Receipt";
@@ -11,11 +22,21 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import SellIcon from "@mui/icons-material/Sell";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import { HomeCard } from "./HomeCard";
+import { useNavigate } from "react-router";
 
 export const Home = () => {
 	const [loading, setLoading] = useState(false);
+
+	const navigate = useNavigate();
+
+
+
+	const handleClick = (e, path) => {
+      navigate(path);
+	};
 
 	return (
 		<>
@@ -23,333 +44,103 @@ export const Home = () => {
 			{!loading && (
 				<div>
 					<Grid container spacing={2}>
-						<Grid className="" item xs={12} sx={{paddingBottom:"32px"}}>
-							<img src={Title} alt="Title" width="50%" />
-						</Grid>
-
 						<Grid
-							className="noPadding"
+							className=""
 							item
-							xs={2}
-							sx={{
-								width: "",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
+							xs={12}
+							sx={{ paddingBottom: "32px" }}
 						>
-							<Link href="loadData">
-								<UploadFileIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
-
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Carga de datos
-								</Typography>
-							</Link>
+							{/*<img src={Title} alt="Title" width="50%" />*/}
+							<span className="home__title" >Club de amigos CORONA</span>
 						</Grid>
 
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="clientList">
-								<GroupsIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Carga de datos"
+							icon={
+									<UploadFileIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/loadData')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Clientes
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="billsList">
-								<ReceiptIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Clientes"
+							icon={
+									<GroupsIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/clientList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Facturas
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="parameterGroupsList">
-								<Inventory2Icon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Facturas"							
+							icon={
+									<ReceiptIcon className="home__icon" />
+							}
+                     handleClick={(e) => {handleClick(e, '/billsList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Grupos de parámetros
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="movementList">
-								<DirectionsRunIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Grupos de parámetros"
+							icon={
+									<Inventory2Icon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/parameterGroupsList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Movimientos
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="benefitsList">
-								<EmojiEventsIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Movimientos"
+							icon={
+									<DirectionsRunIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/movementList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Nivel de beneficios
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="referenceProgramList">
-								<LocalPlayIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Nivel de beneficios"
+							icon={
+									<EmojiEventsIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/benefitsList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Programas de referenciación
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="promotionsList">
-								<PriceCheckIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Programas de referenciación"
+							icon={
+									<LocalPlayIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/referenceProgramList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Promociones / Exclusiones
-								</Typography>
-							</Link>
-						</Grid>
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="salesPointList">
-								<PointOfSaleIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Promociones / Exclusiones"
+							icon={
+									<PriceCheckIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/promotionsList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Puntos de venta
-								</Typography>
-							</Link>
-						</Grid>
+						<HomeCard
+							title="Puntos de venta"
+							icon={
+									<PointOfSaleIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/salesPointList')}}
+						/>
 
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="redemptionsList">
-								<SellIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
+						<HomeCard
+							title="Redenciones"
+							icon={
+									<SellIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/redemptionsList')}}
+						/>
 
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Redenciones
-								</Typography>
-							</Link>
-						</Grid>
-
-						<Grid
-							className="noPadding"
-							item
-							xs={2}
-							sx={{
-								width: "100%",
-								height: 160,
-								borderRadius: "150px",
-								border: 5,
-								borderColor: "primary.main",
-								backgroundColor: "white",
-								margin: 2,
-							}}
-						>
-							<Link href="recordMovement">
-								<DriveFileRenameOutlineIcon
-									className="topMargin"
-									sx={{ fontSize: "64px" }}
-								/>
-
-								<Typography
-									variant="subtitle2"
-									component="div"
-									gutterBottom
-								>
-									Registrar movimientos
-								</Typography>
-							</Link>
-						</Grid>
-
+						<HomeCard
+							title="Registrar movimientos"
+							icon={
+									<DriveFileRenameOutlineIcon className="home__icon"/>
+							}
+                     handleClick={(e) => {handleClick(e, '/recordMovement')}}
+						/>
 					</Grid>
 				</div>
 			)}

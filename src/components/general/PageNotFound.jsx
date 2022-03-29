@@ -1,6 +1,5 @@
 import React from "react";
 import BugReportIcon from "@mui/icons-material/BugReport";
-import "../../assets/styles/global.css";
 
 export const PageNotFound = () => {
 	return (

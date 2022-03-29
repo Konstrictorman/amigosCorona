@@ -3,7 +3,7 @@
 }
 
 .footerBox {
-   background-color: orange;
+   background-color: $pantone123C;
    box-sizing: border-box;
    display: flex;
    max-width: 100%;
@@ -13,4 +13,9 @@
 
 .border {
    border: 1px solid rgba(0,0,0,0.5);
+}
+
+.powered__text {
+   
+   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }

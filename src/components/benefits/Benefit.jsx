@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect} from "react";
+import React, { useMemo, useState} from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useLocation, useNavigate } from "react-router";
@@ -19,7 +19,6 @@ import {
 import PercentIcon from '@mui/icons-material/Percent';
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import "../../assets/styles/global.css";
 import { useForm } from "../customHooks/useForm";
 
 import { getBenefitById } from "./selectors/getBenefitById";
@@ -100,11 +99,8 @@ export const Benefit = () => {
 
 	const handleChange = (e) => {
 		setActivo(e.target.checked);
+      handleValueChange("estado", e.target.checked ? "activo":"inactivo");
 	};
-
-	useEffect(() => {
-  		handleValueChange("estado", activo ? "activo" : "inactivo");
-	}, [activo]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -131,7 +127,7 @@ export const Benefit = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>

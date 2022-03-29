@@ -85,7 +85,7 @@ export const MovementsList = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2} rowSpacing={1}>

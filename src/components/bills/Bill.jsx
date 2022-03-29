@@ -53,7 +53,7 @@ export const Bill = () => {
 		handleInputChange,
 		handleValueChange,
 		handleCheckChange,
-		handleComplexInputChange,
+		
 	] = useForm({
 		numFactura: fact?.numeroFactura ? fact.numeroFactura : "",
 		ptoVenta: fact?.idPuntoVenta ? fact.idPuntoVenta : "",
@@ -121,7 +121,7 @@ export const Bill = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>

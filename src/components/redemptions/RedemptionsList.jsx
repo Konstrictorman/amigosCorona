@@ -2,9 +2,7 @@ import React, { useMemo, useState } from "react";
 import {
 	Autocomplete,
 	Button,
-	FormHelperText,
 	Grid,
-	MenuItem,
 	Paper,
 	Tab,
 	TextField,
@@ -68,6 +66,7 @@ export const RedemptionsList = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.name;
 			options.push(obj);
+         return null;
 		});
 		return options;
 	}, [salesPoints]);
@@ -144,7 +143,7 @@ export const RedemptionsList = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2} rowSpacing={1}>
@@ -246,8 +245,7 @@ export const RedemptionsList = () => {
 						<Grid item xs={12}>
 							<div>
 								<Button
-									className="mt-3 mx-2"
-									color="warning"
+									className="mt-3 mx-2 btn-warning"
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<ArrowBackIcon />}
@@ -256,8 +254,7 @@ export const RedemptionsList = () => {
 									Volver
 								</Button>
 								<Button
-									className="mt-3 mx-2"
-									color="secondary"
+									className="mt-3 mx-2 btn-secondary"									
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<SellIcon />}
@@ -266,9 +263,8 @@ export const RedemptionsList = () => {
 									Crear nueva redención
 								</Button>
 								<Button
-									color="error"
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
 									onClick={clear}
@@ -276,9 +272,8 @@ export const RedemptionsList = () => {
 									Limpiar
 								</Button>
 								<Button
-									color="primary"
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-primary"
 									startIcon={<SearchIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"
@@ -297,7 +292,7 @@ export const RedemptionsList = () => {
 							{rows.length} Resultados
 						</Typography>
 						<Box
-							className="align-self-center dataTableContainer "
+							className="align-self-center container__dataTable "
 							sx={{
 								border: 1,
 								borderColor: "orange",

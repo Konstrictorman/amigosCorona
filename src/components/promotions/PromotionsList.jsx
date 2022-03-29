@@ -55,7 +55,7 @@ export const PromotionsList = () => {
 	return (
       <div className={" d-flex flex-column   animate__animated " + animatedStyle +" " +animatedStyle2}>
 			<h4 className="title ">Promociones / Exclusiones</h4>
-			<div className="align-self-center dataTableContainer">
+			<div className="align-self-center container__dataTable">
 				{
 					<DataTable
 						rows={rows}

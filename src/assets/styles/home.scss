@@ -1,0 +1,41 @@
+.home__card {
+	margin: 10px 10px;
+	width: 180px;
+	height: 200px;
+	background-color: whitesmoke !important;
+	cursor: pointer;
+
+   &:hover {
+		background-color: darken($color: whitesmoke, $amount: 5) !important;
+		box-shadow: 1px;
+	}
+
+}
+
+
+
+.home__card__content {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	align-items: center;
+}
+
+.home__icon {
+	margin-top: 32px;
+	color: gray;
+	font-size: 64px !important;
+	border-radius: 50%;
+	padding: 5px;
+
+   &:hover {
+      background-color: $warmGray !important;
+      color: $pantone300C;
+      box-shadow: 1px;
+	}
+}
+
+.home__text {
+	color: $pantone300C;
+	text-decoration: none;
+}

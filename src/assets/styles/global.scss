@@ -1,25 +1,4 @@
-.basicContainer {
-   background-color: whitesmoke;
-   padding-top:25px;
-   padding-left: 75px;
-   padding-right: 75px;
-   padding-bottom: 25px;
-   margin-top: 0px;   
-   border: 1px solid orchid;   
-   border-radius: 5px;      
-}
 
-.border {
-   border: 1px solid black;
-}
-
-
-
-.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-   background-color: #1976D2 !important;
-   font-weight: 500 !important;
-   min-width: none !important;
-}
 
 .center {
    display: flex;
@@ -36,6 +15,7 @@
    transform: translate(-50%, -50%);
 }
 
+/*****/
 .checkList {
    border: 1px solid orchid; 
    background-color: whitesmoke;
@@ -47,11 +27,6 @@
    color: blue;
    text-decoration: underline;
    cursor: pointer;
-}
-
-.dataTableContainer {
-   background-color: whitesmoke;
-   width: 100%;
 }
 
 .error {
@@ -81,21 +56,6 @@
    padding-right: 75px;
    padding-bottom: 25px;
    margin-top: 0px;
-}
-
-
-
-.grid-container {
-   border: 1px solid orchid;   
-   border-radius: 5px;
-   margin-top:6px;
-   padding-top:0px !important;
-   padding-left: 0px !important;
-   padding-bottom: 16px !important;
-   margin-left: 16px !important;
-   margin-top: 32px !important;   
-   /*background-color: whitesmoke;   */
-   /*background-color: white;*/
 }
 
 .grid-item {
@@ -187,13 +147,16 @@
 
 .title {
    text-align: center;
-   background-color: orange;
+   background-color: $pantone123C;
    color: white;
    height: 40px;
    justify-content: "center";
-   border: 2px solid orchid;
+   border: 2px solid $pantone298C;
    border-radius: 5px;
    margin-bottom: 5px;
+   //font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+   font-family: BrandonText;
+   font-weight: bold;
 }
 
 .topMargin {

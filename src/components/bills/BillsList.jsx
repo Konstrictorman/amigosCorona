@@ -5,7 +5,6 @@ import {
 	Button,
 	FormHelperText,
 	Grid,
-	MenuItem,
 	Paper,
 	TextField,
 	Typography,
@@ -55,7 +54,8 @@ export const BillsList = () => {
 			let obj = {};
 			obj["id"] = i.id;
 			obj["label"] = i.name;
-			options.push(obj);
+			options.push(obj);         
+         return '';
 		});
 		return options;
 	}, [salesPoints]);
@@ -122,7 +122,7 @@ export const BillsList = () => {
 				}}
 			>
 				<form
-					className="form border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2} rowSpacing={1}>
@@ -348,7 +348,7 @@ export const BillsList = () => {
 					<Typography variant="h6" className="left-align">
 						{rows.length} Resultados
 					</Typography>
-					<div className="align-self-center dataTableContainer ">
+					<div className="container__dataTable ">
 						{
 							<DataTable
 								rows={rows}

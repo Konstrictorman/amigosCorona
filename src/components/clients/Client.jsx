@@ -13,7 +13,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
-import { Button, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Button, Grid, Tab, Typography } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
@@ -52,9 +52,7 @@ export const Client = () => {
 		formValues,
 		handleInputChange,
 		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
+
 	] = useForm({
 		fechaMat: client?.referenciador?.fechaMat ? client?.referenciador?.fechaMat : "",
 		idProgramaReferenciacion: client?.referenciador?.idProgramaReferenciacion
@@ -110,7 +108,7 @@ export const Client = () => {
 					width: "100%",
 				}}
 			>
-				<div className="align-self-center basicContainer">
+				<div className="align-self-center container__basic">
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<AssignmentIndIcon color="primary" />
@@ -146,7 +144,7 @@ export const Client = () => {
 
 				<div className="topMargin">
 					<Box
-						className="align-self-center dataTableContainer"
+						className="align-self-center container__dataTable"
 						sx={{ border: 1, borderColor: "orange", borderRadius: "5px" }}
 					>
 						<TabContext value={tabIndex}>

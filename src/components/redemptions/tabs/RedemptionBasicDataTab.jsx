@@ -1,8 +1,7 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TabPanel } from "@mui/lab";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { getRedemptionBasicColumns } from "../selectors/getRedemptionBasicColumns";
-import { DataTable } from "../../general/DataTable";
 import { DataGrid } from "@mui/x-data-grid";
 
 export const RedemptionBasicDataTab = ({ index, rows, handleClick }) => {

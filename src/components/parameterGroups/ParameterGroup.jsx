@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useMemo, useReducer } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import queryString from "query-string";
@@ -12,21 +12,20 @@ import {
 	FormControlLabel,
 	FormHelperText,
 	Grid,
-	MenuItem,
 	Switch,
 	TextField,
 } from "@mui/material";
 import { DataTable } from "../general/DataTable";
 import { getParameterColumns } from "../parameterGroups/selectors/getParameterColumns";
-import ClearIcon from "@mui/icons-material/Clear";
-import CheckIcon from "@mui/icons-material/Check";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 import { useState } from "react";
 import { paramReducer } from "./reducers/paramReducer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CheckIcon from '@mui/icons-material/Check';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
+import {Spinner} from "../general/Spinner";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -55,7 +54,6 @@ export const ParameterGroup = () => {
 	});
 
 	const handleRowChange = (ids) => {
-		console.log("Ids:", ids);
 		setSelectedIds(ids);
 	};
 
@@ -70,6 +68,7 @@ export const ParameterGroup = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.name;
 			options.push(obj);
+         return null;
 		});
 		return options;
 	}, [salesPoints]);
@@ -116,7 +115,6 @@ export const ParameterGroup = () => {
 	};
 
 	const handleRemoveParam = (paramId) => {
-		console.log("Borrando", paramId);
 		const action = {
 			type: "remove",
 			payload: paramId, //Acá no hace falta enviar todo el objeto, sino sólo el id.
@@ -135,14 +133,14 @@ export const ParameterGroup = () => {
 		handleAddParam(param);
 		reset();
 	};
-
+/*
 	const handleRemoveClick = (params) => {
 		const { field, row } = params;
 		if (field === "eliminar") {
 			handleRemoveParam(row.id);
 		}
 	};
-
+*/
 	const deleteItems = () => {
 		handleCloseModal();
 		setLoading(true);
@@ -151,6 +149,10 @@ export const ParameterGroup = () => {
 		setSelectedIds([]);
 		setLoading(false);
 	};
+
+   if (loading) {
+      return (<Spinner/>);
+   }
 
 	return (
 		<div
@@ -167,7 +169,7 @@ export const ParameterGroup = () => {
 				}}
 			>
 				<form
-					className="form  border border-primary rounded"
+					className="container__form"
 					onSubmit={handleSubmit}
 				>
 					<Grid container spacing={2}>

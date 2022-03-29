@@ -65,7 +65,7 @@ export const SalesPointList = () => {
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Puntos de venta
 			</h4>
-			<div className="align-self-center dataTableContainer">
+			<div className="align-self-center container__dataTable">
 				{
 					<DataTable
 						rows={rows}

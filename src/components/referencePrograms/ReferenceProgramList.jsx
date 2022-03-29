@@ -6,11 +6,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { getReferenceProgramColumns } from "./selectors/getReferenceProgramColumns";
 import { useNavigate } from "react-router";
 import { getReferencePrograms } from "./selectors/getReferencePrograms";
-import { getReferenceProgramById } from "./selectors/getReferenceProgramById";
 import LocalPlayIcon from '@mui/icons-material/LocalPlay';
 import { DataTable } from "../general/DataTable";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import { Spinner } from "../general/Spinner";
 
 
 export const ReferenceProgramList = () => {
@@ -53,6 +52,10 @@ export const ReferenceProgramList = () => {
 		path: "/referenceProgram",
 	});
 
+   if (loading) {
+      return (<Spinner/>);
+   }
+
 	return (
 		<div
 			className={" d-flex flex-column   animate__animated " + animatedStyle+ " "+animatedStyle2}
@@ -61,11 +64,11 @@ export const ReferenceProgramList = () => {
 				Programas de referenciación
 			</h4>
 			<div
-				className="align-self-center dataTableContainer"
+				className="container__dataTable"
 
 			>
 				{
-         <DataTable
+         <DataTable            
             rows={rows}
             columns={columns}
             pageSize={10}

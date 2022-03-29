@@ -4,12 +4,12 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useNavigate } from "react-router";
 import { DataTable } from "../general/DataTable";
 import { Button } from "@mui/material";
-import { getBenefitById } from "./selectors/getBenefitById";
 import { getBenefitsColumns } from "./selectors/getBenefitsColumns";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { getBenefits } from "./selectors/getBenefits";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Spinner } from "../general/Spinner";
 
 
 
@@ -53,6 +53,10 @@ export const BenefitsList = () => {
 		setLoading(false);
 	};
 
+   if (loading) {
+      return (<Spinner/>)
+   }
+
 	return (
 		<div
 			className={
@@ -65,7 +69,7 @@ export const BenefitsList = () => {
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Nivel de beneficios
 			</h4>
-			<div className="align-self-center dataTableContainer">
+			<div className="align-self-center container__dataTable">
 				{
 					<DataTable
 						rows={rows}
@@ -73,6 +77,7 @@ export const BenefitsList = () => {
 						pageSize={10}
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
+                  checkboxSelection={true}
 					/>
 				}
 			</div>
