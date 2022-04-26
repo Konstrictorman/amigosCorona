@@ -5,7 +5,7 @@
    padding-right: 75px;
    padding-bottom: 25px;
    margin-top: 0px;   
-   border: 2px solid $pantone298C;   
+   //border: 2px solid $pantone298C;   
    border-radius: 5px;      
 }
 
@@ -20,7 +20,8 @@
 }
 
 .container__dataTable {
-   border: 2px solid $pantone298C !important;             
+   border: none !important;             
+   //border: 2px solid $pantone298C !important;             
    
 }
 .container__dataTable2  {
@@ -28,8 +29,10 @@
 }
 
 .container__dataTable3  {
-   border: none !important;          
+   border: none !important;     
+   background-color: white;     
 }
+
 
 .container__form {
    background-color: whitesmoke;
@@ -39,7 +42,7 @@
    padding-bottom: 25px;
    margin-top: 0px;
    border-radius: 5px;  
-   border: 2px solid $pantone298C;   
+   //border: 2px solid $pantone298C;   
 }
 
 .container__grid {
@@ -52,3 +55,4 @@
    margin-left: 16px !important;
    margin-top: 32px !important;      
 }
+

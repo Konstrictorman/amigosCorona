@@ -6,10 +6,7 @@ import {
 	FormControlLabel,
 	Grid,
 	Paper,
-	Stack,
-	Switch,
 	TextField,
-	Typography,
 } from "@mui/material";
 import { getMovements } from "./selectors/getMovements";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
@@ -182,8 +179,8 @@ export const MovementsList = () => {
 						<Grid item xs={12}>
 							<div>
 								<Button
-									className="mt-3 mx-2"
-									color="warning"
+									className="mt-3 mx-2 btn-warning"
+									
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<ArrowBackIcon />}
@@ -192,9 +189,9 @@ export const MovementsList = () => {
 									Volver
 								</Button>
 								<Button
-									color="error"
+									
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
 									onClick={clear}
@@ -202,9 +199,9 @@ export const MovementsList = () => {
 									Limpiar
 								</Button>
 								<Button
-									color="primary"
+									
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-primary"
 									startIcon={<SearchIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"

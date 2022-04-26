@@ -1,31 +1,21 @@
 import React from "react";
-import {
-	Card,
-	CardContent,
-	Button,
-} from "@mui/material";
+import { Card, CardContent } from "@mui/material";
 
 export const HomeCard = (props) => {
 	const { handleClick, title, icon } = props;
 	return (
-		<div>
-			{/*<Grid className="noPadding" item xs={2}>*/}
-			
-				<Card className="home__card" onClick={handleClick}>
+		<div title={title}>
+			<Card className="home__card" onClick={handleClick}>
+				<div className="home__icon__frame">
 					<CardContent className="home__card__content">
 						{icon}
-						<Button
-							className="btn-primary mt-3 mx-2"
-							variant="contained"
-							style={{ textTransform: "none" }}
-                     
-						>
-							{title}
-						</Button>
+
+						<div className="btn-home">
+							<div>{title}</div>
+						</div>
 					</CardContent>
-				</Card>
-			
-			{/*</Grid>*/}
+				</div>
+			</Card>
 		</div>
 	);
 };

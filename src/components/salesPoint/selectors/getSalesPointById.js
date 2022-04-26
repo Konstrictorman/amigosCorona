@@ -1,7 +1,18 @@
-import { salesPoints } from "../../../data/salesPoints";
+import { delay } from "../../../helpers/delay";
+import { getPuntoVentaById } from "../api/salesPointApi";
 
-
-
-export const getSalesPointById = (id) => {
-   return salesPoints.find(sp=> sp.id === parseInt(id,10));
-}
+export const getSalesPointById = async (id) => {
+	if (id) {
+		const sp = await getPuntoVentaById(id);
+		
+		//console.log("sps:", sp.data);
+		return sp.data;
+	} else {
+		return {
+			id: 0,
+			puntoVenta: "",
+			descripcion: "",
+			estado: "",
+		};
+	}
+};

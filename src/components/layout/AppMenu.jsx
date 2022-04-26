@@ -3,17 +3,21 @@ import { Divider, IconButton, ListItemIcon, ListItemText,Menu, MenuItem} from "@
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
-import GroupsIcon from '@mui/icons-material/Groups';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import LocalPlayIcon from '@mui/icons-material/LocalPlay';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import SellIcon from '@mui/icons-material/Sell';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+
+
+import { ReactComponent as BenefitsIcon} from "../../assets/images/BENEFICIOS_Mesa de trabajo 1.svg";
+import { ReactComponent as FieldIcon } from "../../assets/images/CAMPOS_Mesa de trabajo 1.svg";
+import { ReactComponent as DataLoadIcon } from "../../assets/images/CARGA DE DATOS_Mesa de trabajo 1.svg";
+import { ReactComponent as ClientsIcon } from "../../assets/images/CLIENTES_Mesa de trabajo 1.svg";
+import { ReactComponent as BillsIcon } from "../../assets/images/FACTURAS_Mesa de trabajo 1.svg";
+import { ReactComponent as ParametersIcon } from "../../assets/images/G.PARAMETROS_Mesa de trabajo 1.svg";
+import { ReactComponent as MovementsIcon } from "../../assets/images/MOVIMIENTOS_Mesa de trabajo 1.svg";
+import { ReactComponent as SalesPointIcon } from "../../assets/images/PDV_Mesa de trabajo 1.svg";
+import { ReactComponent as PromotionsIcon } from "../../assets/images/PROMO_Mesa de trabajo 1.svg";
+import { ReactComponent as RedemptionsIcon } from "../../assets/images/REDENCIONES_Mesa de trabajo 1.svg";
+import { ReactComponent as ReferredIcon } from "../../assets/images/REFERENCIACION_Mesa de trabajo 1.svg";
+import { ReactComponent as RegisterMovementIcon } from "../../assets/images/REGISTRAR_Mesa de trabajo 1.svg";
+
 
 export const AppMenu = () => {
    
@@ -57,7 +61,8 @@ export const AppMenu = () => {
 				}}
 
 				keepMounted
-
+            variant="menu"
+                
 			>
 				
             <MenuItem onClick={() => {handleMenuClick('/home')}}>
@@ -67,79 +72,87 @@ export const AppMenu = () => {
                <ListItemText>Inicio</ListItemText>
             </MenuItem>            
             <Divider />
+
+            <MenuItem onClick={() => {handleMenuClick('/fieldsList')}}>
+               <ListItemIcon>
+                  <FieldIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Campos</ListItemText>
+            </MenuItem>  
+
             <MenuItem onClick={() => {handleMenuClick('/loadData')}}>
                <ListItemIcon>
-                  <UploadFileIcon color="primary" fontSize="medium"/>
+                  <DataLoadIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Carga de datos</ListItemText>
             </MenuItem> 
 
             <MenuItem onClick={() => {handleMenuClick('/clientList')}}>
                <ListItemIcon>
-                  <GroupsIcon color="primary" fontSize="medium"/>
+                  <ClientsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Clientes</ListItemText>
             </MenuItem>  
 
             <MenuItem onClick={() => {handleMenuClick('/billsList')}}>
                <ListItemIcon>
-                  <ReceiptIcon color="primary" fontSize="medium"/>
+                  <BillsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
 
-            <MenuItem onClick={() => {handleMenuClick('/parameterGroupsList')}}>
-               <ListItemIcon>
-                  <Inventory2Icon color="primary" fontSize="medium"/>
-               </ListItemIcon>          
-               <ListItemText>Grupos de parámetros</ListItemText>
-            </MenuItem>              
-
             <MenuItem onClick={() => {handleMenuClick('/movementList')}}>
                <ListItemIcon>
-                  <DirectionsRunIcon color="primary" fontSize="medium"/>
+                  <MovementsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Movimientos</ListItemText>
             </MenuItem>  
 
             <MenuItem onClick={() => {handleMenuClick('/benefitsList')}}>
                <ListItemIcon>
-                  <EmojiEventsIcon color="primary" fontSize="medium"/>
+                  <BenefitsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Nivel de beneficios</ListItemText>
-            </MenuItem>               
+            </MenuItem>  
+
+            <MenuItem onClick={() => {handleMenuClick('/parameters')}}>
+               <ListItemIcon>
+                  <ParametersIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Parámetros</ListItemText>
+            </MenuItem>                                  
 
             <MenuItem onClick={() => {handleMenuClick('/referenceProgramList')}}>
                <ListItemIcon>
-                  <LocalPlayIcon color="primary" fontSize="medium"/>
+                  <ReferredIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Programas de referenciación </ListItemText>
             </MenuItem>              
             
             <MenuItem onClick={() => {handleMenuClick('/promotionsList')}}>
                <ListItemIcon>
-                  <PriceCheckIcon color="primary" fontSize="medium"/>
+                  <PromotionsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Promociones / Exclusiones </ListItemText>
             </MenuItem>            
 
             <MenuItem onClick={() => {handleMenuClick('/salesPointList')}}>
                <ListItemIcon>
-                  <PointOfSaleIcon color="primary" fontSize="medium"/>
+                  <SalesPointIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Puntos de venta</ListItemText>
             </MenuItem>    
 
             <MenuItem onClick={() => {handleMenuClick('/redemptionsList')}}>
                <ListItemIcon>
-                  <SellIcon color="primary" fontSize="medium"/>
+                  <RedemptionsIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Redenciones</ListItemText>
             </MenuItem>                
           
             <MenuItem onClick={() => {handleMenuClick('/recordMovement')}}>
                <ListItemIcon>
-                  <DriveFileRenameOutlineIcon color="primary" fontSize="medium"/>
+                  <RegisterMovementIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
                <ListItemText>Registrar movimientos</ListItemText>
             </MenuItem>                

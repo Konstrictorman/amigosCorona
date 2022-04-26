@@ -1,16 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
-import { NoRowsOverlay } from '../general/NoRowsOverlay';
 
 export const DataTable = (props) => {
-	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, disableSelectionOnClick, components, loading } =	props;
+	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, disableSelectionOnClick, components, loading, editMode, editRowsModel, onEditRowsModelChange, className } =	props;
+
+   let css = "";
+   if (className) {
+      css = className;
+   }else {
+      css = "container__dataTable"
+   }
 
 	return (
-
+         
 			<DataGrid
-            className='container__dataTable3'
+            className={css}
             density="compact"
+            loading = {loading}
 				rows={rows}
 				columns={columns}
 				pageSize={pageSize}
@@ -22,8 +29,11 @@ export const DataTable = (props) => {
             disableExtendRowFullWidth={true}
             checkboxSelection={checkboxSelection}
             components = {components}
-            loading = {loading}
+            
             disableSelectionOnClick = {disableSelectionOnClick}
+            editMode={editMode}
+            editRowsModel={editRowsModel}
+            onEditRowsModelChange={onEditRowsModelChange}            
 			/>
 
 	);

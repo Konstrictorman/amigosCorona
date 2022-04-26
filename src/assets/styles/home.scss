@@ -1,9 +1,36 @@
+.home {
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   text-align: center;
+   width: 100%;
+}
+
+.home__banner {
+   display: flex;
+   flex-direction: row;
+   margin-top: 32px;
+   margin-bottom: 32px;
+   justify-content: center;
+}
+
+.home__banner__maestros {
+   margin-right: 10px;
+}
+
+.home__banner__profesionales {
+   margin-left: 10px;
+}
+
 .home__card {
 	margin: 10px 10px;
 	width: 180px;
-	height: 200px;
+	height: 175px;
 	background-color: whitesmoke !important;
 	cursor: pointer;
+   justify-content: center;
+   box-shadow: rgba(0, 0, 0, 0.15) 10px 10px 6px !important;
 
    &:hover {
 		background-color: darken($color: whitesmoke, $amount: 5) !important;
@@ -12,25 +39,50 @@
 
 }
 
-
-
 .home__card__content {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
 	align-items: center;
+   padding: 12px 12px 12px 12px !important;   
 }
 
 .home__icon {
-	margin-top: 32px;
+	//margin-top: 32px;
 	color: gray;
-	font-size: 64px !important;
 	border-radius: 50%;
-	padding: 5px;
+	//padding: 5px;
+   width: 60%;   
+   fill: gray !important;
 
    &:hover {
       background-color: $warmGray !important;
-      color: $pantone300C;
+      color: $pantone300C !important;
+      box-shadow: 1px;
+      fill: $pantone300C;
+      //filter: invert(22%) sepia(55%) saturate(3053%) hue-rotate(195deg) brightness(104%) contrast(102%);
+	}
+}
+
+.home__icon__frame {
+   border-radius: 5px;
+   border: 2px lightgray solid;
+   margin: 10px;
+   height: 90%;
+   
+}
+
+.home__icon__svg {
+   filter: invert(56%) sepia(0%) saturate(1840%) hue-rotate(324deg) brightness(90%) contrast(86%);
+	font-size: 128px !important;
+	border-radius: 50%;
+	padding: 5px;
+   width: 80%;
+   
+   &:hover {
+      background-color: $warmGray !important;
+      //filter: invert(22%) sepia(55%) saturate(3053%) hue-rotate(195deg) brightness(104%) contrast(102%);
+      //fill: $pantone300C;
       box-shadow: 1px;
 	}
 }
@@ -39,3 +91,30 @@
 	color: $pantone300C;
 	text-decoration: none;
 }
+
+.home__test {
+   background-color: $pantone300C !important;
+   border-radius: 3px;
+   font-weight: 500 !important;
+   min-width: none !important;
+   text-decoration: none;
+   text-transform: none;
+   color: white;
+   width: 100%;
+   height: 45px;   
+   font-size: 14px;
+
+   border: 1px solid black; 
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+
+}
+
+.home__title {
+   color: $pantone300C !important;
+   font-size: 36px !important;
+   
+}
+

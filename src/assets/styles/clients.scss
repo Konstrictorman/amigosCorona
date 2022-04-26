@@ -1,0 +1,21 @@
+.client__properties {
+   display:flex;
+   flex-direction: row;
+   align-items: center;
+   text-align: center;
+   align-content: center;
+   vertical-align: middle;
+   justify-content: center;
+
+   //border: 1px solid;
+}
+
+.client__name {
+   font-size: 24px;
+   font-weight: bold;
+}
+
+.client__docs {
+   font-size: 20px;
+}
+

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TabPanel } from "@mui/lab";
 import { DataGrid } from "@mui/x-data-grid";
 import { getClientAddressColumns } from "../selectors/getClientAddressColumns";
@@ -13,7 +13,6 @@ export const ClientAddressTab = ({client, index}) => {
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
 				<DataGrid
-               getRowId={(r) => r.idDireccion}
 					className=""
 					rows={direccionesCliente}
 					columns={addressColumns}

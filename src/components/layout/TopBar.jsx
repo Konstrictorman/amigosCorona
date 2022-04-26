@@ -12,16 +12,9 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 
-
 export const TopBar = () => {
-	const [auth, setAuth] = useState(true);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-   /*
-	const handleChange = (event) => {
-		setAuth(event.target.checked);
-	};
-*/
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -43,6 +36,7 @@ export const TopBar = () => {
 				<AppBar position="static" className="topBar">
 					<Toolbar>
 						<AppMenu />
+                  
 						<img
 							src={Corona_logo}
 							alt="Logo"
@@ -64,47 +58,42 @@ export const TopBar = () => {
 						>
 							{"UserName"}
 						</Typography>
-						{auth && (
-							<div>
-								<IconButton
-									size="large"
-									aria-label="account of current user"
-									aria-controls="menu-appbar"
-									aria-haspopup="true"
-									onClick={handleMenu}
-									color="inherit"
-								>
-									<AccountCircle />
-								</IconButton>
-								<Menu
-									id="menu-profile"
-									anchorEl={anchorEl}
-									keepMounted
-									open={Boolean(anchorEl)}
-									onClose={handleClose}
-								>
-									<MyMenutem onClick={handleClose}>
-										<ListItemIcon>
-											<AccountBoxIcon
-												color="primary"
-												fontSize="medium"
-											/>
-										</ListItemIcon>
-										<ListItemText>Mi Perfil</ListItemText>
-									</MyMenutem>
+						<div>
+							<IconButton
+								size="large"
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleMenu}
+								color="inherit"
+							>
+								<AccountCircle />
+							</IconButton>
+							<Menu
+								id="menu-profile"
+								anchorEl={anchorEl}
+								keepMounted
+								open={Boolean(anchorEl)}
+								onClose={handleClose}
+							>
+								<MyMenutem onClick={handleClose}>
+									<ListItemIcon>
+										<AccountBoxIcon
+											color="primary"
+											fontSize="medium"
+										/>
+									</ListItemIcon>
+									<ListItemText>Mi Perfil</ListItemText>
+								</MyMenutem>
 
-									<MyMenutem onClick={handleClose}>
-										<ListItemIcon>
-											<LogoutIcon
-												color="primary"
-												fontSize="medium"
-											/>
-										</ListItemIcon>
-										<ListItemText>Salir </ListItemText>
-									</MyMenutem>
-								</Menu>
-							</div>
-						)}
+								<MyMenutem onClick={handleClose}>
+									<ListItemIcon>
+										<LogoutIcon color="primary" fontSize="medium" />
+									</ListItemIcon>
+									<ListItemText>Salir </ListItemText>
+								</MyMenutem>
+							</Menu>
+						</div>
 					</Toolbar>
 				</AppBar>
 			</Box>

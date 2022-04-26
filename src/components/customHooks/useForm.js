@@ -14,6 +14,13 @@ export const useForm = (initialState={}) => {
       })
    }   
 
+   const handleInputValueChange = ({target}, name) => {
+      setFormState({
+         ...formState,
+         [name]: target.value,
+      })
+   }    
+
    const handleComplexInputChange = (evt, object) => {
       setFormState({
          ...formState,
@@ -39,13 +46,15 @@ export const useForm = (initialState={}) => {
       })
    }      
 
-   const reset = () => {
+   const reset = (newFormState = initialState) => {
       setFormState(initialState);
    }
 
+   
    useEffect(() => {
       console.log(formState)
    }, [formState])
+
 
    return [formState, handleInputChange, handleValueChange, handleCheckChange, handleComplexInputChange, reset];
 }

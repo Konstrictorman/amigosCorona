@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
    Autocomplete,
@@ -19,9 +19,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { DataTable } from "../general/DataTable";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Spinner } from "../general/Spinner";
 import { getBillColumns } from "./selectors/getBillColumns";
 import { getBills } from "./selectors/getBills";
-import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
+import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
+import { PAGE_SIZE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -33,32 +35,39 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const BillsList = () => {
 	const navigate = useNavigate();
+	const columns = getBillColumns();
+   const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
+	const [rows, setRows] = useState([]);
+   const [loading, setLoading] = useState(false);
+   const componentMounted = useRef(true);
+
+   useEffect(() => {
+      const getSalesPointsList = async () => {
+			setLoading(true);
+			const sps = await getSalesPointsForCombo();
+
+			if (componentMounted.current) {
+				setSortedSalesPoints(sps);
+			}
+			setLoading(false);
+		};
+   
+		getSalesPointsList();
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+		};
+
+   }, []);
+   
+
 
 	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "numeroFactura") {
 			navigate(`/bill?id=${row.id}`);
 		}
-	};
-   const salesPoints = getSalesPoints();
-	const columns = getBillColumns();
-	const [rows, setRows] = useState([]);
-
-	const sortedSalesPoints = useMemo(() => {
-		const array = salesPoints
-			.slice()
-			.sort((a, b) => a.name.localeCompare(b.name));
-
-		let options = [];
-		array.map((i) => {
-			let obj = {};
-			obj["id"] = i.id;
-			obj["label"] = i.name;
-			options.push(obj);         
-         return '';
-		});
-		return options;
-	}, [salesPoints]);
+	};   
 
 	const search = () => {
 		setRows(getBills());
@@ -105,6 +114,11 @@ export const BillsList = () => {
 		navigate,
 		path: "/home",
 	});
+
+   
+	if (loading) {
+		return <Spinner />;
+	}
 
 	return (
 		<div
@@ -184,7 +198,7 @@ export const BillsList = () => {
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
-						<Grid item xs={3}>
+						<Grid item xs={6}>
 							<Item className="">
                      <Autocomplete
 											disablePortal
@@ -353,7 +367,7 @@ export const BillsList = () => {
 							<DataTable
 								rows={rows}
 								columns={columns}
-								pageSize={10}
+								pageSize={PAGE_SIZE}
 								onCellClick={handleClick}
 								disableSelectionOnClick={true}
 							/>

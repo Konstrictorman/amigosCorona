@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { useForm } from "../customHooks/useForm";
@@ -13,23 +13,27 @@ import EmailIcon from "@mui/icons-material/Email";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
-import { Button, Grid, Tab, Typography } from "@mui/material";
+import { Button, Grid, Tab } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import NumbersIcon from "@mui/icons-material/Numbers";
 import { TabContext, TabList } from "@mui/lab";
 import { withStyles } from "@mui/styles";
-import { ClientAuditTab } from "./tabs/ClientAuditTab";
 import { ClientBenefitsTab } from "./tabs/ClientBenefitsTab";
 import { ClientStateHistoryTab } from "./tabs/ClientStateHistoryTab";
 import { ClientMailsTab } from "./tabs/ClientMailsTab";
 import { ClientAddressTab } from "./tabs/ClientAddressTab";
 import { ClientPhonesTab } from "./tabs/ClientPhonesTab";
 import { ClientReferrerTab } from "./tabs/ClientReferrerTab";
+import Swal from "sweetalert2";
+import { loadClientById } from "./actions/clientActions";
+import { Spinner } from "../general/Spinner";
+
 
 const StyledTabs = withStyles({
 	indicator: {
-		backgroundColor: "orange",
+		backgroundColor: "pantone300C",
 	},
 })(TabList);
 
@@ -37,44 +41,66 @@ export const Client = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const client = useMemo(() => getClientById(id), [id]);
-
-	const {
-		primerNombre,
-		segundoNombre,
-		primerApellido,
-		segundoApellido,
-		tipoDocumento,
-		documento,
-	} = client;
-
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-
-	] = useForm({
-		fechaMat: client?.referenciador?.fechaMat ? client?.referenciador?.fechaMat : "",
-		idProgramaReferenciacion: client?.referenciador?.idProgramaReferenciacion
-			? client.referenciador?.idProgramaReferenciacion
-			: "",
-		especialidad: client?.referenciador?.especialidad ? client.referenciador?.especialidad : "",
-		numHijos: client?.referenciador?.numHijos ? client.referenciador?.numHijos : 0,
-		idLifeMiles: client?.referenciador?.idLifeMiles ? client.referenciador?.idLifeMiles : "",
-		estadoRef: client?.referenciador?.estadoRef ? client.referenciador?.estadoRef : "",
-		referencia1: client?.referenciador?.referencia1 ? client.referenciador?.referencia1 : "",
+	const componentMounted = useRef(true);
+	const [loading, setLoading] = useState(false);
+	const [client, setClient] = useState({
+		id: 0,
+		codigoCliente: "",
+		tipoDocumento: "",
+		documento: "",
+		nombreCompleto: "",
+		facturas: [],
+		telefonosclientes: [],
+		referenciador: {},
+		direccionesCliente: [],
+		emailsCliente: [],
 	});
-/*
-	const {
-		fechaMat,
-		idProgramaReferenciacion,
-		especialidad,
-		numHijos,
-		idLifeMiles,
-		estadoRef,
-		referencia1,
-	} = formValues;   
-*/
+
+   const { nombreCompleto, tipoDocumento, documento, referenciador } = client;   
+
+	useEffect(() => {
+		const cliente = async (id) => {
+			setLoading(true);
+			try {
+				const data = await loadClientById(id);
+
+				if (componentMounted.current) {
+					setClient(data);
+				}
+			} catch (e) {
+				setLoading(false);
+				Swal.fire("Error", e.message, "error");
+			}
+			setLoading(false);
+		};
+
+		cliente(id);
+
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+         
+		};
+	}, [id]);
+
+		//Desestructura del event, el objeto target en el argumento
+      const handleInputChange = ({ target }) => {
+         setClient({
+            ...client,
+            referenciador : {
+               ...referenciador,
+               [target.name]: target.value,
+            }
+         });
+      };
+
+      const handleValueChange = (name, value) => {
+         setClient({
+            ...client,
+            [name]: value,
+         })
+      }        
+
 	const [tabIndex, setTabIndex] = useState("0");
 	const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
 
@@ -88,10 +114,14 @@ export const Client = () => {
 		setsaveBtnEnabled(newValue === "0" ? true : false);
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log(formValues);
+	const handleSave = (e) => {
+		
+		console.log(client);
 	};
+
+   if (loading) {
+		return <Spinner />;
+	}
 
 	return (
 		<div
@@ -102,6 +132,7 @@ export const Client = () => {
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Cliente {client.codigoCliente}
 			</h4>
+
 			<div
 				className="align-self-center"
 				style={{
@@ -111,42 +142,32 @@ export const Client = () => {
 				<div className="align-self-center container__basic">
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<AssignmentIndIcon color="primary" />
-							<Typography variant="h6">
-								{primerNombre} {segundoNombre} {primerApellido}{" "}
-								{segundoApellido}
-							</Typography>
+							<div className="client__properties">
+								<AssignmentIndIcon color="primary" fontSize="large" />
+								<span className="client__name">
+									{nombreCompleto}
+								</span>
+							</div>
 						</Grid>
 
-						<Grid item xs={3}>
-							<Typography variant="subtitle2" className="right-align">
-								Tipo documento:
-							</Typography>
-						</Grid>
-						<Grid item xs={3}>
-							<Typography variant="body1" className="left-align">
-								{tipoDocumento}
-							</Typography>
+						<Grid item xs={12}>
+							<div className="client__properties">
+								<CreditCardIcon color="primary" />
+								<span className="client__docs">{tipoDocumento}</span>
+							</div>
 						</Grid>
 
-						<Grid item xs={3}>
-							<Typography variant="subtitle2" className="right-align">
-								Número de documento:
-							</Typography>
-						</Grid>
-						<Grid item xs={3}>
-							<Typography variant="body1" className="left-align">
-								{documento}
-							</Typography>
+						<Grid item xs={12}>
+							<div className="client__properties">
+								<NumbersIcon color="primary" />
+								<span className="client__docs">{documento}</span>
+							</div>
 						</Grid>
 					</Grid>
 				</div>
 
 				<div className="topMargin">
-					<Box
-						className="align-self-center container__dataTable"
-						sx={{ border: 1, borderColor: "orange", borderRadius: "5px" }}
-					>
+					<Box className="align-self-center container__dataTable">
 						<TabContext value={tabIndex}>
 							<StyledTabs
 								onChange={handleTabChange}
@@ -156,63 +177,73 @@ export const Client = () => {
 									value="0"
 									label="Referenciador"
 									style={{ textTransform: "none" }}
-									icon={<AssignmentIndIcon />}
+									icon={<AssignmentIndIcon fontSize="large" />}
 									wrapped
 								/>
 								<Tab
 									value="1"
 									label="Teléfonos"
 									style={{ textTransform: "none" }}
-									icon={<LocalPhoneIcon />}
+									icon={<LocalPhoneIcon fontSize="large" />}
 									wrapped
 								/>
 								<Tab
 									value="2"
 									label="Direcciones"
 									style={{ textTransform: "none" }}
-									icon={<LocationOnIcon />}
+									icon={<LocationOnIcon fontSize="large" />}
 									wrapped
 								/>
 								<Tab
 									value="3"
 									label="e-Mails"
 									style={{ textTransform: "none" }}
-									icon={<EmailIcon />}
+									icon={<EmailIcon fontSize="large" />}
 									wrapped
 								/>
 								<Tab
 									value="4"
 									label="Historial de estados"
 									style={{ textTransform: "none" }}
-									icon={<HistoryToggleOffIcon />}
+									icon={<HistoryToggleOffIcon fontSize="large" />}
 									wrapped
 								/>
 								<Tab
 									value="5"
 									label="Niveles de beneficios"
 									style={{ textTransform: "none" }}
-									icon={<EmojiEventsIcon />}
+									icon={<EmojiEventsIcon fontSize="large" />}
 									wrapped
 								/>
+								{/*
 								<Tab
 									value="6"
 									label="Auditoría"
 									style={{ textTransform: "none" }}
-									icon={<LocationSearchingIcon />}
+									icon={<LocationSearchingIcon fontSize="large"/>}
 									wrapped
 								/>
+         */}
 							</StyledTabs>
 
-							<ClientReferrerTab formValues={formValues} index="0" handleInputChange={handleInputChange} handleValueChange={handleValueChange}/>
+							<ClientReferrerTab
+								formValues={referenciador}
+								index="0"
+								handleInputChange={handleInputChange}
+								handleValueChange={handleValueChange}
+							/>
 							<ClientPhonesTab client={client} index="1" />
 							<ClientAddressTab client={client} index="2" />
 							<ClientMailsTab client={client} index="3" />
 							<ClientStateHistoryTab client={client} index="4" />
 							<ClientBenefitsTab client={client} index="5" />
-							<ClientAuditTab client={client} index="6" />
+							{/*
+                     <ClientAuditTab client={client} index="6" />
+      */}
 						</TabContext>
 					</Box>
 				</div>
+
 				<div>
 					<Button
 						color="error"
@@ -229,12 +260,10 @@ export const Client = () => {
 						variant="contained"
 						className="mt-3 mx-2"
 						startIcon={<CheckIcon />}
-						style={{ textTransform: "none" }}
-						type="submit"
-						onClick={handleSubmit}
-						disabled={!saveBtnEnabled}
-					>
-						Guardar
+						style={{ textTransform: "none" }}						
+						onClick={handleSave}
+						enabled={saveBtnEnabled}
+					>Guardar
 					</Button>
 				</div>
 			</div>

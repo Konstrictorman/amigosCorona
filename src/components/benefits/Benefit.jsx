@@ -24,6 +24,7 @@ import { useForm } from "../customHooks/useForm";
 import { getBenefitById } from "./selectors/getBenefitById";
 import { getReferencePrograms } from "../referencePrograms/selectors/getReferencePrograms";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
+import { INPUT_TYPE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -145,6 +146,7 @@ export const Benefit = () => {
 									value={nivelBeneficio}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -186,6 +188,7 @@ export const Benefit = () => {
 									minRows={3}
 									maxRows={3}
 									multiline={true}
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -203,6 +206,7 @@ export const Benefit = () => {
 									value={idProgramaReferenciacion}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									required
 								>
 									<MenuItem value="">...</MenuItem>
@@ -241,6 +245,7 @@ export const Benefit = () => {
 									value={pctValInicial}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -266,6 +271,7 @@ export const Benefit = () => {
 									value={pctValNormal}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -291,6 +297,7 @@ export const Benefit = () => {
 									value={pctValPropio}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -315,6 +322,7 @@ export const Benefit = () => {
 									value={valMinRedencion}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
                               inputComponent: CustomNumberFormat,
 										startAdornment: (
@@ -341,6 +349,7 @@ export const Benefit = () => {
 									value={numMesesVigencia}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -367,6 +376,7 @@ export const Benefit = () => {
 									value={frecuenciaComp}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}                           
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -407,6 +417,7 @@ export const Benefit = () => {
 									value={numMesesCom}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}                           
 									InputProps={{
 										startAdornment: (
 											<InputAdornment position="start">
@@ -446,6 +457,7 @@ export const Benefit = () => {
 									value={valMinimo}
 									onChange={handleInputChange}
 									className="form-control"
+                           variant={INPUT_TYPE}
 									InputProps={{
                               inputComponent: CustomNumberFormat,
 										startAdornment: (
@@ -471,6 +483,8 @@ export const Benefit = () => {
 									value={valMaxmo}
 									onChange={handleInputChange}
 									className="form-control"
+                           margin="none"
+                           variant={INPUT_TYPE}
 									InputProps={{
                               inputComponent: CustomNumberFormat,
 										startAdornment: (
@@ -487,9 +501,9 @@ export const Benefit = () => {
 				</form>
 				<div>
 					<Button
-						color="error"
+						
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-error"
 						startIcon={<ClearIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
@@ -497,9 +511,9 @@ export const Benefit = () => {
 						Cancelar
 					</Button>
 					<Button
-						color="primary"
+						
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-primary"
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"

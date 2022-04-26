@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Autocomplete, Button, Grid, Paper, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { getReferencePrograms } from "../referencePrograms/selectors/getReferencePrograms";
 import { getClients } from "../clients/selectors/getClients";
+import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
+import { Spinner } from "../general/Spinner";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -23,24 +25,30 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const RecordMovement = () => {
 	const navigate = useNavigate();
-	const salesPoints = getSalesPoints();
    const refPrograms = getReferencePrograms();
    const clientes = getClients();
+   const [loading, setLoading] = useState(false);
+   const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
+   const componentMounted = useRef(true);
 
-	const sortedSalesPoints = useMemo(() => {
-		const array = salesPoints
-			.slice()
-			.sort((a, b) => a.name.localeCompare(b.name));
+   useEffect(() => {
+      const getSalesPointsList = async () => {
+			setLoading(true);
+			const sps = await getSalesPointsForCombo();
 
-		let options = [];
-		array.map((i) => {
-			let obj = {};
-			obj["id"] = i.id;
-			obj["label"] = i.name;
-			options.push(obj);
-		});
-		return options;
-	}, [salesPoints]);
+			if (componentMounted.current) {
+				setSortedSalesPoints(sps);
+			}
+			setLoading(false);
+		};
+   
+		getSalesPointsList();
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+		};
+
+   }, []);
 
 	const sortedRefPrograms = useMemo(() => {
 		const array = refPrograms
@@ -53,6 +61,7 @@ export const RecordMovement = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.programa;
 			options.push(obj);
+         return null;
 		});
 		return options;
 	}, [refPrograms]);   
@@ -68,6 +77,7 @@ export const RecordMovement = () => {
 			obj["id"] = i.id;
 			obj["label"] = i.codigoCliente;
 			options.push(obj);
+         return null;
 		});
 		return options;
 	}, [clientes]);      
@@ -78,9 +88,6 @@ export const RecordMovement = () => {
 		formValues,
 		handleInputChange,
 		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
 	] = useForm({
 		idProceso: "",
 		puntoDeVenta: "",
@@ -108,9 +115,13 @@ export const RecordMovement = () => {
 		path: "/home",
 	});
 
+	if (loading) {
+		return <Spinner />;
+	}   
+
 	return (
 		<div
-			className="align-self-center"
+      className={" d-flex flex-column   animate__animated " + animatedStyle}
 			style={{
 				width: "100%",
 			}}
@@ -265,9 +276,9 @@ export const RecordMovement = () => {
 
 				<div>
 					<Button
-						color="error"
+						
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-error"
 						startIcon={<ClearIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
@@ -275,9 +286,9 @@ export const RecordMovement = () => {
 						Cancelar
 					</Button>
 					<Button
-						color="primary"
+						
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-primary"
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"

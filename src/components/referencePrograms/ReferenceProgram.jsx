@@ -24,6 +24,8 @@ import { useForm } from "../customHooks/useForm";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
+import { useSelector } from "react-redux";
+import { FieldsComboBox } from "../fields/FieldsComboBox";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -41,8 +43,9 @@ export const ReferenceProgram = () => {
 	const periodValues = getReferenceProgramPeriodSelect();
 	const stateColumns = getReferenceProgramStateColumns();
    const activeSalesPointColumns = getReferenceProgramSalesPointColumns();
-   const [activeSalesPoints, setActiveSalesPoints] = useState(getReferenceProgramSalesPointById(id));
+   const [activeSalesPoints, setActiveSalesPoints] = useState([]);
    const [editRowsModel, setEditRowsModel] = useState({});
+   const items = useSelector((state) => state.lists.periodos);
 
    const handleEditRowsModelChange = useCallback((model) => {
       setEditRowsModel(model);
@@ -109,7 +112,7 @@ export const ReferenceProgram = () => {
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
 				Programa de referenciación{" "}
-				{refProgram?.id ? refProgram.programa : "nueva"}
+				{refProgram?.id ? refProgram.programa : "nuevo"}
 			</h4>
 			<div
 				className="align-self-center"
@@ -142,25 +145,14 @@ export const ReferenceProgram = () => {
 						</Grid>
 						<Grid item xs={4}>
 							<Item>
-								<TextField
-									select
-									label="Periodo"
-									error={false}
-									id="tipoPeriodo"
-									type="text"
-									name="tipoPeriodo"
-									size="small"
-									value={tipoPeriodo}
-									onChange={handleInputChange}
-									className="form-control"
-								>
-									<MenuItem value="">...</MenuItem>
-									{sortedPeriodValues.map((sp) => (
-										<MenuItem key={sp.value} value={sp.value}>
-											{sp.label}
-										</MenuItem>
-									))}
-								</TextField>
+                           <FieldsComboBox
+										id="tipoPeriodo"
+										index="2"
+										label="Periodo"
+										value={tipoPeriodo}
+										items={items}
+										handleChange={handleInputChange}
+									/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -248,9 +240,9 @@ export const ReferenceProgram = () => {
 				</form>
 				<div>
 					<Button
-						color="error"
+
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-error"
 						startIcon={<ClearIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
@@ -258,9 +250,9 @@ export const ReferenceProgram = () => {
 						Cancelar
 					</Button>
 					<Button
-						color="primary"
+						
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-primary"
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"

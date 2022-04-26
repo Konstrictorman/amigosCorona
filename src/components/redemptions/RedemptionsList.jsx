@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Autocomplete,
 	Button,
@@ -33,7 +33,9 @@ import { RedemptionBasicDataTab } from "./tabs/RedemptionBasicDataTab";
 import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
 import ArticleIcon from "@mui/icons-material/Article";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
+import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
+import { Spinner } from "../general/Spinner";
+import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -45,7 +47,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const StyledTabs = withStyles({
 	indicator: {
-		backgroundColor: "orange",
+		backgroundColor: "pantone300C",
 	},
 })(TabList);
 
@@ -53,24 +55,30 @@ export const RedemptionsList = () => {
 	const navigate = useNavigate();
 	const [tabIndex, setTabIndex] = useState("0");
 	const [rows, setRows] = useState([]);
-	const salesPoints = getSalesPoints();
+	//const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
+   const [loading, setLoading] = useState(false);
+   const componentMounted = useRef(true);   
 
-	const sortedSalesPoints = useMemo(() => {
-		const array = salesPoints
-			.slice()
-			.sort((a, b) => a.name.localeCompare(b.name));
+   /*
+   useEffect(() => {
+      const getSalesPointsList = async () => {
+			setLoading(true);
+			const sps = await getSalesPointsForCombo();
 
-		let options = [];
-		array.map((i) => {
-			let obj = {};
-			obj["id"] = i.id;
-			obj["label"] = i.name;
-			options.push(obj);
-         return null;
-		});
-		return options;
-	}, [salesPoints]);
+			if (componentMounted.current) {
+				setSortedSalesPoints(sps);
+			}
+			setLoading(false);
+		};
+   
+		getSalesPointsList();
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+		};
 
+   }, []);
+*/
 	const search = () => {
 		setRows(getRedemptions());
 	};
@@ -89,12 +97,12 @@ export const RedemptionsList = () => {
 		reset,
 	] = useForm({
 		codeCliente: "",
-		puntoDeVenta: "",
+		idPuntoVenta: "",
 		fechaInicial: null,
 		fechaFinal: null,
 	});
 
-	const { codeCliente, puntoDeVenta, fechaInicial, fechaFinal } = formValues;
+	const { codeCliente, idPuntoVenta, fechaInicial, fechaFinal } = formValues;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -123,6 +131,10 @@ export const RedemptionsList = () => {
 		navigate,
 		path: "/redemption",
 	});
+
+	if (loading) {
+		return <Spinner />;
+	}   
 
 	return (
 		<div
@@ -203,8 +215,9 @@ export const RedemptionsList = () => {
 							</Item>
 						</Grid>
 
-						<Grid item xs={3}>
+						<Grid item xs={4}>
 							<Item className="">
+                        {/**
 								<Autocomplete
 									disablePortal
 									id="puntoDeVenta"
@@ -220,11 +233,12 @@ export const RedemptionsList = () => {
 											required
 										/>
 									)}
-								/>
+								/> */}
+                        <SalesPointsCombo id={idPuntoVenta} handleValueChange={handleValueChange}/>
 							</Item>
 						</Grid>
 
-						<Grid item xs={3}>
+						<Grid item xs={2}>
 							<Item className="">
 								<TextField
 									label="Código cliente"
@@ -308,14 +322,14 @@ export const RedemptionsList = () => {
 										value="0"
 										label="Datos básicos"
 										style={{ textTransform: "none" }}
-										icon={<ArticleIcon />}
+										icon={<ArticleIcon fontSize="large" />}
 										wrapped
 									/>
 									<Tab
 										value="1"
 										label="Auditoría"
 										style={{ textTransform: "none" }}
-										icon={<LocationSearchingIcon />}
+										icon={<LocationSearchingIcon fontSize="large"/>}
 										wrapped
 									/>
 								</StyledTabs>

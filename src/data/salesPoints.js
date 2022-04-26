@@ -3,60 +3,60 @@ export const salesPoints = [
       'id': 1,
       'name': 'Unicentro',
       'description': 'Punto de venta en centro comercial Unicentro',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 2,
       'name': 'Santa Bárbara',
       'description': 'Punto de venta en Santa Bárbara',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 3,
       'name': 'Gran Estación',
       'description': 'Punto de venta en centro comercial GE',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 4,
       'name': 'Hayuelos',
       'description': 'Punto de venta en centro comercial Hayuelos',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 5,
       'name': 'Usme',
       'description': 'Punto de venta en Usme',
-      'status': 'Inactivo'
+      'status': 'I'
    },
    {
       'id': 6,
       'name': 'Bosa',
       'description': 'Punto de venta en Bosa',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 7,
       'name': 'Villavicencio',
       'description': 'Punto de venta en Av. Villavicencio',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 8,
       'name': 'Cali',
       'description': 'Punto de venta en Av. ciudad de Cali',
-      'status': 'Inactivo'
+      'status': 'I'
    },
    {
       'id': 9,
       'name': 'Titán',
       'description': 'Punto de venta en centro comercial Titán',
-      'status': 'Activo'
+      'status': 'A'
    },
    {
       'id': 10,
       'name': 'Candelaria',
       'description': 'Punto de venta en barrio la Candenlaria',
-      'status': 'Activo'
+      'status': 'A'
    },   
 ]

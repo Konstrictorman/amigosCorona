@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TabPanel } from "@mui/lab";
 import { DataGrid } from "@mui/x-data-grid";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
@@ -13,7 +13,7 @@ export const ClientMailsTab = ({client, index}) => {
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
 				<DataGrid
-               getRowId={(r) => r.idMail}            
+               //getRowId={(r) => r.idMail}            
 					className=""
 					rows={rows}
 					columns={mailColumns}

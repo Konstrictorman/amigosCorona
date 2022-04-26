@@ -9,7 +9,7 @@ export const getBenefitsColumns = () => {
    const columns = [
       { 
          field: "nivelBeneficio", 
-         headerName: "Nombre", 
+         headerName: "Nivel de beneficio", 
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
@@ -20,7 +20,7 @@ export const getBenefitsColumns = () => {
       { 
          field: "descripcion", 
          headerName: "Descripción", 
-         flex:3,
+         flex:2.5,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,

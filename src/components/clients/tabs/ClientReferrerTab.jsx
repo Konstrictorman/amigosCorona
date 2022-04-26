@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { DesktopDatePicker, LocalizationProvider, TabPanel } from "@mui/lab";
-import { Button, FormHelperText, Grid, Paper, TextField } from "@mui/material";
+import { FormHelperText, Grid, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import esLocale from "date-fns/locale/es";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { getClientStatusList } from "../selectors/getClientStatusList";
 import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
-import { useForm } from "../../customHooks/useForm";
-import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
+import { useSelector } from "react-redux";
+import { FieldsComboBox } from "../../fields/FieldsComboBox";
+import { types } from "../../../types/types";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -18,36 +18,10 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const ClientReferrerTab = ({ formValues, index, handleInputChange, handleValueChange }) => {
-	const statusList = getClientStatusList();
 
-	const sortedRefPrograms = useMemo(() => {
-		const rp = getReferencePrograms();
-		const array = rp
-			.slice()
-			.sort((a, b) => a.programa.localeCompare(b.programa));
-		return array;
-	}, [getReferencePrograms]);
 
-   /*
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
-	] = useForm({
-		fechaMat: client?.fechaMat ? client?.fechaMat : "",
-		idProgramaReferenciacion: client?.idProgramaReferenciacion
-			? client.idProgramaReferenciacion
-			: "",
-		especialidad: client?.especialidad ? client.especialidad : "",
-		numHijos: client?.numHijos ? client.numHijos : 0,
-		idLifeMiles: client?.idLifeMiles ? client.idLifeMiles : "",
-		estadoRef: client?.estadoRef ? client.estadoRef : "",
-		referencia1: client?.referencia1 ? client.referencia1 : "",
-	});
-*/
+   console.log("FV: ",JSON.stringify(formValues));
+
 	const {
 		fechaMat,
 		idProgramaReferenciacion,
@@ -95,29 +69,14 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 
 						<Grid item xs={4}>
 							<Item>
-								<TextField
-									select
-									label="Programa referenciación"
-									error={false}
-									id="idProgramaReferenciacion"
-									type="text"
-									name="idProgramaReferenciacion"
-									size="small"
-									value={idProgramaReferenciacion}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-									SelectProps={{
-										native: true,
-									}}
-								>
-									<option value="">...</option>
-									{sortedRefPrograms.map((rp) => (
-										<option key={rp.id} value={rp.id}>
-											{rp.programa}
-										</option>
-									))}
-								</TextField>
+                     <FieldsComboBox
+										id="idProgramaReferenciacion"
+										label="Programa referenciación"
+										value={idProgramaReferenciacion}
+										type="programas"
+										handleChange={handleInputChange}
+									/>  
+
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -184,6 +143,15 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 
 						<Grid item xs={4}>
 							<Item>
+
+                     <FieldsComboBox
+										id="estadoRef"
+										label="Estado"
+										value={estadoRef}
+										type="estadosReferido"
+										handleChange={handleInputChange}
+									/>       
+                           {/*
 								<TextField
 									select
 									label="Estado"
@@ -208,6 +176,7 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 										</option>
 									))}
 								</TextField>
+                        */}                 
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>

@@ -2,7 +2,7 @@ export const getSalesPointsColumns = () => {
 	const columns = [
 		/*{ field: "id", headerName: "ID", width: 60, headerClassName: 'headerCol',headerAlign: 'center', align: 'center' ,cellClassName: 'clickableCell'},*/
 		{
-			field: "name",
+			field: "puntoVenta",
 			headerName: "Nombre",
 			flex: 1.5,
 			headerClassName: "headerCol",
@@ -11,14 +11,14 @@ export const getSalesPointsColumns = () => {
          align: "center",
 		},
 		{
-			field: "description",
+			field: "descripcion",
 			headerName: "Descripción",
 			flex: 6,
 			headerClassName: "headerCol",
 			headerAlign: "center",
 		},
 		{
-			field: "status",
+			field: "estado",
 			headerName: "Estado",
 			flex: 1,
 			headerClassName: "headerCol",

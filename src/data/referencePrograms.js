@@ -3,7 +3,7 @@ export const referencePrograms = [
 		id: 1,
 		descripcion: "Programa de referenciación maestro",
 		programa: "MAESTRO",
-		tipoPeriodo: "Anual",
+		tipoPeriodo: "ANU",
       estado: "activo",
       programaEstados: [
          {
@@ -56,14 +56,14 @@ export const referencePrograms = [
 		id: 2,
 		descripcion: "Programa de referenciación profesional",
 		programa: "PROFESIONAL",
-		tipoPeriodo: "Anual",
+		tipoPeriodo: "ANU",
       estado: "inactivo",
 	},   
 	{
 		id: 3,
 		descripcion: "Programa de referenciación amateur",
 		programa: "AMATEUR",
-		tipoPeriodo: "Semestral",
+		tipoPeriodo: "SEME",
       estado: "inactivo",
       programaPuntoVentas: [
          {

@@ -79,8 +79,8 @@ export const ReferenceProgramList = () => {
 			</div>
 			<div className="align-self-center">
          <Button
-						className="mt-3 mx-2"
-						color="warning"
+						className="mt-3 mx-2 btn-warning"
+						
 						variant="contained"
 						style={{ textTransform: "none" }}
 						startIcon={<ArrowBackIcon />}
@@ -89,8 +89,8 @@ export const ReferenceProgramList = () => {
 						Volver
 					</Button>
 				<Button
-					className="mt-3 mx-2"
-					color="error"
+					className="mt-3 mx-2 btn-error"
+					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<DeleteForeverIcon />}
@@ -100,8 +100,8 @@ export const ReferenceProgramList = () => {
 					Eliminar programa(s) de referido(s) seleccionado(s)
 				</Button>
 				<Button
-					className="mt-3 mx-2"
-					color="secondary"
+					className="mt-3 mx-2 btn-primary"
+					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<LocalPlayIcon />}

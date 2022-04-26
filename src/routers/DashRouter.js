@@ -16,12 +16,14 @@ import { Benefit } from '../components/benefits/Benefit';
 import { BenefitsList } from '../components/benefits/BenefitsList';
 import { Bill } from '../components/bills/Bill';
 import { MovementsList } from '../components/movements/MovementsList';
+import { Parameters } from '../components/parameters/Parameters';
 import { RedemptionsList } from '../components/redemptions/RedemptionsList';
 import { Redemption } from '../components/redemptions/Redemption';
-import { ParameterGroupsList } from '../components/parameterGroups/ParameterGroupsList';
-import { ParameterGroup } from '../components/parameterGroups/ParameterGroup';
+import { FieldsList } from '../components/fields/FieldsList';
+import { Field } from '../components/fields/Field';
 import { LoadData } from '../components/loadData/LoadData';
 import { RecordMovement } from '../components/movements/RecordMovement';
+
 
 export const DashRouter = () => {
    return (
@@ -38,8 +40,9 @@ export const DashRouter = () => {
                   <Route exact path="/clientList" element={<ClientList/>}/>
                   <Route exact path="/loadData" element={<LoadData/>}/>
                   <Route exact path="/movementList" element={<MovementsList/>}/>
-                  <Route exact path="/parameterGroupsList" element={<ParameterGroupsList/>}/>
-                  <Route exact path="/parameterGroup" element={<ParameterGroup/>}/>
+                  <Route exact path="/fieldsList" element={<FieldsList/>}/>
+                  <Route exact path="/field" element={<Field/>}/>
+                  <Route exact path="/parameters" element={<Parameters/>}/>
                   <Route exact path="/promotionsList" element={<PromotionsList/>}/>
                   <Route exact path="/promotion" element={<Promotion/>}/>
                   <Route exact path="/recordMovement" element={<RecordMovement/>}/>
@@ -50,7 +53,7 @@ export const DashRouter = () => {
                   <Route exact path="/salesPoint" element={<SalesPoint/>}/>
                   <Route exact path="/salesPointList" element={<SalesPointList/>}/>
                   <Route exact path="/" element={<Home/>}/>
-                  <Route element={<PageNotFound/>}/>
+                  <Route path="*" element={<PageNotFound/>}/>
                </Routes>   
             </div>
          </Layout> 

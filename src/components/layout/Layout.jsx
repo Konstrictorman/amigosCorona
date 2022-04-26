@@ -11,9 +11,9 @@ export const Layout = ({children}) => {
 			<div className="row">
 				<div className="container">
 					<div className="row mb-4">
-						<div id="left" className="col-2 "></div>
-						<div id="center" className="col-8  text-center container">{children}</div>
-						<div id="right" className="col-2 "></div>
+						<div id="left" className="col-1 "></div>
+						<div id="center" className="col-10  text-center container">{children}</div>
+						<div id="right" className="col-1 "></div>
 					</div>
 				</div>
 			</div>

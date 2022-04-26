@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
-   Autocomplete,
+	Autocomplete,
 	Button,
 	FormControlLabel,
 	FormHelperText,
@@ -23,7 +23,10 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { useForm } from "../customHooks/useForm";
 import { DesktopDatePicker } from "@mui/lab";
-
+import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
+import { Spinner } from "../general/Spinner";
+import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
+import { useSelector } from "react-redux";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -34,46 +37,26 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const Promotion = () => {
-   const navigate = useNavigate();
+	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const promo = useMemo(() => getPromoById(id), [id]);
-	const salePoints = getSalesPoints();
+//	const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
+	const componentMounted = useRef(true);
+	const [loading, setLoading] = useState(false);
 
 
-
-	const sortedSalePoints = useMemo(() => {
-		const array = salePoints
-			.slice()
-			.sort((a, b) => a.name.localeCompare(b.name));
-
-		let options = [];
-		array.map((i) => {
-			let obj = {};
-			obj["id"] = i.id;
-			obj["label"] = i.name;
-			options.push(obj);
-         return '';
-		});
-		return options;
-	}, [salePoints]);
-
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/promotionsList",
+	const [formState, setFormState] = useState({
+		id: 0,
+		name: promo?.name ? promo.name : "",
+		fechaInicio: promo?.fechaInicio ? promo.fechaInicio : "",
+		fechaFin: promo?.fechaFin ? promo.fechaFin : "",
+		idArticulo: promo?.idArticulo ? promo.idArticulo : "",
+		idPuntoVenta: promo?.idPuntoVenta ? promo.idPuntoVenta : "",
+		pctPromo: promo?.pctPromo ? promo.pctPromo : "",
+		flagExclusion: promo?.flagExclusion ? promo.flagExclusion : false,
+		flagTodos: promo?.flagTodos ? promo.flagTodos : false,
 	});
-
-	const [formValues, handleInputChange, handleValueChange, handleCheckChange] =
-		useForm({
-			name: promo?.name ? promo.name : "",
-			fechaInicio: promo?.fechaInicio ? promo.fechaInicio : "",
-			fechaFin: promo?.fechaFin ? promo.fechaFin : "",
-			idArticulo: promo?.idArticulo ? promo.idArticulo : "",
-			idPuntoVenta: promo?.idPuntoVenta ? promo.idPuntoVenta : "",
-			pctPromo: promo?.pctPromo ? promo.pctPromo : "",
-			flagExclusion: promo?.flagExclusion ? promo.flagExclusion : false,
-			flagTodos: promo?.flagTodos ? promo.flagTodos : false,
-		});
 
 	const {
 		name,
@@ -84,20 +67,82 @@ export const Promotion = () => {
 		pctPromo,
 		flagExclusion,
 		flagTodos,
-	} = formValues;
+	} = formState;
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log(formValues);
+   /**
+   const idPuntoVentaRef = useRef(idPuntoVenta);
+
+	useEffect(() => {
+		const getSalesPointsList = async () => {
+			setLoading(true);
+			const sps = await getSalesPointsForCombo();
+
+			if (componentMounted.current) {
+				setSortedSalesPoints(sps);
+				const sel = sps.filter((s) => s.id === idPuntoVentaRef.current.toString());
+				setSelected(sel[0]);
+			}
+			setLoading(false);
+		};
+
+		getSalesPointsList();
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+		};
+	}, []);
+   */
+
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/promotionsList",
+	});
+
+	//Desestructura del event, el objeto target en el argumento
+	const handleInputChange = ({ target }) => {
+		setFormState({
+			...formState,
+			[target.name]: target.value,
+		});
+		console.log("sp?:", formState);
 	};
+
+	const handleValueChange = (name, value) => {
+		setFormState({
+			...formState,
+			[name]: value,
+		});
+	};
+
+	const handleCheckChange = ({ target }) => {
+		console.log("target:", target.name);
+		setFormState({
+			...formState,
+			[target.name]: target.checked,
+		});
+	};
+
+
+
+	const handleSave = () => {
+		console.log(formState);
+	};
+
+	if (loading) {
+		return <Spinner />;
+	}
 
 	return (
 		<div
-			className={"d-flex flex-column container animate__animated " + animatedStyle}
+			className={
+				"d-flex flex-column container animate__animated " + animatedStyle
+			}
 		>
-			<h4 className="title align-self-center"  style={{ width: "80%" }}>
-				Promoción / Exclusión {promo?.id ? promo.name : "nueva"}
-			</h4>
+			{formState && (
+				<h4 className="title align-self-center" style={{ width: "80%" }}>
+					Promoción / Exclusión {promo?.id ? promo.name : "nueva"}
+				</h4>
+			)}
 			<div
 				className="align-self-center"
 				style={{
@@ -105,207 +150,213 @@ export const Promotion = () => {
 					width: "80%",
 				}}
 			>
-				<form
-					className="container__form"
-					onSubmit={handleSubmit}
-				>
-					<Grid container spacing={2}>
-						<Grid item xs={6}>
-							<Item>
-								<TextField
-									label="Nombre de la promoción/exclusión"
-									error={false}
-									id="name"
-									type="text"
-									name="name"
-									autoComplete="off"
-									size="small"
-									required
-									value={name}
-									onChange={handleInputChange}
-									className="form-control"
-								/>
-							</Item>
-							<FormHelperText className="helperText">
-								{" "}
-								
-							</FormHelperText>
-						</Grid>
-
-						<Grid item xs={6}>
-							<Item className="half-quarter-width">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha inicio vigencia"
-										id="fechaInicio"
-										value={fechaInicio}
-										minDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaInicio", newValue);
-										}}
+				{formState && (
+					<form className="container__form">
+						<Grid container spacing={2}>
+							<Grid item xs={6}>
+								<Item>
+									<TextField
+										label="Nombre de la promoción/exclusión"
+										error={false}
+										id="name"
+										type="text"
+										name="name"
+										autoComplete="off"
+										size="small"
+										required
+										value={name}
+										onChange={handleInputChange}
 										className="form-control"
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												required
-												className="form-control"
-												error={false}
-											/>
-										)}
 									/>
-								</LocalizationProvider>
-							</Item>
-							<FormHelperText className="helperText">
-								{" "}
-								
-							</FormHelperText>
-						</Grid>
+								</Item>
+								<FormHelperText className="helperText">
+									{" "}
+								</FormHelperText>
+							</Grid>
 
-						<Grid item xs={6}>
-							<Item>
-								<TextField
-									label="Artículo"
-									error={false}
-									id="idArticulo"
-									type="text"
-									name="idArticulo"
-									autoComplete="off"
-									size="small"
-									required
-									value={idArticulo}
-									onChange={handleInputChange}
-									className="form-control"
-								/>
-							</Item>
-							<FormHelperText className="helperText">
-								{" "}
-								
-							</FormHelperText>
-						</Grid>
-
-						<Grid item xs={6} >
-							<Item className=" half-quarter-width">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha final vigencia"
-										id="fechaFin"
-										value={fechaFin}
-										minDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaFin", newValue);
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												required
-												className="form-control"
-												error={false}
-											/>
-										)}
-									/>
-								</LocalizationProvider>
-							</Item>
-							<FormHelperText className="helperText">{" "} </FormHelperText>
-						</Grid>
-
-						<Grid item xs={6} >
-							<Item className="half-quarter-width right">
-                        <Autocomplete
-											disablePortal
-											id="salesPoint"
-											options={sortedSalePoints}
+							<Grid item xs={6}>
+								<Item className="half-quarter-width">
+									<LocalizationProvider
+										dateAdapter={AdapterDateFns}
+										locale={esLocale}
+									>
+										<DesktopDatePicker
+											label="Fecha inicio vigencia"
+											id="fechaInicio"
+											value={fechaInicio}
+											minDate={new Date()}
+											onChange={(newValue) => {
+												handleValueChange("fechaInicio", newValue);
+											}}
+											className="form-control"
 											renderInput={(params) => (
 												<TextField
 													{...params}
-													className="form-control"
 													size="small"
-													label="Punto de venta"
-													onChange={handleInputChange}
-													value={idPuntoVenta}
 													required
+													className="form-control"
+													error={false}
 												/>
 											)}
-										/>                        
-							</Item>
-							<FormHelperText className="helperText half-quarter-width right">
-								{" "}
-							</FormHelperText>
-						</Grid>
+										/>
+									</LocalizationProvider>
+								</Item>
+								<FormHelperText className="helperText">
+									{" "}
+								</FormHelperText>
+							</Grid>
 
-						<Grid item xs={6}>
-							<Item className="half-width">
-								<TextField
-									label="Porcentaje"
-									type="number"
-									error={false}
-									id="pctPromo"
-									name="pctPromo"
-									autoComplete="off"
-									size="small"
-									required
-									value={pctPromo}
-									onChange={handleInputChange}
-									className="form-control"
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												%
-											</InputAdornment>
-										),
-									}}
+							<Grid item xs={6}>
+								<Item>
+									<TextField
+										label="Artículo"
+										error={false}
+										id="idArticulo"
+										type="text"
+										name="idArticulo"
+										autoComplete="off"
+										size="small"
+										required
+										value={idArticulo}
+										onChange={handleInputChange}
+										className="form-control"
+									/>
+								</Item>
+								<FormHelperText className="helperText">
+									{" "}
+								</FormHelperText>
+							</Grid>
+
+							<Grid item xs={6}>
+								<Item className=" half-quarter-width">
+									<LocalizationProvider
+										dateAdapter={AdapterDateFns}
+										locale={esLocale}
+									>
+										<DesktopDatePicker
+											label="Fecha final vigencia"
+											id="fechaFin"
+											value={fechaFin}
+											minDate={new Date()}
+											onChange={(newValue) => {
+												handleValueChange("fechaFin", newValue);
+											}}
+											renderInput={(params) => (
+												<TextField
+													{...params}
+													size="small"
+													required
+													className="form-control"
+													error={false}
+												/>
+											)}
+										/>
+									</LocalizationProvider>
+								</Item>
+								<FormHelperText className="helperText">
+									{" "}
+								</FormHelperText>
+							</Grid>
+
+							<Grid item xs={6}>
+								<Item className=" right">
+                           {/*
+									<Autocomplete
+										disablePortal
+										id="salesPoint"
+										options={sortedSalesPoints}
+										value={selected}
+										onChange={(event, newValue) => {
+											handleChange(event, newValue);
+										}}
+										inputValue={nomPuntoVenta}
+										onInputChange={(event, newInputValue) => {
+											setNomPuntoVenta(newInputValue);
+										}}
+										renderInput={(params) => (
+											<TextField
+												{...params}
+												className="form-control"
+												size="small"
+												label="Punto de venta"
+												required
+											/>
+										)}
+                              />*/}
+
+                              <SalesPointsCombo id={idPuntoVenta} handleValueChange={handleValueChange}/>
+								</Item>
+								<FormHelperText className="helperText half-quarter-width right">
+									{" "}
+								</FormHelperText>
+							</Grid>
+
+							<Grid item xs={6}>
+								<Item className="half-width">
+									<TextField
+										label="Porcentaje"
+										type="number"
+										error={false}
+										id="pctPromo"
+										name="pctPromo"
+										autoComplete="off"
+										size="small"
+										required
+										value={pctPromo}
+										onChange={handleInputChange}
+										className="form-control"
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													%
+												</InputAdornment>
+											),
+										}}
+									/>
+								</Item>
+								<FormHelperText> </FormHelperText>
+							</Grid>
+
+							<Grid item xs={9} className=" right-align">
+								<FormControlLabel
+									className=""
+									control={
+										<Switch
+											id="flagExclusion"
+											name="flagExclusion"
+											checked={flagExclusion}
+											onChange={handleCheckChange}
+										/>
+									}
+									labelPlacement="start"
+									label="Artículo excluido de acumulación"
 								/>
-							</Item>
-							<FormHelperText> {" "}</FormHelperText>
-						</Grid>
+							</Grid>
 
-						<Grid item xs={9} className=" right-align">
-							<FormControlLabel
-								className=""
-								control={
-									<Switch
-										id="flagExclusion"
-										name="flagExclusion"
-										checked={flagExclusion}
-										onChange={handleCheckChange}
-									/>
-								}
-								labelPlacement="start"
-								label="Artículo excluido de acumulación"
-							/>
-						</Grid>
+							<Grid item xs={9} className=" right-align">
+								<FormControlLabel
+									className="right primary-font"
+									control={
+										<Switch
+											id="flagTodos"
+											name="flagTodos"
+											checked={flagTodos}
+											onChange={handleCheckChange}
+										/>
+									}
+									labelPlacement="start"
+									label="Aplica para todos los puntos de venta"
+								/>
+							</Grid>
 
-						<Grid item xs={9} className=" right-align">
-							<FormControlLabel
-								className="right primary-font"
-								control={
-									<Switch
-										id="flagTodos"
-										name="flagTodos"
-										checked={flagTodos}
-										onChange={handleCheckChange}
-									/>
-								}
-								labelPlacement="start"
-								label="Aplica para todos los puntos de venta"
-							/>
+							<Grid item xs={12} />
 						</Grid>
-
-						<Grid item xs={12} />
-					</Grid>
-				</form>
+					</form>
+				)}
 				<div>
 					<Button
-						color="error"
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-error"
 						startIcon={<ClearIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
@@ -313,13 +364,12 @@ export const Promotion = () => {
 						Cancelar
 					</Button>
 					<Button
-						color="primary"
 						variant="contained"
-						className="mt-3 mx-2"
+						className="mt-3 mx-2 btn-primary"
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"
-						onClick={handleSubmit}
+						onClick={handleSave}
 					>
 						Guardar
 					</Button>

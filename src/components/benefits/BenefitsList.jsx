@@ -10,6 +10,7 @@ import { getBenefits } from "./selectors/getBenefits";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Spinner } from "../general/Spinner";
+import { PAGE_SIZE } from "../../config/config";
 
 
 
@@ -74,7 +75,7 @@ export const BenefitsList = () => {
 					<DataTable
 						rows={rows}
 						columns={columns}
-						pageSize={10}
+						pageSize={PAGE_SIZE}
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
                   checkboxSelection={true}
@@ -83,8 +84,8 @@ export const BenefitsList = () => {
 			</div>
 			<div className="align-self-center">
 				<Button
-					className="mt-3 mx-2"
-					color="warning"
+					className="mt-3 mx-2 btn-warning"
+					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<ArrowBackIcon />}
@@ -94,8 +95,8 @@ export const BenefitsList = () => {
 				</Button>
 
 				<Button
-					className="mt-3 mx-2"
-					color="error"
+					className="mt-3 mx-2 btn-error"
+					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<DeleteForeverIcon />}
@@ -105,8 +106,8 @@ export const BenefitsList = () => {
 					Eliminar nivel(es) de beneficio(s)
 				</Button>
 				<Button
-					className="mt-3 mx-2"
-					color="secondary"
+					className="mt-3 mx-2 btn-primary"
+					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<EmojiEventsIcon />}

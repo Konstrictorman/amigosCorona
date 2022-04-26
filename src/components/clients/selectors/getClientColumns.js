@@ -17,6 +17,7 @@ export const getClientColumns = () => {
 			headerAlign: "center",
 			align: "center",
 		},          
+      /*
 		{
 			field: "documento",
 			headerName: "Documento",
@@ -25,6 +26,16 @@ export const getClientColumns = () => {
 			headerAlign: "center",
 			align: "center",
 		},
+      */
+      {
+			field: "nombreCompleto",
+			headerName: "Nombre completo",
+			flex: 3,
+			headerClassName: "headerCol",
+			headerAlign: "center",
+			align: "center",
+		},
+      /*
 		{
 			field: "nombreCompleto",
 			headerName: "Nombre completo",
@@ -39,7 +50,7 @@ export const getClientColumns = () => {
             ${params.getValue(params.id, 'segundoApellido') || ''}
          `,
 		},         
-                                   
+        */                           
 	];
 	return columns;
 };

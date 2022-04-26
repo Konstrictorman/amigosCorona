@@ -7,7 +7,6 @@ import {
 	Paper,
 	Radio,
 	RadioGroup,
-	Switch,
 	TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -39,7 +38,7 @@ export const LoadData = () => {
 		path: "/home",
 	});
 
-	const [formValues, handleInputChange, handleValueChange, handleCheckChange] =
+	const [formValues, handleInputChange, handleValueChange] =
 		useForm({
 			loadType: "Clientes",
 			fileName: "No ha sido seleccionado ningún archivo",
@@ -54,7 +53,7 @@ export const LoadData = () => {
 
 	useEffect(() => {
       handleValueChange("fileName", file?.name);
- }, [file]);   
+ }, [handleValueChange,file]);   
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

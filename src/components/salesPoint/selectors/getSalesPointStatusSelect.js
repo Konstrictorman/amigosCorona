@@ -2,12 +2,14 @@
 export const getSalesPointsStatusSelect = () => {
    const statusOptions = [
       {
-         'value':'Activo',
-         'label':'Activo'
+         'valor':'A',
+         'descripcion':'Activo',
+         'id':6
       },
       {
-         'value':'Inactivo',
-         'label':'Inactivo'
+         'valor':'I',
+         'descripcion':'Inactivo',
+         'id':5
       },      
    ];   
    return statusOptions;
