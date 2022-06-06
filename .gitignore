@@ -48,3 +48,8 @@ Thumbs.db
 *.mov
 *.wmv
 
+#env
+.DS_Store
+.env.test
+.env.development
+.env.production

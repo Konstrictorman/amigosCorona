@@ -1,29 +1,26 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
-   Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
 	Paper,
 	TextField,
-	Typography,
 } from "@mui/material";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useForm } from "../customHooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import esLocale from "date-fns/locale/es";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import { DataTable } from "../general/DataTable";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Spinner } from "../general/Spinner";
 import { getBillColumns } from "./selectors/getBillColumns";
-import { getBills } from "./selectors/getBills";
-import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
-import { PAGE_SIZE } from "../../config/config";
+import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
+import { INPUT_TYPE } from "../../config/config";
+import { PagedBillDataTable } from "./PagedBillDataTable";
+import moment from 'moment';
+import { dateFormatter2 } from "../../helpers/dateFormatter";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -36,89 +33,95 @@ const Item = styled(Paper)(({ theme }) => ({
 export const BillsList = () => {
 	const navigate = useNavigate();
 	const columns = getBillColumns();
-   const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
-	const [rows, setRows] = useState([]);
-   const [loading, setLoading] = useState(false);
-   const componentMounted = useRef(true);
 
-   useEffect(() => {
-      const getSalesPointsList = async () => {
-			setLoading(true);
-			const sps = await getSalesPointsForCombo();
+	const [params, setParams] = useState({});
+	const [show, setShow] = useState(false);
 
-			if (componentMounted.current) {
-				setSortedSalesPoints(sps);
-			}
-			setLoading(false);
-		};
-   
-		getSalesPointsList();
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
+	const [formState, setFormState] = useState({
+		idPuntoVenta: "",
+		fechaDesde: "",
+		fechaHasta: "",
+		numeroFactura: "",
+		pedido: "",
+		clienteVta: "",
+		idClienteRef: "",
+	});
 
-   }, []);
-   
+	const {
+		idPuntoVenta,
+		fechaDesde,
+		fechaHasta,
+		numeroFactura,
+		pedido,
+		clienteVta,
+		idClienteRef,
+	} = formState;
 
+	//Desestructura del event, el objeto target en el argumento
+	const handleInputChange = ({ target }) => {
+		setFormState({
+			...formState,
+			[target.name]: target.value,
+		});
+	};
+
+	const handleValueChange = (name, value) => {
+      let m = ""
+      if (name === "fechaDesde" || name === "fechaHasta") {         
+         m = dateFormatter2(value);         
+      } else {
+         m = value;
+      }
+		setFormState({
+			...formState,
+			[name]: m,
+		});
+	};
+
+	const reset = () => {
+		setFormState({
+			idPuntoVenta: "",
+			fechaDesde: "",
+			fechaHasta: "",
+			numeroFactura: "",
+			pedido: "",
+			clienteVta: "",
+			idClienteRef: "",
+		});
+	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
 		if (field === "numeroFactura") {
 			navigate(`/bill?id=${row.id}`);
 		}
-	};   
-
-	const search = () => {
-		setRows(getBills());
 	};
 
-	const clear = () => {
-		setRows([]);
+	const handleReset = () => {
 		reset();
+		setParams({});
+		setShow(false);
 	};
 
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
-	] = useForm({
-		puntoDeVenta: "",
-		fechaInicial: "",
-		fechaFinal: "",
-		numFactura: "",
-		numPedido: "",
-		clienteVenta: "",
-		clienteReferenciador: "",
-	});
+	const handleSearch = () => {
+		Object.entries(formState).forEach((fv) => {
+			if (fv[1]) {
+				setParams((_params) => {
+					return {
+						..._params,
+						[fv[0]]: fv[1],
+					};
+				});
+			}
+		});
 
-	const {
-		puntoDeVenta,
-		fechaInicial,
-		fechaFinal,
-		numFactura,
-		numPedido,
-		clienteVenta,
-		clienteReferenciador,
-	} = formValues;
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		search();
+		setShow(true);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
-
-   
-	if (loading) {
-		return <Spinner />;
-	}
 
 	return (
 		<div
@@ -135,10 +138,7 @@ export const BillsList = () => {
 					width: "100%",
 				}}
 			>
-				<form
-					className="container__form"
-					onSubmit={handleSubmit}
-				>
+				<form className="container__form">
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={3}>
 							<Item className="">
@@ -148,11 +148,11 @@ export const BillsList = () => {
 								>
 									<DesktopDatePicker
 										label="Fecha inicial"
-										id="fechaInicial"
-										value={fechaInicial}
+										id="fechaDesde"
+										value={fechaDesde}
 										maxDate={new Date()}
 										onChange={(newValue) => {
-											handleValueChange("fechaInicial", newValue);
+											handleValueChange("fechaDesde", newValue);
 										}}
 										renderInput={(params) => (
 											<TextField
@@ -160,6 +160,7 @@ export const BillsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
+												variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={false}
@@ -177,11 +178,11 @@ export const BillsList = () => {
 								>
 									<DesktopDatePicker
 										label="Fecha final"
-										id="fechaFinal"
-										value={fechaFinal}
+										id="fechaHasta"
+										value={fechaHasta}
 										maxDate={new Date()}
 										onChange={(newValue) => {
-											handleValueChange("fechaFinal", newValue);
+											handleValueChange("fechaHasta", newValue);
 										}}
 										renderInput={(params) => (
 											<TextField
@@ -189,6 +190,7 @@ export const BillsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
+												variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={false}
@@ -200,44 +202,10 @@ export const BillsList = () => {
 
 						<Grid item xs={6}>
 							<Item className="">
-                     <Autocomplete
-											disablePortal
-											id="puntoDeVenta"
-											options={sortedSalesPoints}
-											renderInput={(params) => (
-												<TextField
-													{...params}
-													className="form-control"
-													size="small"
-													label="Punto de venta"
-													onChange={handleInputChange}
-													value={puntoDeVenta}
-													required
-												/>
-											)}
-										/>
-{/*
-								<TextField
-									label="Punto de venta"
-									error={false}
-									id="puntoDeVenta"
-									select
-									name="puntoDeVenta"
-									autoComplete="off"
-									size="small"
-									value={puntoDeVenta}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-                        >
-									<MenuItem value="">...</MenuItem>
-									{sortedSalesPoints.map((sp) => (
-										<MenuItem key={sp.id} value={sp.id}>
-											{sp.name}
-										</MenuItem>
-									))}                           
-                        </TextField>
-*/}								
+								<SalesPointsCombo
+									id={idPuntoVenta}
+									handleValueChange={handleValueChange}
+								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -247,15 +215,16 @@ export const BillsList = () => {
 								<TextField
 									label="Cliente venta"
 									error={false}
-									id="clienteVenta"
+									id="clienteVta"
 									type="text"
-									name="clienteVenta"
+									name="clienteVta"
 									autoComplete="off"
 									size="small"
-									value={clienteVenta}
+									value={clienteVta}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -266,15 +235,16 @@ export const BillsList = () => {
 								<TextField
 									label="Número de factura"
 									error={false}
-									id="numFactura"
+									id="numeroFactura"
 									type="text"
-									name="numFactura"
+									name="numeroFactura"
 									autoComplete="off"
 									size="small"
-									value={numFactura}
+									value={numeroFactura}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -285,15 +255,16 @@ export const BillsList = () => {
 								<TextField
 									label="Número de pedido"
 									error={false}
-									id="numPedido"
+									id="pedido"
 									type="text"
-									name="numPedido"
+									name="pedido"
 									autoComplete="off"
 									size="small"
-									value={numPedido}
+									value={pedido}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -304,15 +275,16 @@ export const BillsList = () => {
 								<TextField
 									label="Cliente referenciador"
 									error={false}
-									id="clienteReferenciador"
+									id="idClienteRef"
 									type="text"
-									name="clienteReferenciador"
+									name="idClienteRef"
 									autoComplete="off"
 									size="small"
-									value={clienteReferenciador}
+									value={idClienteRef}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -321,8 +293,7 @@ export const BillsList = () => {
 						<Grid item xs={12}>
 							<div>
 								<Button
-									className="mt-3 mx-2"
-									color="warning"
+									className="mt-3 mx-2 btn-warning"
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<ArrowBackIcon />}
@@ -332,23 +303,20 @@ export const BillsList = () => {
 								</Button>
 
 								<Button
-									color="error"
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
-									onClick={clear}
+									onClick={handleReset}
 								>
 									Limpiar
 								</Button>
 								<Button
-									color="primary"
 									variant="contained"
-									className="mt-3 mx-2"
+									className="mt-3 mx-2 btn-primary"
 									startIcon={<SearchIcon />}
 									style={{ textTransform: "none" }}
-									type="submit"
-									onClick={handleSubmit}
+									onClick={handleSearch}
 								>
 									Buscar
 								</Button>
@@ -357,24 +325,13 @@ export const BillsList = () => {
 					</Grid>
 				</form>
 			</div>
-			{rows.length > 0 && (
-				<div className="topMargin">
-					<Typography variant="h6" className="left-align">
-						{rows.length} Resultados
-					</Typography>
-					<div className="container__dataTable ">
-						{
-							<DataTable
-								rows={rows}
-								columns={columns}
-								pageSize={PAGE_SIZE}
-								onCellClick={handleClick}
-								disableSelectionOnClick={true}
-							/>
-						}
-					</div>
-				</div>
-			)}
+
+			<PagedBillDataTable
+				columns={columns}
+				handleClick={handleClick}
+				params={params}
+				show={show}
+			/>
 		</div>
 	);
 };

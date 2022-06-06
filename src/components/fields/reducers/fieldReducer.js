@@ -2,9 +2,9 @@ import { types } from "../../../types/types";
 
 /*
 {
-   fields :      
+   lists :      
       {
-         estado:[
+         estados:[
             {
                valueId: '#',
                name: 'xxx',
@@ -46,7 +46,7 @@ export const fieldReducer = (state = { initialState }, action) => {
 				...state,
 				estadosReferido: action.payload,
 			};
-
+         
       case types.fieldsSetPrograms:
          return {
             ...state,

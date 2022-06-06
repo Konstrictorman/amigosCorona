@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
-import { useForm } from "../customHooks/useForm";
+import { useCustomForm } from "../customHooks/useCustomForm";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import esLocale from "date-fns/locale/es";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -88,7 +88,7 @@ export const RecordMovement = () => {
 		formValues,
 		handleInputChange,
 		handleValueChange,
-	] = useForm({
+	] = useCustomForm({
 		idProceso: "",
 		puntoDeVenta: "",
 		fechaInicial: null,

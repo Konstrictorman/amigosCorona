@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 
-export const useForm = (initialState={}) => {
+export const useCustomForm = (initialState={}) => {
 
    const [formState, setFormState] = useState(initialState);
 
@@ -13,13 +13,6 @@ export const useForm = (initialState={}) => {
          [target.name]: target.value,
       })
    }   
-
-   const handleInputValueChange = ({target}, name) => {
-      setFormState({
-         ...formState,
-         [name]: target.value,
-      })
-   }    
 
    const handleComplexInputChange = (evt, object) => {
       setFormState({

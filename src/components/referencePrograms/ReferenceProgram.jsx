@@ -20,7 +20,7 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import { useForm } from "../customHooks/useForm";
+import { useCustomForm } from "../customHooks/useCustomForm";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
@@ -77,7 +77,7 @@ export const ReferenceProgram = () => {
 	});
 
 	const [formValues, handleInputChange, handleValueChange] =
-		useForm({
+		useCustomForm({
 			programa: refProgram?.programa ? refProgram.programa : "",
 			descripcion: refProgram?.descripcion ? refProgram.descripcion : "",
 			tipoPeriodo: refProgram?.tipoPeriodo ? refProgram.tipoPeriodo : "",

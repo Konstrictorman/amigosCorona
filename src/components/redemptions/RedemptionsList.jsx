@@ -12,7 +12,7 @@ import { styled } from "@mui/material/styles";
 
 import { getRedemptions } from "./selectors/getRedemptions";
 import { getRedemptionById } from "./selectors/getRedemptionById";
-import { useForm } from "../customHooks/useForm";
+import { useCustomForm } from "../customHooks/useCustomForm";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
 	DesktopDatePicker,
@@ -33,9 +33,9 @@ import { RedemptionBasicDataTab } from "./tabs/RedemptionBasicDataTab";
 import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
 import ArticleIcon from "@mui/icons-material/Article";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
 import { Spinner } from "../general/Spinner";
 import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
+import { INPUT_TYPE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -55,30 +55,8 @@ export const RedemptionsList = () => {
 	const navigate = useNavigate();
 	const [tabIndex, setTabIndex] = useState("0");
 	const [rows, setRows] = useState([]);
-	//const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
    const [loading, setLoading] = useState(false);
-   const componentMounted = useRef(true);   
 
-   /*
-   useEffect(() => {
-      const getSalesPointsList = async () => {
-			setLoading(true);
-			const sps = await getSalesPointsForCombo();
-
-			if (componentMounted.current) {
-				setSortedSalesPoints(sps);
-			}
-			setLoading(false);
-		};
-   
-		getSalesPointsList();
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
-
-   }, []);
-*/
 	const search = () => {
 		setRows(getRedemptions());
 	};
@@ -95,7 +73,7 @@ export const RedemptionsList = () => {
 		handleCheckChange,
 		handleComplexInputChange,
 		reset,
-	] = useForm({
+	] = useCustomForm({
 		codeCliente: "",
 		idPuntoVenta: "",
 		fechaInicial: null,
@@ -179,9 +157,11 @@ export const RedemptionsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
+                                    variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={false}
+                              
 									/>
 								</LocalizationProvider>
 							</Item>
@@ -207,9 +187,11 @@ export const RedemptionsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
+                                    variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={false}
+                              
 									/>
 								</LocalizationProvider>
 							</Item>
@@ -217,23 +199,7 @@ export const RedemptionsList = () => {
 
 						<Grid item xs={4}>
 							<Item className="">
-                        {/**
-								<Autocomplete
-									disablePortal
-									id="puntoDeVenta"
-									options={sortedSalesPoints}
-									renderInput={(params) => (
-										<TextField
-											{...params}
-											className="form-control"
-											size="small"
-											label="Punto de venta"
-											onChange={handleInputChange}
-											value={puntoDeVenta}
-											required
-										/>
-									)}
-								/> */}
+
                         <SalesPointsCombo id={idPuntoVenta} handleValueChange={handleValueChange}/>
 							</Item>
 						</Grid>
@@ -252,6 +218,7 @@ export const RedemptionsList = () => {
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 						</Grid>

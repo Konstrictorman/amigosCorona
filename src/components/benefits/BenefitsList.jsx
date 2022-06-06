@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useNavigate } from "react-router";
@@ -10,19 +10,63 @@ import { getBenefits } from "./selectors/getBenefits";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Spinner } from "../general/Spinner";
-import { PAGE_SIZE } from "../../config/config";
-
-
+import { ERROR_MSG, PAGE_SIZE } from "../../config/config";
+import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { deleteBenefit } from "./actions/benefitsAction";
+import { aFilter } from "../../helpers/aFilter";
 
 export const BenefitsList = () => {
-   const columns = getBenefitsColumns();
-   const [rows, setRows] = useState(getBenefits());
-	const [selectedIds, setSelectedIds] = useState([]);
+   const navigate = useNavigate();
 	const [openModal, setOpenModal] = useState(false);
+   const handleOpenModal = () => setOpenModal(true);
+	const handleCloseModal = () => setOpenModal(false);	
+   const columns = getBenefitsColumns();
+   const [selectedIds, setSelectedIds] = useState([]);
    const [loading, setLoading] = useState(false);
-	const handleOpenModal = () => setOpenModal(true);
-	const handleCloseModal = () => setOpenModal(false);
-	const navigate = useNavigate();
+   const [rows, setRows] = useState([]);
+	const componentMounted = useRef(true);
+   const { estados, programas } = useSelector((state) => state.lists);
+   
+   
+   useEffect(() => {
+     const getBenefitLevels = async () => {
+        setLoading(true);
+        try {
+           const data = await getBenefits();
+
+           if (componentMounted.current) {
+              data.forEach((b)=> {
+                  const estado = estados?.find((e)=> e.valor === b.estado);
+                  b.estadoDesc = estado?.descripcion;
+
+                  const prog = programas?.find((p) => p.idProgramaReferenciacion === b.idProgramaReferenciacion);
+                  b.programa = prog?.descripcion;
+              })
+              
+              console.log("data:",data);
+              setRows(data);
+           }
+         } catch (e) {
+				console.log(e);
+				Swal.fire(
+					"Error",
+					e.message + ` - ${ERROR_MSG}`,
+					"error"
+				);
+			}
+			setLoading(false);
+     }
+
+     getBenefitLevels();
+   
+     return () => {
+      componentMounted.current = false;
+      setLoading(null);
+     }
+   }, [estados, programas])
+   
+	
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -49,10 +93,37 @@ export const BenefitsList = () => {
 	const deleteItems = () => {
 		handleCloseModal();
 		setLoading(true);
-		setRows(rows.filter((r) => !selectedIds.includes(r.id)));
-		setSelectedIds([]);
+		//setRows(rows.filter((r) => !selectedIds.includes(r.id)));
+
+      
+		try {
+			selectedIds.forEach(async (item) => {
+            await deleteBenefit(item);
+			});
+			handleRemoveRows();
+			Swal.fire(
+				"Eliminación exitosa",
+				"Registro(s) exitosamente eliminado(s)",
+				"success"
+			);
+		} catch (e) {
+			Swal.fire(
+				"Error",
+				`Error durante la eliminación del(los) registro(s).  ${e.message}`,
+				"error"
+			);
+		}
+
+		
 		setLoading(false);
 	};
+
+	const handleRemoveRows = () => {
+		const result = aFilter(rows, selectedIds);
+		console.log("result:", result);
+		setRows(result);
+      setSelectedIds([]);
+	};   
 
    if (loading) {
       return (<Spinner/>)
@@ -72,6 +143,7 @@ export const BenefitsList = () => {
 			</h4>
 			<div className="align-self-center container__dataTable">
 				{
+               
 					<DataTable
 						rows={rows}
 						columns={columns}
@@ -79,7 +151,9 @@ export const BenefitsList = () => {
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
                   checkboxSelection={true}
+                  loading={loading}
 					/>
+               
 				}
 			</div>
 			<div className="align-self-center">

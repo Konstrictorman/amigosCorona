@@ -1,5 +1,7 @@
-import {movements} from "../../../data/movements";
+import { getMovimientosSeq } from "../api/movementApi";
 
-export const getMovements = () => {
+export const getMovements = async (size,page) => {
+   const movements = await getMovimientosSeq(size, page);
+
    return movements;
 }

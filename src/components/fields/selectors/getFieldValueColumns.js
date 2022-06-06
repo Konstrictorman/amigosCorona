@@ -1,12 +1,10 @@
-import { getFieldValueById } from "./getFieldValueById";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { GridActionsCellItem } from '@mui/x-data-grid';
 
-const getFieldFatherDesc = async ({value}) => {
-   const p = await getFieldValueById(value);
-   return p?p.descripcion:'';
-}
+export const getFieldValueColumns = (handleDelete) => {
 
 
-export const getFieldValueColumns = () => {
+
    const columns = [
       {
          field: "descripcion", 
@@ -16,7 +14,6 @@ export const getFieldValueColumns = () => {
          headerAlign: 'center', 
          align: 'left' ,
          type: 'string',
-         editable: true
       },    
       {
          field: "valor", 
@@ -26,21 +23,7 @@ export const getFieldValueColumns = () => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
-         editable: true
-      },   
-      /*
-      {
-         field: "idValorPadre", 
-         headerName: "Padre", 
-         flex:1,
-         headerClassName: 'headerCol',
-         headerAlign: 'center', 
-         align: 'center' ,
-         type: 'string',
-         //valueGetter: ({value}) => (getFieldFatherDesc(value).then((res)=>(res))),
-         valueGetter: getFieldFatherDesc,
-      },
-      */    
+      },    
          
       {
          field: "valorPadre", 
@@ -50,7 +33,21 @@ export const getFieldValueColumns = () => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
-      },        
+      },     
+      {
+         field: "actions", 
+         type: 'actions',
+         headerName: "Eliminar", 
+         headerClassName: 'headerCol',         
+         getActions: (params) => [
+            <GridActionsCellItem icon={<DeleteIcon/>} label="Eliminar" 
+            disabled={params.row.actionDisabled}
+            onClick={() => {
+               
+               handleDelete(params.id);
+            }}/>
+         ]
+      },    
       
    ];
    return columns;

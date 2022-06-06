@@ -1,5 +1,11 @@
-import { bills } from "../../../data/bills"
+import { getFacturaById } from "../api/billsApi";
 
-export const getBillById = (id) => {
-   return bills.find(b => b.id === parseInt(id, 10));
+export const getBillById = async (id) => {
+   if (id) {
+      const {data} = await getFacturaById(id);
+      delete data._links;
+      return data;
+   } else {
+      return null;
+   }
 }

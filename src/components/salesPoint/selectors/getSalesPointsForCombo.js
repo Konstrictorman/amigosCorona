@@ -11,7 +11,7 @@ export const getSalesPointsForCombo = async () => {
 
    array.forEach((i) => {
       let obj = {};
-      obj["id"] = i.id.toString();
+      obj["id"] = i.id?.toString();
       obj["label"] = i.puntoVenta + " - " + i.descripcion
       salesPoints.push(obj);
    });

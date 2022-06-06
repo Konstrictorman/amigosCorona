@@ -15,18 +15,16 @@ import {
 import { DataTable } from "../general/DataTable";
 import { getFieldValueColumns } from "./selectors/getFieldValueColumns";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import { Spinner } from "../general/Spinner";
 import Swal from "sweetalert2";
-import {
-	getFieldByIdWithChildren,
-	getFieldByIdWithItems,
-} from "./selectors/getFieldByIdWithItems";
+import { getFieldByIdWithItems } from "./selectors/getFieldByIdWithItems";
 import { aFilter } from "../../helpers/aFilter";
 import {
 	addFieldValue,
@@ -38,7 +36,7 @@ import { ERROR_MSG, INPUT_TYPE, TIME_OUT } from "../../config/config";
 import { getFields } from "./selectors/getFields";
 import { getFieldValuesByFieldId } from "./selectors/getFieldValuesByFieldId";
 import { delay } from "../../helpers/delay";
-import { getFieldValueById } from "./selectors/getFieldValueById";
+import { Separator } from "../general/Separator";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -52,11 +50,11 @@ export const Field = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const columns = getFieldValueColumns();
+
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [padresCampo, setPadresCampo] = useState([]);
 	const [padresValor, setPadresValor] = useState([]);
-   
+
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
 	const [openModal, setOpenModal] = useState(false);
@@ -66,7 +64,17 @@ export const Field = () => {
 	const [disabledFatherFieldcombo, setDisabledFatherFieldcombo] =
 		useState(false);
 	const [disableValueFields, setDisableValueFields] = useState(true);
-	const [editRowsModel, setEditRowsModel] = useState({});
+	const [itemActionBtnLabel, setitemActionBtnLabel] = useState("");
+
+	const func = (id) => {
+		//setSelectedIds([]);
+		setSelectedIds([id]);
+		handleOpenModal();
+		console.log("id para borrar...", id);
+	};
+	const columns = getFieldValueColumns(func);
+
+	//const [editRowsModel, setEditRowsModel] = useState({});
 
 	const [formState, setFormState] = useState({
 		id: 0,
@@ -83,7 +91,7 @@ export const Field = () => {
 		idItem: 0,
 		nomItem: "",
 		valueItem: "",
-		idValorPadre: 0,      
+		idValorPadre: 0,
 	});
 
 	const { idItem, nomItem, valueItem, idValorPadre } = childForm;
@@ -92,22 +100,16 @@ export const Field = () => {
 		const field = async (id) => {
 			setLoading(true);
 			try {
-            
 				const data = await getFieldByIdWithItems(id);
 
 				if (componentMounted.current) {
 					const fields = await getFields();
 					setFormState(data);
-					const padres = fields.filter((f) => f.id.toString() !== id);
+					const padres = fields.filter((f) => f.id?.toString() !== id);
 					setPadresCampo(padres);
 					setDisabledFatherFieldcombo(data.idCampoPadre ? false : true);
-
-               
-               
-
-               
 				}
-            //await delay(TIME_OUT);
+				await delay(TIME_OUT);
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
@@ -135,23 +137,34 @@ export const Field = () => {
 	}, [nomItem, valueItem]);
 
 	useEffect(() => {
-      const getPadresValor = async () => {
-         try {
-            const pv = await getFieldValuesByFieldId(idCampoPadre);
-            console.log("_>:",idCampoPadre, pv);
-            setPadresValor(pv);
-         } catch (e) {
+		const getPadresValor = async () => {
+			try {
+				const pv = await getFieldValuesByFieldId(idCampoPadre);
+				//console.log("_>:", idCampoPadre, pv);
+				setPadresValor(pv);
+			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
 			}
-      }
-
-      getPadresValor();
-		return () => {
-			
 		};
+
+		getPadresValor();
+		return () => {};
 	}, [idCampoPadre]);
 
+	useEffect(() => {
+		if (idItem === 0) {
+			setitemActionBtnLabel("Agregar ítem");
+		} else {
+			setitemActionBtnLabel("Actualizar ítem");
+		}
+		//console.log(idItem, itemActionBtnLabel);
+		return () => {
+			setitemActionBtnLabel(null);
+		};
+	}, [idItem]);
+
+	/*
 	const handleEditRowsModelChange = React.useCallback(
 		(model) => {
 			setEditRowsModel(model);
@@ -182,6 +195,7 @@ export const Field = () => {
 		},
 		[formState, items]
 	);
+   */
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -206,6 +220,26 @@ export const Field = () => {
 
 	const handleRowChange = (ids) => {
 		setSelectedIds(ids);
+		//console.log("handleRowChange", ids);
+	};
+
+	const handleRowClick = (params) => {
+		const { field, row } = params;
+		//console.log("row", row);
+		setChildForm({
+			idItem: row.id,
+			nomItem: row.descripcion,
+			valueItem: row.valor,
+			idValorPadre: row.idValorPadre,
+		});
+
+		items.forEach((item) => {
+			if (item.id === row.id) {
+				item["actionDisabled"] = false;
+			} else {
+				item["actionDisabled"] = true;
+			}
+		});
 	};
 
 	const handleCheckChange = ({ target }) => {
@@ -237,9 +271,13 @@ export const Field = () => {
 						"success"
 					);
 				})
-				.catch((e) => {
+				.catch((error) => {
+					console.log(error.response.data);
+					console.log(error.response.status);
+					console.log(error.response.headers);
 					setLoading(false);
-					Swal.fire("Error", e.message, "error");
+					console.log("A:", JSON.stringify(error));
+					//Swal.fire("Error", error.message, "error");
 				});
 		} else {
 			//Si no permite padre, el idCampoPadre debe ser null
@@ -265,9 +303,13 @@ export const Field = () => {
 						"success"
 					);
 				})
-				.catch((e) => {
+				.catch((error) => {
+					console.log(error.response.data);
+					console.log(error.response.status);
+					console.log(error.response.headers);
 					setLoading(false);
-					Swal.fire("Error", e.message, "error");
+					console.log("B:", JSON.stringify(error));
+					//Swal.fire("Error", error.message, "error");
 				});
 		}
 	};
@@ -280,48 +322,102 @@ export const Field = () => {
 			idValorPadre: 0,
 		});
 		setDisabledAddBtn(true);
+		items.forEach((item) => {
+			item["actionDisabled"] = true;
+		});
 	};
 
-	const handleAddClick = () => {
+	const handleActionItemClick = () => {
 		setLoading(true);
+
 		const param = {
-			id: 0,
+			id: idItem,
 			valor: valueItem,
 			descripcion: nomItem,
 			idCampo: formState.id,
 			idValorPadre: idValorPadre,
 		};
-		console.log("param:", param);
-		addFieldValue(param)
-			.then(async (response) => {
-				console.log(response);
-				const data = response.data;
-            const fatherName = await getFieldValueById(data.idValorPadre);
 
-				const newFieldValue = {
-					...param,
-					id: data.id,
-               valorPadre: fatherName?.valor
-				};
+		const pv = padresValor.find(
+			(elem) => elem.id?.toString() === param.idValorPadre?.toString()
+		);
+		const fatherName = pv?.valor;
+		if (idItem === 0) {
+			//Agregar ítem
+			addFieldValue(param)
+				.then((response) => {
+					//console.log(response);
+					const data = response.data;
+					//const fatherName = await getFieldValueById(data.idValorPadre);
 
-				setFormState({
-					...formState,
-					items: [...items, newFieldValue],
+					const newFieldValue = {
+						...param,
+						id: data.id,
+						valorPadre: fatherName,
+						actionDisabled: true,
+					};
+
+					setFormState({
+						...formState,
+						items: [...items, newFieldValue],
+					});
+
+					Swal.fire(
+						"Registro exitoso",
+						"Registro(s) agregado(s) exitosamente",
+						"success"
+					);
+					reset();
+					setLoading(false);
+				})
+				.catch((error) => {
+					setLoading(false);
+					const msg =
+						error.message +
+						"\r\n" +
+						error.response?.data?.cause?.cause?.message;
+					console.log("A:", JSON.stringify(error));
+
+					Swal.fire("Error", msg, "error");
 				});
-				reset();
-				setLoading(false);
-			})
-			.catch((e) => {
-				setLoading(false);            
-				Swal.fire("Error", e.message, "error");
-			});
-      
+		} else {
+			//Actualizar ítem
+
+			updateFieldValue(idItem, param)
+				.then(async (response) => {
+					const index = items.findIndex((item) => item.id === idItem);
+
+					items[index].valorPadre = fatherName;
+					items[index].descripcion = param.descripcion;
+					items[index].value = param.valor;
+					items[index].idValorPadre = param.idValorPadre;
+
+					setLoading(false);
+
+					Swal.fire(
+						"Actualización exitosa",
+						"Cambios(s) guardado(s) exitosamente",
+						"success"
+					);
+					reset();
+				})
+				.catch((e) => {
+					console.log("e.r:", JSON.stringify(e.response));
+					Swal.fire(
+						"Error",
+						`Error durante la actualización del(los) registro(s).  ${e.message}: 
+                  ${e.response?.data?.cause?.message}`,
+						"error"
+					);
+				});
+		}
+		setLoading(false);
 	};
 
 	const handleRemoveRows = (paramIds) => {
 		console.log("items:", items);
 		const result = aFilter(items, paramIds);
-		console.log("result:", result);
+		//console.log("result:", result);
 		setFormState({
 			...formState,
 			items: result,
@@ -331,7 +427,7 @@ export const Field = () => {
 	const deleteItems = () => {
 		handleCloseModal();
 		setLoading(true);
-		console.log("SelectedIds:", selectedIds);
+		//console.log("SelectedIds:", selectedIds);
 		try {
 			selectedIds.forEach(async (element) => {
 				await deleteFieldValue(element);
@@ -351,11 +447,12 @@ export const Field = () => {
 		}
 
 		setSelectedIds([]);
+		reset();
 		setLoading(false);
 	};
 
 	const handleUpdateFieldValues = () => {
-		console.log(JSON.stringify(items));
+		//console.log(JSON.stringify(items));
 		setLoading(true);
 		try {
 			items.forEach(async (hijo) => {
@@ -482,7 +579,7 @@ export const Field = () => {
 										disabled={disabledFatherFieldcombo}
 										variant={INPUT_TYPE}
 									>
-										<option value="">...</option>
+										<option value=""></option>
 										{padresCampo?.map((so) => {
 											return (
 												<option key={so.id} value={so.id}>
@@ -497,7 +594,7 @@ export const Field = () => {
 							<Grid item xs={6} className="right-align">
 								<Button
 									variant="contained"
-									className="mt-1 mx-1 btn-error"
+									className="mt-1 mx-1 btn btn-error"
 									startIcon={<ClearIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"
@@ -510,7 +607,7 @@ export const Field = () => {
 							<Grid item xs={6} className="left-align">
 								<Button
 									variant="contained"
-									className="mt-1 mx-1 btn-primary"
+									className="mt-1 mx-1 btn btn-primary"
 									startIcon={<CheckIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"
@@ -521,9 +618,13 @@ export const Field = () => {
 							</Grid>
 
 							<Grid item xs={12} />
-							<Grid item xs={12} />
-							<Grid item xs={12} />
-							<Grid item xs={12} />
+
+                     <Grid item xs={12} >
+                     <Separator
+                        title="Valores campo"
+                        icon={<SettingsIcon color="white" />}
+                     />
+                     </Grid>
 
 							<Grid item xs={3} className="">
 								<Item>
@@ -590,7 +691,7 @@ export const Field = () => {
 										disabled={disabledFatherFieldcombo}
 										variant={INPUT_TYPE}
 									>
-										<option value="">...</option>
+										<option value=""></option>
 										{padresValor?.map((so) => {
 											return (
 												<option key={so.id} value={so.id}>
@@ -604,15 +705,15 @@ export const Field = () => {
 
 							<Grid item xs={3} className="">
 								<Button
-									sx={{ marginTop: 0.5 }}
-									className="btn-secondary left-align left"
+									sx={{ marginTop: 1 }}
+									className="btn btn-secondary left-align left"
 									variant="contained"
 									startIcon={<AddCircleIcon />}
 									style={{ textTransform: "none" }}
-									onClick={handleAddClick}
+									onClick={handleActionItemClick}
 									disabled={disabledAddBtn}
 								>
-									Agregar ítem
+									{itemActionBtnLabel}
 								</Button>
 							</Grid>
 
@@ -625,29 +726,28 @@ export const Field = () => {
 								{formState && (
 									<DataTable
 										className="container__dataTable3"
-                              loading={loading}
-                              
+										loading={loading}
 										rows={items}
 										columns={columns}
 										pageSize={10}
 										onSelectionModelChange={handleRowChange}
-										checkboxSelection={true}
-										onCellClick={() => {}}
-										disableSelectionOnClick={true}
+										checkboxSelection={false}
+										//disableSelectionOnClick={true}
 										editMode="cell"
-										editRowsModel={editRowsModel}
-										onEditRowsModelChange={handleEditRowsModelChange}
+										onCellClick={handleRowClick}
+
+										//editRowsModel={editRowsModel}
+										//onEditRowsModelChange={handleEditRowsModelChange}
 									/>
 								)}
 							</Grid>
-                     
 						</Grid>
 					</div>
 				)}
 
 				<div>
 					<Button
-						className="mt-3 mx-2 btn-warning"
+						className="mt-3 mx-2 btn btn-warning"
 						variant="contained"
 						style={{ textTransform: "none" }}
 						startIcon={<ArrowBackIcon />}
@@ -655,6 +755,17 @@ export const Field = () => {
 					>
 						Volver
 					</Button>
+
+					<Button
+						className="mt-3 mx-2 btn btn-secondary"
+						variant="contained"
+						style={{ textTransform: "none" }}
+						startIcon={<CleaningServicesIcon />}
+						onClick={reset}
+					>
+						Limpiar
+					</Button>
+					{/*                           
 					<Button
 						className="mt-3 mx-2 btn-error"
 						variant="contained"
@@ -663,18 +774,9 @@ export const Field = () => {
 						disabled={!selectedIds.length > 0}
 						onClick={handleOpenModal}
 					>
-						Eliminar parámetro(s) seleccionado(s)
+						Eliminar valor(es) seleccionado(s)
 					</Button>
-
-					<Button
-						variant="contained"
-						className="mt-3 mx-2 btn-secondary"
-						startIcon={<CheckIcon />}
-						style={{ textTransform: "none" }}
-						onClick={handleUpdateFieldValues}
-					>
-						Guardar cambios
-					</Button>
+            */}
 				</div>
 			</div>
 
@@ -683,6 +785,7 @@ export const Field = () => {
 				handleAction={deleteItems}
 				open={openModal}
 				items={selectedIds}
+				recordDesc={nomItem}
 			/>
 		</div>
 	);

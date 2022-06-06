@@ -4,13 +4,13 @@ import {
 	Button,
 	Checkbox,
 	FormControlLabel,
+	FormHelperText,
 	Grid,
 	Paper,
 	TextField,
 } from "@mui/material";
-import { getMovements } from "./selectors/getMovements";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useForm } from "../customHooks/useForm";
+import { useCustomForm } from "../customHooks/useCustomForm";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import esLocale from "date-fns/locale/es";
@@ -18,6 +18,11 @@ import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import { INPUT_TYPE } from "../../config/config";
+import { PagedMovementDataTable } from "./PagedMovementDataTable";
+import { MovementsResume } from "./MovementsResume";
+import moment from "moment";
+import { dateFormatter2 } from "../../helpers/dateFormatter";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -29,11 +34,10 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const MovementsList = () => {
 	const navigate = useNavigate();
-	const [rows, setRows] = useState([]);
 
-	const search = () => {
-		setRows(getMovements());
-	};
+	const [params, setParams] = useState({});
+	const [show, setShow] = useState(false);
+	const [errors, setErrors] = useState({});
 
 	const [
 		formValues,
@@ -42,7 +46,7 @@ export const MovementsList = () => {
 		handleCheckChange,
 		handleComplexInputChange,
 		reset,
-	] = useForm({
+	] = useCustomForm({
 		codeCliente: "",
 		fechaInicial: null,
 		fechaFinal: null,
@@ -52,21 +56,67 @@ export const MovementsList = () => {
 	const { codeCliente, fechaInicial, fechaFinal, llaveMaestraFlag } =
 		formValues;
 
-	const clear = () => {
-		setRows([]);
+	const handleClick = (params) => {
+		console.log("click");
+		/*
+		const { field, row } = params;
+		if (field === "numeroFactura") {
+			navigate(`/bill?id=${row.id}`);
+		}
+      */
+	};
+
+
+
+	const validateForm = (values) => {
+		const errors = {};
+
+		if (!fechaInicial) {
+			errors.fechaInicial = "La fecha inicial es requerida";
+		}
+		if (!fechaFinal) {
+			errors.fechaFinal = "La fecha final es requerida";
+		}
+		const fInit = moment(fechaInicial);
+		const fFinal = moment(fechaFinal);
+
+		if (!fInit.isBefore(fFinal)) {
+			errors.fechaFinal =
+				"La fecha final debe ser posterior a la fecha inicial";
+		}
+
+		const x = Object.keys(errors).length;
+		setShow(x === 0);
+		return errors;
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		Object.entries(formValues).forEach((fv) => {
+			if (fv[1]) {
+				setParams((_params) => {
+					return {
+						..._params,
+						[fv[0]]: fv[1],
+					};
+				});
+			}
+		});
+		//console.log("params:", params);
+
+		setErrors(validateForm(formValues));
+	};
+
+	const handleClean = () => {
 		reset();
+		setErrors({});
+		setShow(false);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log("Searching with:", formValues);
-		search();
-	};
 
 	return (
 		<div
@@ -81,16 +131,13 @@ export const MovementsList = () => {
 					width: "100%",
 				}}
 			>
-				<form
-					className="container__form"
-					onSubmit={handleSubmit}
-				>
+				<form className="container__form" onSubmit={handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
 									label="Cliente"
-									error={false}
+									error={errors.cliente}
 									id="codeCliente"
 									type="text"
 									name="codeCliente"
@@ -100,8 +147,13 @@ export const MovementsList = () => {
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								{errors.cliente}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
@@ -116,20 +168,26 @@ export const MovementsList = () => {
 										value={fechaInicial}
 										maxDate={new Date()}
 										onChange={(newValue) => {
-											handleValueChange("fechaInicial", newValue);
+											handleValueChange("fechaInicial", dateFormatter2(newValue));
 										}}
 										renderInput={(params) => (
 											<TextField
 												{...params}
 												size="small"
 												className="form-control"
-												error={false}
+												error={errors.fechaInicial}
+												variant={INPUT_TYPE}
+												required={true}
 											/>
 										)}
 										disabled={false}
 									/>
 								</LocalizationProvider>
 							</Item>
+							<FormHelperText className="helperText">
+								
+								{errors.fechaInicial}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
@@ -144,7 +202,7 @@ export const MovementsList = () => {
 										value={fechaFinal}
 										maxDate={new Date()}
 										onChange={(newValue) => {
-											handleValueChange("fechaFinal", newValue);
+											handleValueChange("fechaFinal", dateFormatter2(newValue));
 										}}
 										renderInput={(params) => (
 											<TextField
@@ -152,12 +210,18 @@ export const MovementsList = () => {
 												size="small"
 												className="form-control"
 												error={false}
+												variant={INPUT_TYPE}
+												required={true}
 											/>
 										)}
 										disabled={false}
 									/>
 								</LocalizationProvider>
 							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								{errors.fechaFinal}{" "}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
@@ -180,7 +244,6 @@ export const MovementsList = () => {
 							<div>
 								<Button
 									className="mt-3 mx-2 btn-warning"
-									
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<ArrowBackIcon />}
@@ -189,23 +252,20 @@ export const MovementsList = () => {
 									Volver
 								</Button>
 								<Button
-									
 									variant="contained"
 									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
-									onClick={clear}
+									onClick={handleClean}
 								>
 									Limpiar
 								</Button>
 								<Button
-									
 									variant="contained"
 									className="mt-3 mx-2 btn-primary"
 									startIcon={<SearchIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"
-									onClick={handleSubmit}
 								>
 									Buscar
 								</Button>
@@ -214,6 +274,20 @@ export const MovementsList = () => {
 					</Grid>
 				</form>
 			</div>
+
+			<PagedMovementDataTable
+				handleClick={handleClick}
+				params={params}
+				show={show}
+			/>
+
+
+			{show && fechaInicial && fechaFinal &&(
+				<MovementsResume
+					fechaDesde={fechaInicial}
+					fechaHasta={fechaFinal}
+				/>
+			)}
 		</div>
 	);
 };

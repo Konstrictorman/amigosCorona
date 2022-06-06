@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { FieldsComboBox } from "../fields/FieldsComboBox";
 import { useSelector } from "react-redux";
 import { updateSalesPoint, addSalesPoint } from "./actions/salesPointActions";
-import { ERROR_MSG } from "../../config/config";
+import { ERROR_MSG, INPUT_TYPE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -155,6 +155,7 @@ export const SalesPoint = () => {
 										value={puntoVenta}
 										onChange={handleInputChange}
 										className="form-control"
+                              variant={INPUT_TYPE}
 									/>
 								</Item>
 								<FormHelperText className="helperText">
@@ -171,6 +172,8 @@ export const SalesPoint = () => {
 										value={estado}
 										items={items}
 										handleChange={handleInputChange}
+                              type="estados"
+                              valueType="valor"
 									/>
 								</Item>
 							</Grid>
@@ -192,6 +195,7 @@ export const SalesPoint = () => {
 										minRows={2}
 										maxRows={2}
 										multiline={true}
+                              variant={INPUT_TYPE}
 									/>
 								</Item>
 								<FormHelperText className="helperText">

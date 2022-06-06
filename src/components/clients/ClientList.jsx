@@ -1,114 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { DataTable } from "../general/DataTable";
 import { getClientColumns } from "./selectors/getClientColumns";
-import { getClients } from "./selectors/getClients";
-import { Button } from "@mui/material";
-import { NoRowsOverlay } from "../general/NoRowsOverlay";
+import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Spinner } from "../general/Spinner";
-import Swal from "sweetalert2";
-import { ERROR_MSG, PAGE_SIZE } from "../../config/config";
-import { useDispatch } from "react-redux";
-import {
-	setError
-} from "../general/actions/uiActions";
-import { DataGrid } from "@mui/x-data-grid"; 
+import { styled } from "@mui/material/styles";
+import { INPUT_TYPE } from "../../config/config";
+import { useCustomForm } from "../customHooks/useCustomForm";
+import SearchIcon from "@mui/icons-material/Search";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import { PagedClientDataTable } from "./PagedClientDataTable";
 
-
-const useQuery = (page, pageSize) => {
-   const [rowCount, setRowCount] = useState(undefined);
-   const [loading, setLoading] = useState(false);
-   const [rows, setRows] = useState([]);
-
-   useEffect(() => {
-     let active = true;
-
-     setLoading(true);
-     setRowCount(undefined);
-     getClients(pageSize, page)
-      .then((response) => {
-         if (!active) {
-            return;
-         }
-         setRows(response.data._embedded.clientes);
-         setRowCount(response.data.page.totalElements)         
-         setLoading(false);
-      })
-    
-
-   
-     return () => {
-       active = false;
-     }
-   }, [page, pageSize])
-
-   return {loading, rows, rowCount}
-   
-}
+const Item = styled(Paper)(({ theme }) => ({
+	...theme.typography.body2,
+	padding: 0,
+	paddingTop: theme.spacing(0.7),
+	textAlign: "left",
+	color: theme.palette.text.secondary,
+}));
 
 export const ClientList = () => {
 	const navigate = useNavigate();
 	const columns = getClientColumns();
-	
-	
-   //const [pageNumber, setPageNumber] = useState(0);
-   
-	//const componentMounted = useRef(true);
-   //const dispatch = useDispatch();
 
-   const [rowsState, setRowsState] = useState({
-      page: 0,
-      pageSize: PAGE_SIZE,
-   });
+	const [params, setParams] = useState({});
+   const [show, setShow] = useState(false);
 
-   const { loading, rows, rowCount} = useQuery(rowsState.page, rowsState.pageSize)
-   const [rowCountState, setRowCountState] = useState(rowCount || 0);
+	const [
+		formValues,
+		handleInputChange,
+		handleValueChange,
+		handleCheckChange,
+		handleComplexInputChange,
+		reset,
+	] = useCustomForm({
+		codigoCliente: "",
+		nombreCompleto: "",
+	});
 
-   /*
-	useEffect(() => {
-		const getClientsList = async () => {
-			setLoading(true);
-         let data = null;
-			try {
-				data = await getClients(PAGE_SIZE, pageNumber);
-            //console.log("data: ", JSON.stringify(data.data.page));
-            
-            if (componentMounted.current && data.data._embedded) {
-               setRows(data.data._embedded.clientes);
-               setRowCount(data.data.page.totalElements)
-            } 
-                       
-			} catch (e) {
-				console.log("status",data.status);
-            let path = "";
-            if (data.status !== 200) {
-               path = " - " + data.path;
-            }
-				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
-            dispatch(setError(e.message+path));
-			}
-			setLoading(false);
-		};
-
-		getClientsList();
-
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
-	}, [dispatch, pageNumber]);
-*/
-
-   useEffect(() => {
-     setRowCountState((prev) => 
-         rowCount !== undefined ? rowCount : prev
-     );   
-   }, [rowCount, setRowCountState]);
-   
-
-
+	const { codigoCliente, nombreCompleto } = formValues;
 
 	const handleClick = (params) => {
 		const { field, row } = params;
@@ -117,50 +48,152 @@ export const ClientList = () => {
 		}
 	};
 
+   const handleReset = () => {
+      reset();
+      setParams({});
+      setShow(false);
+   }
+
+	const handleSearch = () => {
+		Object.entries(formValues).forEach((fv) => {
+			
+			if (fv[1]) {
+				setParams(_params => {
+               return (
+               {
+					   ..._params,
+					   [fv[0]]: fv[1],
+				   })
+            });
+			}
+		});
+
+      setShow(true);
+	};
+
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
-
-	if (loading) {
-		return <Spinner />;
-	}
 
 	return (
 		<div className={"text-center animate__animated " + animatedStyle}>
 			<h4 className="title align-self-center" style={{ width: "90%" }}>
 				Clientes
 			</h4>
-			<div className="container__dataTable" style={{ width: "90%" }}>
-				{
-					<DataGrid
-                  className="container__dataTable"
-                  density="compact"
-                  autoHeight={true}
-                  autoPageSize={false}
-                  disableExtendRowFullWidth={true}
-                  rowsPerPageOptions={[5]}
-						rows={rows}
-						columns={columns}
-						pageSize={PAGE_SIZE}
-						onCellClick={handleClick}
-						disableSelectionOnClick={true}
-						components={{
-							NoRowsOverlay: NoRowsOverlay,
-						}}
-                  loading={loading}
-                  pagination
-                  {...rowsState}
-                  paginationMode="server"
-                  rowCount={rowCountState}
-                  onPageChange={(page) => setRowsState((prev) => ({...prev, page}))}
-					/>
-				}
+			<div className="align-self-center" style={{ width: "90%" }}>
+				<form className="container__form">
+					<Grid container spacing={2} rowSpacing={1}>
+						<Grid item xs={6}>
+							<Item className="half-quarter-width right">
+								<TextField
+									label="Código cliente"
+									error={false}
+									id="codigoCliente"
+									type="text"
+									name="codigoCliente"
+									autoComplete="off"
+									size="small"
+									value={codigoCliente}
+									onChange={handleInputChange}
+									className="form-control"
+									disabled={false}
+									variant={INPUT_TYPE}
+								/>
+							</Item>
+						</Grid>
+						<Grid item xs={6}>
+							<Item className="half-quarter-width">
+								<TextField
+									label="Nombre cliente"
+									error={false}
+									id="nombreCompleto"
+									type="text"
+									name="nombreCompleto"
+									autoComplete="off"
+									size="small"
+									value={nombreCompleto}
+									onChange={handleInputChange}
+									className="form-control"
+									disabled={false}
+									variant={INPUT_TYPE}
+								/>
+							</Item>
+						</Grid>
+
+						<Grid item xs={12}>
+							<div>
+								<Button
+									className="mt-3 mx-2 btn-warning"
+									variant="contained"
+									style={{ textTransform: "none" }}
+									startIcon={<ArrowBackIcon />}
+									onClick={handleClickOut}
+								>
+									Volver
+								</Button>
+
+								<Button
+									variant="contained"
+									className="mt-3 mx-2 btn-error"
+									startIcon={<CleaningServicesIcon />}
+									style={{ textTransform: "none" }}
+									onClick={handleReset}
+								>
+									Limpiar
+								</Button>
+								<Button
+									variant="contained"
+									className="mt-3 mx-2 btn-primary"
+									startIcon={<SearchIcon />}
+									style={{ textTransform: "none" }}
+									onClick={handleSearch}
+								>
+									Buscar
+								</Button>
+							</div>
+						</Grid>
+					</Grid>
+				</form>
+
+				{/*
+							<DataGrid
+								className="container__dataTable"
+								density="compact"
+								autoHeight={true}
+								autoPageSize={false}
+								disableExtendRowFullWidth={true}
+								rowsPerPageOptions={[5]}
+								rows={rows}
+								columns={columns}
+								pageSize={PAGE_SIZE}
+								onCellClick={handleClick}
+								disableSelectionOnClick={true}
+								components={{
+									NoRowsOverlay: NoRowsOverlay,
+								}}
+								loading={loading}
+								pagination
+								{...rowsState}
+								paginationMode="server"
+								rowCount={rowCountState}
+								onPageChange={(page) =>
+									setRowsState((prev) => ({ ...prev, page }))
+								}
+							/>
+
+                     */}
+				<PagedClientDataTable
+					columns={columns}
+					handleClick={handleClick}
+					params={params}
+               show = {show}
+				/>
 			</div>
+			{/** 
 			<div className="align-self-center">
 				<Button
-					className="mt-3 mx-2"
-					color="warning"
+					className="mt-3 mx-2 btn-warning"					
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<ArrowBackIcon />}
@@ -169,6 +202,7 @@ export const ClientList = () => {
 					Volver
 				</Button>
 			</div>
+         */}
 		</div>
 	);
 };

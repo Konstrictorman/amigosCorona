@@ -1,0 +1,29 @@
+
+.separator-item {
+   //border: 1px solid;
+   justify-content: center;
+   
+}
+
+.separator-container {
+   display: flex;
+   flex-direction: row;
+   margin-bottom: 15px;
+   margin-top: 35px;
+   justify-content: space-between;
+   column-gap: 10px;
+}
+
+
+.separator-title {
+   //display: flex;
+   background-color: $pantone298C;   
+   padding: 0px 5px 0px 5px;
+   border-radius: 3px;
+   color: white;
+
+   width: 100%;
+}
+
+
+

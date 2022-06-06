@@ -12,7 +12,7 @@ import {
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useForm } from "../customHooks/useForm";
+import { useCustomForm } from "../customHooks/useCustomForm";
 import { getClientByCode } from "../clients/selectors/getClientByCode";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useMemo } from "react";
@@ -63,7 +63,7 @@ export const Redemption = () => {
 	];
 
 	const [formValues, handleInputChange] =
-		useForm({
+		useCustomForm({
 			codReferrer: "",
 			redemptionType: "",
 			amount: "",

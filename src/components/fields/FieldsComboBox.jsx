@@ -3,11 +3,11 @@ import React from "react";
 import { TextField } from "@mui/material";
 import { useSelector } from "react-redux";
 import PropTypes from 'prop-types';
+import { INPUT_TYPE } from "../../config/config";
 
 export const FieldsComboBox = (params) => {
-	const { id, label, value, type, handleChange } = params;
+	const { id, label, value, type, handleChange, valueType } = params;
    const items = useSelector((state) => state.lists[`${type}`]);
-
 
 
 	return (
@@ -25,11 +25,12 @@ export const FieldsComboBox = (params) => {
             SelectProps={{
                native: true,
             }}            
+            variant={INPUT_TYPE}
 			>
 				<option value="">...</option>
 				{items?.map((so) => {
                return(              
-					<option key={so.id} value={so.valor}>
+					<option key={so.id} value={so[`${valueType}`]}>
 						{so.descripcion}
 					</option>
             
@@ -45,4 +46,5 @@ FieldsComboBox.propTypes = {
    value: PropTypes.number.isRequired,
    type: PropTypes.string.isRequired,
    handleChange: PropTypes.func.isRequired,
+   valueType: PropTypes.string.isRequired
 }

@@ -19,7 +19,7 @@ export const getBillDetailColumns = () => {
          type: 'number'
       },          
       { 
-         field: "articulo", 
+         field: "idArticulo", 
          headerName: "Artículo", 
          flex:1,
          headerClassName: 'headerCol',

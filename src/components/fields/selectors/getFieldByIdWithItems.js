@@ -10,7 +10,7 @@ const setPadres = async(hijos) => {
      const fv = await getFieldValueById(h.idValorPadre);
      //console.log("fv:",fv);
       h['valorPadre'] = fv?.valor;
-      
+      h['actionDisabled'] = true;
    });
 
    return hijos;
@@ -23,7 +23,7 @@ export const getFieldByIdWithItems = async (id) => {
       //hijos.forEach((h)=> h.valorPadre = 'sin papá');
       const hijosConPadre = await setPadres(hijos);
 
-      //console.log("hijos:", JSON.stringify(hijosConPadre));
+      //console.log("hijos:", hijosConPadre);
 		const campo = {
 			...field,
 			items: hijosConPadre,

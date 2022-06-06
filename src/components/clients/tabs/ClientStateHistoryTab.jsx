@@ -1,14 +1,14 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TabPanel } from "@mui/lab";
 import { DataGrid } from "@mui/x-data-grid";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { getStatusHistoryColumns } from "../selectors/getStatusHistoryColumns";
-import { getStatusHistoryByClientId } from "../selectors/getStatusHistoryByClientId";
 
 export const ClientStateHistoryTab = ({client, index}) => {
 
+   //console.log(client);
 	const statusHistoryColumns = getStatusHistoryColumns();
-	const statusHistory = useMemo(() => getStatusHistoryByClientId(client.id), [client]);
+	const rows = client?.referenciador?.states? client.referenciador.states: [];
 
   
 	return (
@@ -16,7 +16,7 @@ export const ClientStateHistoryTab = ({client, index}) => {
 			<TabPanel value={index} style={{ padding: "0" }}>
 				<DataGrid
 					className=""
-					rows={statusHistory}
+					rows={rows}
 					columns={statusHistoryColumns}
 					pageSize={5}
 					checkboxSelection={false}

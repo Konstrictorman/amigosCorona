@@ -7,11 +7,20 @@ import { types } from "../../../types/types";
 import { delay } from "../../../helpers/delay";
 import { getFieldValuesByFieldId } from "../selectors/getFieldValuesByFieldId";
 import { ID_PERIODS, ID_PROGRAMS, ID_REFERRED_STATUS, ID_STATES, TIME_OUT } from "../../../config/config";
+import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
 
 
 export const loadPrograms = () => {
    return async(dispatch) => {
       const programs = await getFieldValuesByFieldId(ID_PROGRAMS);
+      const programsRef = await getReferencePrograms();
+      programs?.forEach((p)=> {
+         const prog = programsRef?.find((pr) => pr.programa ===  p.valor);
+
+         p.idProgramaReferenciacion = prog.id;
+         p.tipoPeriodo = prog.tipoPeriodo;
+         p.mesesVigencia = prog.mesesVigencia;
+      });
       dispatch(setPrograms(programs));
    }
 }

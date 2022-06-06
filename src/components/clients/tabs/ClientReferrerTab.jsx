@@ -1,13 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { DesktopDatePicker, LocalizationProvider, TabPanel } from "@mui/lab";
 import { FormHelperText, Grid, Paper, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import esLocale from "date-fns/locale/es";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
-import { useSelector } from "react-redux";
 import { FieldsComboBox } from "../../fields/FieldsComboBox";
-import { types } from "../../../types/types";
+import { Spinner } from "../../general/Spinner";
+import { ERROR_MSG, INPUT_TYPE } from "../../../config/config";
+import Swal from "sweetalert2";
+import { getProgramsWithSpecialties } from "../../fields/selectors/getProgramsWithSpecialties";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -19,10 +21,13 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const ClientReferrerTab = ({ formValues, index, handleInputChange, handleValueChange }) => {
 
+   const [loading, setLoading] = useState(false);
+   const [programs, setPrograms] = useState([]);
+   const [specialties, setSpecialties] = useState([]);
+   const componentMounted = useRef(true);
+   
 
-   console.log("FV: ",JSON.stringify(formValues));
-
-	const {
+   const {
 		fechaMat,
 		idProgramaReferenciacion,
 		especialidad,
@@ -30,7 +35,56 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 		idLifeMiles,
 		estadoRef,
 		referencia1,
-	} = formValues;
+	} = formValues?formValues:{};
+
+   const idProgramaReferenciacionRef = useRef(idProgramaReferenciacion);
+
+   useEffect(() => {
+      const getPrograms = async () => {
+         setLoading(true);
+         try {
+            const progs = await getProgramsWithSpecialties();
+
+            if (componentMounted.current) {
+               setPrograms(progs);
+               //console.log("ref:",idProgramaReferenciacionRef);
+               const p = progs?.find((p) => p.twinId === idProgramaReferenciacionRef.current);
+               setSpecialties(p?.specs);
+
+            }
+			} catch (e) {
+				console.log(e);
+				Swal.fire(
+					"Error",
+					e.message + ` - ${ERROR_MSG}`,
+					"error"
+				);
+			}         
+         setLoading(false);
+         
+      };
+      
+      getPrograms();
+		return () => {
+			componentMounted.current = false;
+         idProgramaReferenciacionRef.current = null;
+			setLoading(null);
+		};      
+   }, []);
+
+   if (loading) {
+		return <Spinner />;
+	}
+
+   const handleChange = (evt) => {
+      handleValueChange(evt);
+      const newId = evt.target.value;
+
+      const p = programs?.find((p) => p.twinId?.toString() === newId?.toString());
+
+
+      setSpecialties(p?.specs);
+   }
 
 	return (
 		<div>
@@ -58,6 +112,7 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 												required
 												className="form-control"
 												error={false}
+                                    variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={false}
@@ -69,34 +124,63 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 
 						<Grid item xs={4}>
 							<Item>
-                     <FieldsComboBox
-										id="idProgramaReferenciacion"
-										label="Programa referenciación"
-										value={idProgramaReferenciacion}
-										type="programas"
-										handleChange={handleInputChange}
-									/>  
-
+                     <TextField
+									select
+									label="Programa referenciación"
+									error={false}
+									id="idProgramaReferenciacion"
+									type="text"
+									name="idProgramaReferenciacion"
+									size="small"
+									value={idProgramaReferenciacion}
+									onChange={handleChange}
+									className="form-control"
+									disabled={false}
+									required
+									SelectProps={{
+										native: true,
+									}}
+                           variant={INPUT_TYPE}
+								>
+									<option value="">...</option>
+									{programs?.map((program) => (
+										<option key={program.id} value={program.twinId}>
+											{program.descripcion}
+										</option>
+									))}
+								</TextField>                       
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
 							<Item>
-								<TextField
+                     <TextField
+									select
 									label="Especialidad"
 									error={false}
 									id="especialidad"
 									type="text"
 									name="especialidad"
-									autoComplete="off"
 									size="small"
-									required
 									value={especialidad}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
-								/>
+									required
+									SelectProps={{
+										native: true,
+									}}
+                           variant={INPUT_TYPE}
+								>
+									<option value="">...</option>
+									{specialties?.map((spec) => (
+										<option key={spec.id} value={spec.valor}>
+											{spec.descripcion}
+										</option>
+									))}
+								</TextField>  
+                      
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -116,6 +200,7 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -136,6 +221,7 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
@@ -150,33 +236,9 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 										value={estadoRef}
 										type="estadosReferido"
 										handleChange={handleInputChange}
+                              valueType="valor"
 									/>       
-                           {/*
-								<TextField
-									select
-									label="Estado"
-									error={false}
-									id="estadoRef"
-									type="text"
-									name="estadoRef"
-									size="small"
-									value={estadoRef}
-									onChange={handleInputChange}
-									className="form-control"
-									disabled={false}
-									required
-									SelectProps={{
-										native: true,
-									}}
-								>
-									<option value="">...</option>
-									{statusList.map((status) => (
-										<option key={status.label} value={status.value}>
-											{status.label}
-										</option>
-									))}
-								</TextField>
-                        */}                 
+              
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
@@ -199,6 +261,7 @@ export const ClientReferrerTab = ({ formValues, index, handleInputChange, handle
 									minRows={5}
 									maxRows={5}
 									multiline={true}
+                           variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText"> </FormHelperText>

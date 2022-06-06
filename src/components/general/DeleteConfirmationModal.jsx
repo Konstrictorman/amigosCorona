@@ -23,7 +23,21 @@ export const DeleteConfirmationModal = ({
 	handleAction,
 	handleClose,
 	items,
+   recordDesc,
 }) => {
+
+   let msg = "";
+   if (items.length===1) {
+      if (recordDesc) {
+         msg = `Está seguro de eliminar el registro seleccionado <${recordDesc}> ?`;
+      } else {
+         msg = "Está seguro de eliminar el registro seleccionado?";
+      }      
+   }else {
+      msg="¿Está seguro de eliminar los registros seleccionados?";
+   }
+
+
 	return (
 		<div>
 			<Modal
@@ -57,10 +71,7 @@ export const DeleteConfirmationModal = ({
                      align="center"
 						>
                      <WarningAmberIcon color="warning" fontSize="large"/>
-                     {
-                        items.length===1?"Está seguro de eliminar el registro seleccionado?":
-							"¿Está seguro de eliminar los registros seleccionados?"
-                     }  
+                     {msg}  
                      
 						</Typography>
                   

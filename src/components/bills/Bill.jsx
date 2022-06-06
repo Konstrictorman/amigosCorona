@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
 	Button,
@@ -15,7 +15,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getBillById } from "./selectors/getBillById";
-import { useForm } from "../customHooks/useForm";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import esLocale from "date-fns/locale/es";
@@ -26,6 +25,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import { getBillDetailColumns } from "./selectors/getBillDetailColumns";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Swal from "sweetalert2";
+import { ERROR_MSG, INPUT_TYPE, TIME_OUT } from "../../config/config";
+import { Spinner } from "../general/Spinner";
+import { getSalesPointById } from "../salesPoint/selectors/getSalesPointById";
+import { useDispatch, useSelector } from "react-redux";
+import { setError } from "../general/actions/uiActions";
+import { delay } from "../../helpers/delay";
+import { getArticlesByBillId } from "./selectors/getArticlesByBillId";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -39,71 +46,85 @@ export const Bill = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const fact = useMemo(() => getBillById(id), [id]);
-	const ref = useMemo(() => getClientById(fact.idClienteRef), [fact]);
 	const detailColumns = getBillDetailColumns();
+	const [articulos, setArticulos] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const componentMounted = useRef(true);
+	const [formState, setFormState] = useState({});
+	const { estados } = useSelector((state) => state.lists);
+	const dispatch = useDispatch();
+
+	const {
+		clienteVta,
+		fechaFactura,
+		flagEsPremium,
+		idFacturaOriginal,
+		numeroFactura,
+		pedido,
+		tipoFactura,
+		valor,
+		valorAntesImpuesto,
+		puntoVenta,
+		estado,
+		nomReferenciador,
+		codeReferenciador,
+	} = formState;
+
+	useEffect(() => {
+		const bill = async (id) => {
+			setLoading(true);
+			try {
+				const data = await getBillById(id);
+				console.log("data:", data);
+            await delay(TIME_OUT);
+            const pVta = await getSalesPointById(data.idPuntoVenta);
+            const cliente = await getClientById(data.idClienteRef);
+            console.log("Estados:", estados);
+            const estado = estados?.find(
+               (e) => e.valor === data.estadoFactura
+            );
+
+            const articles = await getArticlesByBillId(id);
+            
+				if (componentMounted.current) {
+					setFormState( {
+							...data,
+                     
+							puntoVenta: pVta?.descripcion,
+							estado: estado?.descripcion,
+							nomReferenciador: cliente?.nombreCompleto,
+							codeReferenciador: cliente?.codigoCliente,
+                     
+					});
+               console.log("articles:",articles);
+               setArticulos(articles);
+               
+				}
+			} catch (e) {
+				console.log(e);
+				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
+				dispatch(setError(e));
+			}
+
+			setLoading(false);
+		};
+
+		bill(id);
+
+		return () => {
+			componentMounted.current = false;
+			setLoading(null);
+		};
+	}, [id, dispatch, estados]);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/billsList",
 	});
 
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		
-	] = useForm({
-		numFactura: fact?.numeroFactura ? fact.numeroFactura : "",
-		ptoVenta: fact?.idPuntoVenta ? fact.idPuntoVenta : "",
-		fechaFactura: fact?.fechaFactura ? fact.fechaFactura : "",
-		clienteVenta: fact?.clienteVta ? fact.clienteVta : "",
-		codReferenciador: ref?.codigoCliente ? ref.codigoCliente : "",
-		nomReferenciador: ref
-			? ref.primerNombre +
-			  " " +
-			  ref.segundoNombre +
-			  " " +
-			  ref.primerApellido +
-			  " " +
-			  ref.segundoApellido
-			: "",
-		estadoFactura: fact?.estadoFactura ? fact.estadoFactura : "",
-		pedido: fact?.pedido ? fact.pedido : "",
-		idFactOriginal: fact?.idFacturaOriginal ? fact.idFacturaOriginal : "",
-		tipoFactura: fact?.tipoFactura ? fact.tipoFactura : "",
-		premium: fact?.flagEsPremium ? fact.flagEsPremium : "",
-		valor: fact?.valor ? fact.valor : "",
-		valorAntesImpuesto: fact?.valorAntesImpuesto
-			? fact.valorAntesImpuesto
-			: "",
-		impuesto: fact?.valor - fact?.valorAntesImpuesto,
-		articulos: fact?.articulosFactura ? fact.articulosFactura : [],
-	});
-
-	const {
-		numFactura,
-		ptoVenta,
-		fechaFactura,
-		clienteVenta,
-		codReferenciador,
-		nomReferenciador,
-		estadoFactura,
-		pedido,
-		idFactOriginal,
-		tipoFactura,
-		premium,
-		valor,
-		valorAntesImpuesto,
-		impuesto,
-		articulos,
-	} = formValues;
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log(formValues);
-	};
+	if (loading) {
+		return <Spinner />;
+	}
 
 	return (
 		<div
@@ -112,7 +133,7 @@ export const Bill = () => {
 			}
 		>
 			<h4 className="title align-self-center" style={{ width: "100%" }}>
-				Factura {numFactura}
+				Factura {numeroFactura}
 			</h4>
 			<div
 				className="align-self-center"
@@ -120,10 +141,7 @@ export const Bill = () => {
 					width: "100%",
 				}}
 			>
-				<form
-					className="container__form"
-					onSubmit={handleSubmit}
-				>
+				<form className="container__form">
 					<Grid container spacing={2}>
 						<Grid item xs={4}>
 							<Item>
@@ -135,13 +153,12 @@ export const Bill = () => {
 									name="ptoVenta"
 									autoComplete="off"
 									size="small"
-									value={ptoVenta}
-									onChange={handleInputChange}
+									value={puntoVenta}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -155,9 +172,6 @@ export const Bill = () => {
 										id="fechaFactura"
 										value={fechaFactura}
 										minDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaFactura", newValue);
-										}}
 										renderInput={(params) => (
 											<TextField
 												{...params}
@@ -165,13 +179,13 @@ export const Bill = () => {
 												required
 												className="form-control"
 												error={false}
+												variant={INPUT_TYPE}
 											/>
 										)}
 										disabled={true}
 									/>
 								</LocalizationProvider>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -184,13 +198,12 @@ export const Bill = () => {
 									name="clienteVenta"
 									autoComplete="off"
 									size="small"
-									value={clienteVenta}
-									onChange={handleInputChange}
+									value={clienteVta}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -198,18 +211,17 @@ export const Bill = () => {
 								<TextField
 									label="Código referenciador"
 									error={false}
-									id="codReferenciador"
+									id="idClienteRef"
 									type="text"
-									name="codReferenciador"
+									name="idClienteRef"
 									autoComplete="off"
 									size="small"
-									value={codReferenciador}
-									onChange={handleInputChange}
+									value={codeReferenciador}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={8}>
@@ -223,12 +235,11 @@ export const Bill = () => {
 									autoComplete="off"
 									size="small"
 									value={nomReferenciador}
-									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -242,12 +253,11 @@ export const Bill = () => {
 									autoComplete="off"
 									size="small"
 									value={pedido}
-									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -260,13 +270,12 @@ export const Bill = () => {
 									name="estadoFactura"
 									autoComplete="off"
 									size="small"
-									value={estadoFactura}
-									onChange={handleInputChange}
+									value={estado}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -280,12 +289,11 @@ export const Bill = () => {
 									autoComplete="off"
 									size="small"
 									value={tipoFactura}
-									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -293,28 +301,26 @@ export const Bill = () => {
 								<TextField
 									label="Factura original"
 									error={false}
-									id="idFactOriginal"
+									id="idFacturaOriginal"
 									type="text"
-									name="idFactOriginal"
+									name="idFacturaOriginal"
 									autoComplete="off"
 									size="small"
-									value={idFactOriginal}
-									onChange={handleInputChange}
+									value={idFacturaOriginal}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={6} className="left-align">
 							<FormControlLabel
 								control={
 									<Switch
-										id="premium"
-										name="premium"
-										checked={premium}
-										onChange={handleCheckChange}
+										id="flagEsPremium"
+										name="flagEsPremium"
+										checked={flagEsPremium}
 									/>
 								}
 								labelPlacement="start"
@@ -341,7 +347,6 @@ export const Bill = () => {
 									autoComplete="off"
 									size="small"
 									value={valorAntesImpuesto}
-									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
 									InputProps={{
@@ -352,9 +357,9 @@ export const Bill = () => {
 											</InputAdornment>
 										),
 									}}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -367,8 +372,7 @@ export const Bill = () => {
 									name="impuesto"
 									autoComplete="off"
 									size="small"
-									value={impuesto}
-									onChange={handleInputChange}
+									value={(valor - valorAntesImpuesto).toFixed(2)}
 									className="form-control"
 									disabled={true}
 									InputProps={{
@@ -379,9 +383,9 @@ export const Bill = () => {
 											</InputAdornment>
 										),
 									}}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
@@ -395,7 +399,6 @@ export const Bill = () => {
 									autoComplete="off"
 									size="small"
 									value={valor}
-									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
 									InputProps={{
@@ -406,9 +409,9 @@ export const Bill = () => {
 											</InputAdornment>
 										),
 									}}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
 						</Grid>
 						<Grid item xs={12}>
 							<div className="center">

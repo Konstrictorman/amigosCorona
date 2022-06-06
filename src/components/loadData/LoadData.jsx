@@ -1,6 +1,8 @@
+import React, { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import {
 	Button,
+	Chip,
 	FormControlLabel,
 	FormLabel,
 	Grid,
@@ -9,13 +11,16 @@ import {
 	RadioGroup,
 	TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useForm } from "../customHooks/useForm";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import useFileUpload from "react-use-file-upload";
+import { INPUT_TYPE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -31,33 +36,68 @@ const Input = styled("input")({
 
 export const LoadData = () => {
 	const navigate = useNavigate();
-   const [file, setFile] = useState(null);
+	const [file, setFile] = useState(null);
+	const [formState, setFormState] = useState({
+		loadType: "Clientes",
+		fileName: "No ha sido seleccionado ningún archivo",
+		idProcess: "",
+	});
+
+	const {
+		files,
+		fileNames,
+		fileTypes,
+		totalSize,
+		totalSizeInBytes,
+		handleDragDropEvent,
+		clearAllFiles,
+		createFormData,
+		setFiles,
+		removeFile,
+	} = useFileUpload();
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/home",
 	});
 
-	const [formValues, handleInputChange, handleValueChange] =
-		useForm({
-			loadType: "Clientes",
+	const handleValueChange = (name, value) => {
+		setFormState({
+			...formState,
+			[name]: value,
+		});
+	};
+
+	const reset = () => {
+		setFormState({
+			...formState,
 			fileName: "No ha sido seleccionado ningún archivo",
 			idProcess: "",
 		});
+		clearAllFiles();
+	};
 
-	const { loadType, fileName, idProcess } = formValues;
+	const handleInputChange = ({ target }) => {
+		setFormState({
+			...formState,
+			[target.name]: target.value,
+		});
+	};
 
-   const handleCapture = ({target}) => {
-      setFile(target.files[0]);
-   }
-
+	const handleCapture = (e) => {
+		//https://www.npmjs.com/package/react-use-file-upload
+		//setFile(target.files[0]);
+		setFiles(e);
+	};
+	/*
 	useEffect(() => {
-      handleValueChange("fileName", file?.name);
- }, [handleValueChange,file]);   
-
-	const handleSubmit = (e) => {
+		handleValueChange("fileName", file?.name);
+	}, [handleValueChange, file]);
+*/
+	const handleLoadData = (e) => {
 		e.preventDefault();
-		console.log(formValues)
+		const data = createFormData();
+		console.log(formState, data);
 	};
 
 	return (
@@ -76,16 +116,15 @@ export const LoadData = () => {
 					width: "100%",
 				}}
 			>
-				<form
-					className="container__form"
-					onSubmit={handleSubmit}
-				>
+				<form className="container__form">
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={8} className=" left-align">
 							<FormLabel id="radioGroupLabel">Tipo de archivo</FormLabel>
 							<RadioGroup
-								value={loadType}
-								onChange={(e) => {handleValueChange("loadType",e.target.value)}}
+								value={formState.loadType}
+								onChange={(e) => {
+									handleValueChange("loadType", e.target.value);
+								}}
 								aria-labelledby="radioGroupLabel"
 								name="radio-buttons-group"
 								row
@@ -113,16 +152,16 @@ export const LoadData = () => {
 									name="idProcess"
 									autoComplete="off"
 									size="small"
-									value={idProcess}
+									value={formState.idProcess}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
 						</Grid>
 
-                  <Grid item xs={12} className=""/>
-                  <Grid item xs={12} className=""/>
+						<Grid item xs={12} className="" />
 
 						<Grid item xs={8} className="">
 							<div>
@@ -135,10 +174,15 @@ export const LoadData = () => {
 									autoComplete="off"
 									size="small"
 									required
-									value={fileName}
+									value={
+										fileNames[0]
+											? fileNames[0]
+											: "No ha seleccionado ningún archivo"
+									}
 									onChange={handleInputChange}
 									className="form-control"
-                           disabled={true}
+									disabled={true}
+									variant={INPUT_TYPE}
 								/>
 							</div>
 						</Grid>
@@ -149,12 +193,12 @@ export const LoadData = () => {
 									<Input
 										accept="text/csv"
 										id="contained-button-file"
-										multiple
+										//multiple
 										type="file"
-                              onChange={handleCapture}
+										onChange={handleCapture}
 									/>
 									<Button
-                              color="secondary"
+										className="btn-secondary"
 										variant="contained"
 										component="span"
 										style={{ textTransform: "none" }}
@@ -165,14 +209,18 @@ export const LoadData = () => {
 								</label>
 							</div>
 						</Grid>
+
+						<Grid item xs={12} className="left-align">
+							{files?.length > 0 && (
+								<Chip icon={<AttachFileIcon />} label={totalSize} />
+							)}
+						</Grid>
 					</Grid>
 				</form>
 			</div>
-
 			<div className="align-self-center">
 				<Button
-					className="mt-3 mx-2"
-					color="warning"
+					className="mt-3 mx-2 btn-warning"
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<ArrowBackIcon />}
@@ -182,17 +230,25 @@ export const LoadData = () => {
 				</Button>
 
 				<Button
-					className="mt-3 mx-2"
-					color="primary"
+					className="mt-3 mx-2 btn-error"
+					variant="contained"
+					style={{ textTransform: "none" }}
+					startIcon={<CleaningServicesIcon />}
+					onClick={reset}
+				>
+					Limpiar
+				</Button>
+
+				<Button
+					className="mt-3 mx-2 btn-primary"
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<UploadFileIcon />}
-					onClick={handleSubmit}
+					onClick={handleLoadData}
 				>
 					Cargar datos
 				</Button>
 			</div>
-
 		</div>
 	);
 };

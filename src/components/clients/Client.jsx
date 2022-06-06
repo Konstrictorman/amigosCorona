@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useForm } from "../customHooks/useForm";
+
 import queryString from "query-string";
 import { getClientById } from "./selectors/getClientById";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-
+import {updateReferrer} from "../clients/actions/clientActions";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
@@ -13,7 +13,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
-import { Button, Grid, Tab } from "@mui/material";
+import { Button, Grid, Paper, Tab, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
@@ -29,6 +29,11 @@ import { ClientReferrerTab } from "./tabs/ClientReferrerTab";
 import Swal from "sweetalert2";
 import { loadClientById } from "./actions/clientActions";
 import { Spinner } from "../general/Spinner";
+import { ERROR_MSG } from "../../config/config";
+import { setError } from "../general/actions/uiActions";
+import { useDispatch } from "react-redux";
+
+
 
 
 const StyledTabs = withStyles({
@@ -43,6 +48,7 @@ export const Client = () => {
 	const { id = "" } = queryString.parse(location.search);
 	const componentMounted = useRef(true);
 	const [loading, setLoading] = useState(false);
+   const dispatch = useDispatch();
 	const [client, setClient] = useState({
 		id: 0,
 		codigoCliente: "",
@@ -56,7 +62,9 @@ export const Client = () => {
 		emailsCliente: [],
 	});
 
-   const { nombreCompleto, tipoDocumento, documento, referenciador } = client;   
+	const { nombreCompleto, tipoDocumento, documento, referenciador } = client;
+
+
 
 	useEffect(() => {
 		const cliente = async (id) => {
@@ -68,8 +76,9 @@ export const Client = () => {
 					setClient(data);
 				}
 			} catch (e) {
-				setLoading(false);
-				Swal.fire("Error", e.message, "error");
+				console.log(e);
+				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
+				dispatch(setError(e));
 			}
 			setLoading(false);
 		};
@@ -79,27 +88,31 @@ export const Client = () => {
 		return () => {
 			componentMounted.current = false;
 			setLoading(null);
-         
 		};
-	}, [id]);
+	}, [id, dispatch]);
 
-		//Desestructura del event, el objeto target en el argumento
-      const handleInputChange = ({ target }) => {
-         setClient({
-            ...client,
-            referenciador : {
-               ...referenciador,
-               [target.name]: target.value,
-            }
-         });
-      };
+	//Desestructura del event, el objeto target en el argumento
+	const handleRefInputChange = ({ target }) => {
+		setClient({
+			...client,
+			referenciador: {
+				...referenciador,
+				[target.name]: target.value,
+			},
+		});
+	};
 
-      const handleValueChange = (name, value) => {
-         setClient({
-            ...client,
-            [name]: value,
-         })
-      }        
+	const handleRefValueChange = ({target}) => {
+		setClient({
+			...client,
+			referenciador: {
+				...referenciador,
+				[target.name]: target.value,
+            "especialidad": "",
+			},
+		});
+
+	};
 
 	const [tabIndex, setTabIndex] = useState("0");
 	const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
@@ -115,11 +128,30 @@ export const Client = () => {
 	};
 
 	const handleSave = (e) => {
-		
 		console.log(client);
+      
+		setLoading(true);
+		
+      if (client?.referenciador?.id) {
+			updateReferrer(client.referenciador.id, client.referenciador)
+				.then((response) => {
+					setLoading(false);
+					Swal.fire(
+						"Cambio exitoso",
+						"El registro se modificó con éxito",
+						"success"
+					);
+				})
+				.catch((e) => {
+					setLoading(false);
+					Swal.fire("Error", e.message, "error");
+				});
+		} else {
+         Swal.fire("Warning", "Se requiere un id de la matrícula referenciador para realizar la actualización", "warning");   
+      }
 	};
 
-   if (loading) {
+	if (loading) {
 		return <Spinner />;
 	}
 
@@ -139,14 +171,14 @@ export const Client = () => {
 					width: "100%",
 				}}
 			>
+
+
 				<div className="align-self-center container__basic">
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
 							<div className="client__properties">
 								<AssignmentIndIcon color="primary" fontSize="large" />
-								<span className="client__name">
-									{nombreCompleto}
-								</span>
+								<span className="client__name">{nombreCompleto}</span>
 							</div>
 						</Grid>
 
@@ -229,8 +261,8 @@ export const Client = () => {
 							<ClientReferrerTab
 								formValues={referenciador}
 								index="0"
-								handleInputChange={handleInputChange}
-								handleValueChange={handleValueChange}
+								handleInputChange={handleRefInputChange}
+								handleValueChange={handleRefValueChange}
 							/>
 							<ClientPhonesTab client={client} index="1" />
 							<ClientAddressTab client={client} index="2" />
@@ -260,10 +292,11 @@ export const Client = () => {
 						variant="contained"
 						className="mt-3 mx-2"
 						startIcon={<CheckIcon />}
-						style={{ textTransform: "none" }}						
+						style={{ textTransform: "none" }}
 						onClick={handleSave}
 						enabled={saveBtnEnabled}
-					>Guardar
+					>
+						Guardar
 					</Button>
 				</div>
 			</div>

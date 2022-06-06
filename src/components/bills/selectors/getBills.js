@@ -1,5 +1,7 @@
-import { bills } from "../../../data/bills"
+import { getFacturas } from "../api/billsApi"
 
-export const getBills = () => {
-   return bills;
+export const getBills = async (size, page) => {
+   const facturas = await getFacturas(size, page);
+   
+   return facturas;
 }

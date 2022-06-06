@@ -2,7 +2,7 @@ import { types } from "../../../types/types";
 
 const initialState = {
 	loading: false,
-	msgError: null,
+	error: null,
 };
 
 export const uiReducer = (state = { initialState }, action) => {
@@ -10,13 +10,13 @@ export const uiReducer = (state = { initialState }, action) => {
 		case types.uiSetError:
 			return {
 				...state,
-				msgError: action.payload,
+				error: action.payload,
 			};
 
 		case types.uiRemoveError:
 			return {
 				...state,
-				msgError: null,
+				error: null,
 			};
 
 		case types.uiStartLoading:

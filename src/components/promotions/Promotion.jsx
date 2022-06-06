@@ -21,12 +21,13 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import esLocale from "date-fns/locale/es";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useForm } from "../customHooks/useForm";
+import { useForm } from "../customHooks/useCustomForm";
 import { DesktopDatePicker } from "@mui/lab";
 import { getSalesPointsForCombo } from "../salesPoint/selectors/getSalesPointsForCombo";
 import { Spinner } from "../general/Spinner";
 import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
 import { useSelector } from "react-redux";
+import { INPUT_TYPE } from "../../config/config";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -167,6 +168,7 @@ export const Promotion = () => {
 										value={name}
 										onChange={handleInputChange}
 										className="form-control"
+                              variant={INPUT_TYPE}
 									/>
 								</Item>
 								<FormHelperText className="helperText">
@@ -196,6 +198,7 @@ export const Promotion = () => {
 													required
 													className="form-control"
 													error={false}
+                                       variant={INPUT_TYPE}
 												/>
 											)}
 										/>
@@ -220,6 +223,7 @@ export const Promotion = () => {
 										value={idArticulo}
 										onChange={handleInputChange}
 										className="form-control"
+                              variant={INPUT_TYPE}
 									/>
 								</Item>
 								<FormHelperText className="helperText">
@@ -248,6 +252,7 @@ export const Promotion = () => {
 													required
 													className="form-control"
 													error={false}
+                                       variant={INPUT_TYPE}
 												/>
 											)}
 										/>
@@ -305,6 +310,7 @@ export const Promotion = () => {
 										value={pctPromo}
 										onChange={handleInputChange}
 										className="form-control"
+                              variant={INPUT_TYPE}
 										InputProps={{
 											startAdornment: (
 												<InputAdornment position="start">

@@ -14,6 +14,8 @@ import {
 import { Spinner } from "../components/general/Spinner";
 import {
 	finishLoading,
+	removeError,
+	setError,
 	startLoading,
 } from "../components/general/actions/uiActions";
 import Swal from "sweetalert2";
@@ -30,10 +32,11 @@ export const AppRouter = () => {
 			dispatch(loadPeriods());
 			dispatch(loadReferredStatus());
          dispatch(loadPrograms());
-			//dispatch(loadSalesPointList());
+			dispatch(removeError());
 		} catch (e) {
 			console.log(e);
 			Swal.fire("Error", e.message, "error");
+         dispatch(setError(e));
 		}
 		dispatch(finishLoading());
 	}, [dispatch]);

@@ -55,13 +55,13 @@ export const FieldsList = () => {
 	}, []);
 
 	const handleRowChange = (ids) => {
-		console.log("Ids:", ids);
+		//console.log("Ids:", ids);
 		setSelectedIds(ids);
 	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
-		console.log(field, row);
+		//console.log(field, row);
 		if (field === "campo") {
 			//dispatch()
 			navigate(`/field?id=${row.id}`);

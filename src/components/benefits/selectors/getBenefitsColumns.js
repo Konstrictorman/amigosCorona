@@ -27,17 +27,17 @@ export const getBenefitsColumns = () => {
          type: 'string'
       },  
       { 
-         field: "idProgramaReferenciacion", 
+         field: "programa", 
          headerName: "P. de ref", 
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
-         valueFormatter: ({value}) => getReferenceProgramName(value),
+         //valueFormatter: ({value}) => getReferenceProgramName(value),
       },        
       {
-         field: "estado",
+         field: "estadoDesc",
          headerName: "Estado",
          flex:1,
          headerClassName: 'headerCol',

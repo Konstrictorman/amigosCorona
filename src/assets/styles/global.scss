@@ -87,7 +87,13 @@ border {
 .headerCol {
    background-color:lightgrey;
    color: black;
-   font-weight: bold;
+   
+}
+
+.headerCol2 {
+   background-color:$pantone2955C;
+   color: white;
+   
 }
 
 .helperText {
@@ -111,6 +117,14 @@ border {
    margin-top: 16px !important;
    width: 80%;
    border: 1px solid black;
+}
+
+//Este se usa para mover a la izquierda los iconos de calendarios
+//en los componentes DatePicker, que con la variante=Standar se salen
+//de la caja.
+label+.css-1480iag-MuiInputBase-root-MuiInput-root {
+   margin-top: 16px;
+   padding-right: 10px !important;
 }
 
 .left-align {
