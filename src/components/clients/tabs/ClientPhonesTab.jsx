@@ -3,17 +3,26 @@ import { TabPanel } from "@mui/lab";
 import { DataGrid } from "@mui/x-data-grid";
 import { getClientPhoneColumns } from "../selectors/getClientPhoneColumns";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
+import { Button } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
+import { useNavigate } from "react-router";
 
-export const ClientPhonesTab = ({client, index}) => {
-   const phoneColumns = getClientPhoneColumns();
-   const rows = client?.telefonosclientes? client.telefonosclientes: [];
-   
+export const ClientPhonesTab = ({ client, index }) => {
+	const phoneColumns = getClientPhoneColumns();
+	const rows = client?.telefonosclientes ? client.telefonosclientes : [];
+	const navigate = useNavigate();
 
-   return (
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/clientList",
+	});
+
+	return (
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
 				<DataGrid
-               //getRowId={(r) => r.idTelefono}            
+					//getRowId={(r) => r.idTelefono}
 					className=""
 					rows={rows}
 					columns={phoneColumns}
@@ -26,7 +35,18 @@ export const ClientPhonesTab = ({client, index}) => {
 						NoRowsOverlay: NoRowsOverlay,
 					}}
 				/>
+				<div className="container__blank">
+					<Button
+						className="mt-3 mx-2 btn-warning"
+						variant="contained"
+						style={{ textTransform: "none" }}
+						startIcon={<ArrowBackIcon />}
+						onClick={handleClickOut}
+					>
+						Volver
+					</Button>
+				</div>
 			</TabPanel>
 		</div>
-	); 
+	);
 };

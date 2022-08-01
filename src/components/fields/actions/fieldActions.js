@@ -6,7 +6,7 @@ import {
 import { types } from "../../../types/types";
 import { delay } from "../../../helpers/delay";
 import { getFieldValuesByFieldId } from "../selectors/getFieldValuesByFieldId";
-import { ID_PERIODS, ID_PROGRAMS, ID_REFERRED_STATUS, ID_STATES, TIME_OUT } from "../../../config/config";
+import { ID_GENDERS, ID_LOAD_TYPES, ID_PERIODS, ID_PROCESS_TYPES, ID_PROGRAMS, ID_REDEMPTION_TYPES, ID_REFERRED_STATUS, ID_SPECIALTIES, ID_STATES, TIME_OUT } from "../../../config/config";
 import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
 
 
@@ -28,6 +28,18 @@ export const loadPrograms = () => {
 export const setPrograms = (programs) => ({
    type: types.fieldsSetPrograms,
    payload: programs,
+});
+
+export const loadGenders = () => {
+   return async(dispatch) => {
+      const genders = await getFieldValuesByFieldId(ID_GENDERS);
+      dispatch(setGenders(genders));
+   }
+}
+
+export const setGenders = (genders) => ({
+   type: types.fieldsSetGenders,
+   payload: genders
 });
 
 export const loadStates = () => {
@@ -66,9 +78,57 @@ export const setReferredStatus = (status) => ({
    payload: status
 });
 
+export const loadSpecialties = () => {
+   return async(dispatch) => {
+      const spec = await getFieldValuesByFieldId(ID_SPECIALTIES);
+      dispatch(setSpecialties(spec));
+   }
+}
+
+export const setSpecialties = (specs) => ({
+   type: types.fieldsSetSpecialties,
+   payload: specs
+});
+
+export const loadRedemptionTypes = () => {
+   return async(dispatch) => {
+      const rt = await getFieldValuesByFieldId(ID_REDEMPTION_TYPES);
+      dispatch(setRedemptionTypes(rt));
+   }
+}
+
+export const setRedemptionTypes = (rt) => ({
+   type: types.fieldsSetRedemptionTypes,
+   payload: rt
+});
+
+export const loadProcessTypes = ()=> {
+   return async(dispatch) => {
+      const pt = await getFieldValuesByFieldId(ID_PROCESS_TYPES);
+      dispatch(setProcessTypes(pt));
+   }   
+}
+
+export const setProcessTypes = (pt) => ({
+   type: types.fieldsSetProcessTypes,
+   payload: pt
+});
+
+export const loadLoadTypes = ()=> {
+   return async(dispatch) => {
+      const lt = await getFieldValuesByFieldId(ID_LOAD_TYPES);
+      dispatch(setLoadTypes(lt));
+   }   
+}
+
+export const setLoadTypes = (lt) => ({
+   type: types.fieldsSetLoadTypes,
+   payload: lt
+});
 
 
 export const saveField = async (field) => {
+   console.log("field:",field);
    const res = await saveCampo(field);
    await delay(TIME_OUT);
    return res;

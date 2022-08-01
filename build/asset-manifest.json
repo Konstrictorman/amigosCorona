@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.25d39c88.chunk.css",
+    "main.js": "/static/js/main.a7a065b3.chunk.js",
+    "main.js.map": "/static/js/main.a7a065b3.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.2a15d075.js",
+    "runtime-main.js.map": "/static/js/runtime-main.2a15d075.js.map",
+    "static/js/2.74dbce39.chunk.js": "/static/js/2.74dbce39.chunk.js",
+    "static/js/2.74dbce39.chunk.js.map": "/static/js/2.74dbce39.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.25d39c88.chunk.css.map": "/static/css/main.25d39c88.chunk.css.map",
+    "static/js/2.74dbce39.chunk.js.LICENSE.txt": "/static/js/2.74dbce39.chunk.js.LICENSE.txt",
+    "static/media/BENEFICIOS_Mesa de trabajo 1.e6b90f1b.svg": "/static/media/BENEFICIOS_Mesa de trabajo 1.e6b90f1b.svg",
+    "static/media/styles.scss": "/static/media/BrandonText-Regular.640ff234.woff2",
+    "static/media/CAMPOS_Mesa de trabajo 1.2c2f15d1.svg": "/static/media/CAMPOS_Mesa de trabajo 1.2c2f15d1.svg",
+    "static/media/CARGA DE DATOS_Mesa de trabajo 1.d4b182f8.svg": "/static/media/CARGA DE DATOS_Mesa de trabajo 1.d4b182f8.svg",
+    "static/media/CLIENTES_Mesa de trabajo 1.86028c98.svg": "/static/media/CLIENTES_Mesa de trabajo 1.86028c98.svg",
+    "static/media/Club_Maestros-01.29868e33.png": "/static/media/Club_Maestros-01.29868e33.png",
+    "static/media/FACTURAS_Mesa de trabajo 1.d956374a.svg": "/static/media/FACTURAS_Mesa de trabajo 1.d956374a.svg",
+    "static/media/G.PARAMETROS_Mesa de trabajo 1.b56c1283.svg": "/static/media/G.PARAMETROS_Mesa de trabajo 1.b56c1283.svg",
+    "static/media/MOVIMIENTOS_Mesa de trabajo 1.aac60c61.svg": "/static/media/MOVIMIENTOS_Mesa de trabajo 1.aac60c61.svg",
+    "static/media/PDV_Mesa de trabajo 1.d96fd9a0.svg": "/static/media/PDV_Mesa de trabajo 1.d96fd9a0.svg",
+    "static/media/PROMO_Mesa de trabajo 1.32f9c52c.svg": "/static/media/PROMO_Mesa de trabajo 1.32f9c52c.svg",
+    "static/media/Profesionales-01.5c4548c5.png": "/static/media/Profesionales-01.5c4548c5.png",
+    "static/media/REDENCIONES_Mesa de trabajo 1.b2b611b6.svg": "/static/media/REDENCIONES_Mesa de trabajo 1.b2b611b6.svg",
+    "static/media/REFERENCIACION_Mesa de trabajo 1.c87e0413.svg": "/static/media/REFERENCIACION_Mesa de trabajo 1.c87e0413.svg",
+    "static/media/REGISTRAR_Mesa de trabajo 1.7d221c10.svg": "/static/media/REGISTRAR_Mesa de trabajo 1.7d221c10.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2a15d075.js",
+    "static/js/2.74dbce39.chunk.js",
+    "static/css/main.25d39c88.chunk.css",
+    "static/js/main.a7a065b3.chunk.js"
+  ]
+}

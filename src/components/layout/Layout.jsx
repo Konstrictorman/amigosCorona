@@ -4,7 +4,7 @@ import MuiAlert from "@mui/material/Alert";
 import { Footer } from "./Footer";
 import { TopBar } from "./TopBar";
 import { useDispatch, useSelector } from "react-redux";
-import { removeError } from "../general/actions/uiActions";
+import { removeError,removeMessage } from "../general/actions/uiActions";
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -13,7 +13,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export const Layout = ({ children }) => {
 	const [open, setOpen] = useState(false);
-   const { error } = useSelector((state) => state.ui);
+   const [openMsg, setOpenMsg] = useState(false);
+   const { error,message } = useSelector((state) => state.ui);
    const dispatch = useDispatch();
 
 	const handleClose = (event, reason) => {
@@ -22,6 +23,7 @@ export const Layout = ({ children }) => {
 		}
 		setOpen(false);
       dispatch(removeError());
+      dispatch(removeMessage());
 	};
 
    useEffect(() => {
@@ -30,7 +32,15 @@ export const Layout = ({ children }) => {
      return () => {
        setOpen(false);
      }
-   }, [error])
+   }, [error]);
+
+   useEffect(() => {
+      setOpenMsg(message?true:false);
+   
+     return () => {
+      setOpenMsg(false);
+     }
+   }, [message]);
    
 
 	return (
@@ -65,6 +75,22 @@ export const Layout = ({ children }) => {
 					{error?.message}
 				</Alert>
 			</Snackbar>
+
+			<Snackbar
+				open={openMsg}
+				autoHideDuration={6000}            
+				onClose={handleClose}
+				message="Note archived"
+			>
+				<Alert
+					severity={message?.severity?message.severity:"info"}
+					onClose={handleClose}
+					sx={{ width: "100%" }}
+				>
+					{message?.msg}
+				</Alert>
+			</Snackbar>
+
 			<div className="row">
 				<Footer />
 			</div>

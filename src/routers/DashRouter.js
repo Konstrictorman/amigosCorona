@@ -16,13 +16,14 @@ import { Benefit } from '../components/benefits/Benefit';
 import { BenefitsList } from '../components/benefits/BenefitsList';
 import { Bill } from '../components/bills/Bill';
 import { MovementsList } from '../components/movements/MovementsList';
-import { Parameters } from '../components/parameters/Parameters';
 import { RedemptionsList } from '../components/redemptions/RedemptionsList';
 import { Redemption } from '../components/redemptions/Redemption';
 import { FieldsList } from '../components/fields/FieldsList';
 import { Field } from '../components/fields/Field';
 import { LoadData } from '../components/loadData/LoadData';
-import { RecordMovement } from '../components/movements/RecordMovement';
+import { RecordMovement, Reports } from '../components/reports/Reports';
+import { ParametersGroupList } from '../components/parameters/ParametersGroupList';
+import { ParameterGroup } from '../components/parameters/ParameterGroup';
 
 
 export const DashRouter = () => {
@@ -42,14 +43,15 @@ export const DashRouter = () => {
                   <Route exact path="/movementList" element={<MovementsList/>}/>
                   <Route exact path="/fieldsList" element={<FieldsList/>}/>
                   <Route exact path="/field" element={<Field/>}/>
-                  <Route exact path="/parameters" element={<Parameters/>}/>
+                  <Route exact path="/parameterGroup" element={<ParameterGroup/>}/>
+                  <Route exact path="/parametersGroupList" element={<ParametersGroupList/>}/>
                   <Route exact path="/promotionsList" element={<PromotionsList/>}/>
                   <Route exact path="/promotion" element={<Promotion/>}/>
-                  <Route exact path="/recordMovement" element={<RecordMovement/>}/>
                   <Route exact path="/redemptionsList" element={<RedemptionsList/>}/>
                   <Route exact path="/redemption" element={<Redemption/>}/>
                   <Route exact path="/referenceProgram" element={<ReferenceProgram/>}/>
                   <Route exact path="/referenceProgramList" element={<ReferenceProgramList/>}/>
+                  <Route exact path="/reports" element={<Reports/>}/>                  
                   <Route exact path="/salesPoint" element={<SalesPoint/>}/>
                   <Route exact path="/salesPointList" element={<SalesPointList/>}/>
                   <Route exact path="/" element={<Home/>}/>

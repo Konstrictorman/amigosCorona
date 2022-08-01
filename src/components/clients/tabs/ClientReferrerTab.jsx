@@ -1,273 +1,461 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { DesktopDatePicker, LocalizationProvider, TabPanel } from "@mui/lab";
-import { FormHelperText, Grid, Paper, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import esLocale from "date-fns/locale/es";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
+import React, { useEffect, useRef, useState } from "react";
+import { TabPanel } from "@mui/lab";
+import { Button, FormHelperText, Grid, TextField } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
+import CheckIcon from "@mui/icons-material/Check";
 import { FieldsComboBox } from "../../fields/FieldsComboBox";
 import { Spinner } from "../../general/Spinner";
 import { ERROR_MSG, INPUT_TYPE } from "../../../config/config";
 import Swal from "sweetalert2";
 import { getProgramsWithSpecialties } from "../../fields/selectors/getProgramsWithSpecialties";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import moment from "moment";
+import { createReferrer, updateReferrer } from "../actions/clientActions";
+import { Item } from "../../general/Item";
+import { CustomDatePicker } from "../../general/CustomDatePicker";
 
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+const validationSchema = yup.object({
+	fechaMat: yup.date().required("La fecha de matrícula es requerida"),
+	idProgramaReferenciacion: yup
+		.string()
+		.required("Se requiere un programa de referenciación"),
+	especialidad: yup
+		.string()
+		.nullable()
+		.required("La especialidad es requerida"),
+	numHijos: yup
+		.number()
+		.min(0, "La cantidad de hijos debe ser un número positivo")
+		.required("El número de hijos es requerido"),
+	idLifeMiles: yup
+		.string()
+		.min(10, "El id de LifeMiles debe tener al menos 10 caracteres")
+		.required("El id de LifeMiles es requerido"),
+	estadoRef: yup.string().required("El estado es requerido"),
+	genero: yup.string().required("El género es requerido"),
+   celNequi: yup.number()
+   .test('len',"El número de celular debe tener 10 dígitos", val=> val.toString().length===10)
+   .required("El celular para Nequi debe ser obligatorio"),
+	referencia1: yup
+		.string()
+		.min(8, "La referencia debe tener al menos 10 caracteres")
+		.required("La referencia es requerida"),
+});
 
-export const ClientReferrerTab = ({ formValues, index, handleInputChange, handleValueChange }) => {
+export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
+	const [loading, setLoading] = useState(false);
+	const [programs, setPrograms] = useState([]);
+	const [specialties, setSpecialties] = useState([]);
+	const componentMounted = useRef(true);
 
-   const [loading, setLoading] = useState(false);
-   const [programs, setPrograms] = useState([]);
-   const [specialties, setSpecialties] = useState([]);
-   const componentMounted = useRef(true);
-   
+	const initialValues = {
+		id: 0,
+		fechaMat: moment().format(),
+		idProgramaReferenciacion: "",
+		especialidad: "",
+		numHijos: "",
+		idLifeMiles: "",
+		estadoRef: "",
+		referencia1: "",
+		genero: "",
+      celNequi:0,
+	};
 
-   const {
-		fechaMat,
-		idProgramaReferenciacion,
-		especialidad,
-		numHijos,
-		idLifeMiles,
-		estadoRef,
-		referencia1,
-	} = formValues?formValues:{};
+	const [formState, setFormState] = useState(initialValues);
 
-   const idProgramaReferenciacionRef = useRef(idProgramaReferenciacion);
+	useEffect(() => {
+		const setForm = () => {
+			if (formValues) {
+				//console.log(JSON.stringify(formValues,null,2));
+				setFormState(formValues);
+			}
+		};
+		setForm();
+	}, [formValues]);
 
-   useEffect(() => {
-      const getPrograms = async () => {
-         setLoading(true);
-         try {
-            const progs = await getProgramsWithSpecialties();
+	const formik = useFormik({
+		initialValues: formState,
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			//console.log(JSON.stringify(values, null, 2));
+			if (formState.id) {
+				console.log("updating...");
+				handleUpdateReferrer(formState.id, values);
+			} else {
+				console.log("creating...");
+				handleCreateReferrer(values);
+			}
+		},
+		enableReinitialize: true,
+	});
 
-            if (componentMounted.current) {
-               setPrograms(progs);
-               //console.log("ref:",idProgramaReferenciacionRef);
-               const p = progs?.find((p) => p.twinId === idProgramaReferenciacionRef.current);
-               setSpecialties(p?.specs);
+	const idProgramaReferenciacionRef = useRef(
+		formValues?.idProgramaReferenciacion
+	);
 
-            }
+	useEffect(() => {
+		const getPrograms = async () => {
+			setLoading(true);
+			try {
+				const progs = await getProgramsWithSpecialties();
+				if (componentMounted.current) {
+					setPrograms(progs);
+					const p = progs?.find(
+						(p) => p.twinId === idProgramaReferenciacionRef.current
+					);
+					setSpecialties(p?.specs);
+				}
 			} catch (e) {
 				console.log(e);
-				Swal.fire(
-					"Error",
-					e.message + ` - ${ERROR_MSG}`,
-					"error"
-				);
-			}         
-         setLoading(false);
-         
-      };
-      
-      getPrograms();
+				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
+			}
+			setLoading(false);
+		};
+
+		getPrograms();
 		return () => {
 			componentMounted.current = false;
-         idProgramaReferenciacionRef.current = null;
+			idProgramaReferenciacionRef.current = null;
 			setLoading(null);
-		};      
-   }, []);
+		};
+	}, []);
 
-   if (loading) {
+	const handleCreateReferrer = (values) => {
+		setLoading(true);
+		createReferrer(values)
+			.then((response) => {
+				setLoading(false);
+				Swal.fire(
+					"Registro exitoso",
+					"El registro se creó con éxito",
+					"success"
+				);
+			})
+			.catch((e) => {
+				setLoading(false);
+				Swal.fire("Error", e.message, "error");
+			});
+	};
+
+	const handleUpdateReferrer = (id, values) => {
+		setLoading(true);
+		updateReferrer(id, values)
+			.then((response) => {
+				setLoading(false);
+				Swal.fire(
+					"Cambio exitoso",
+					"El registro se modificó con éxito",
+					"success"
+				);
+			})
+			.catch((e) => {
+				setLoading(false);
+				Swal.fire("Error", e.message, "error");
+			});
+	};
+
+	const handleChange = (evt) => {
+		//handleValueChange(evt);
+		const newId = evt.target.value;
+		formik.setFieldValue("idProgramaReferenciacion", newId);
+		formik.setFieldValue("especialidad", null);
+		const p = programs?.find(
+			(p) => p.twinId?.toString() === newId?.toString()
+		);
+		setSpecialties(p?.specs);
+	};
+
+	const handleDateChange = (name, val) => {
+		formik.setFieldValue(name, val);
+	};
+
+	if (loading) {
 		return <Spinner />;
 	}
-
-   const handleChange = (evt) => {
-      handleValueChange(evt);
-      const newId = evt.target.value;
-
-      const p = programs?.find((p) => p.twinId?.toString() === newId?.toString());
-
-
-      setSpecialties(p?.specs);
-   }
-
 	return (
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
-				<form className="form">
+				<form
+					id="referrer-form"
+					className="form"
+					onSubmit={formik.handleSubmit}
+				>
 					<Grid container spacing={2}>
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha de matrícula"
-										id="fechaMat"
-										value={fechaMat}
-										
-										onChange={(newValue) => {
-											handleValueChange("fechaMat", newValue);
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												required
-												className="form-control"
-												error={false}
-                                    variant={INPUT_TYPE}
-											/>
-										)}
-										disabled={false}
-									/>
-								</LocalizationProvider>
+								<CustomDatePicker
+									label="Fecha de matrícula *"
+									id="fechaMat"
+									value={formik.values.fechaMat}
+									onChange={(val) => {
+										handleDateChange("fechaMat", val);
+									}}
+									maxDate={new Date()}
+									error={
+										formik.touched.fechaMat &&
+										Boolean(formik.errors.fechaMat)
+									}
+								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.fechaMat && formik.errors.fechaMat}
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={4}>
-							<Item>
-                     <TextField
+						<Grid item xs={3}>
+							<Item>                      
+								<TextField
 									select
-									label="Programa referenciación"
-									error={false}
+									label="Programa referenciación *"
 									id="idProgramaReferenciacion"
 									type="text"
 									name="idProgramaReferenciacion"
 									size="small"
-									value={idProgramaReferenciacion}
+									value={formik.values.idProgramaReferenciacion}
 									onChange={handleChange}
+									error={
+										formik.touched.idProgramaReferenciacion &&
+										Boolean(formik.errors.idProgramaReferenciacion)
+									}
 									className="form-control"
-									disabled={false}
-									required
 									SelectProps={{
 										native: true,
 									}}
-                           variant={INPUT_TYPE}
+									variant={INPUT_TYPE}
 								>
-									<option value="">...</option>
+									<option value=""></option>
 									{programs?.map((program) => (
 										<option key={program.id} value={program.twinId}>
-											{program.descripcion}
+											{program.valor}
 										</option>
 									))}
-								</TextField>                       
+								</TextField>
+ 
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.idProgramaReferenciacion &&
+									formik.errors.idProgramaReferenciacion}
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
-                     <TextField
+
+								<TextField
 									select
-									label="Especialidad"
-									error={false}
+									label="Especialidad *"
 									id="especialidad"
 									type="text"
 									name="especialidad"
 									size="small"
-									value={especialidad}
-									onChange={handleInputChange}
+									value={formik.values.especialidad}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.especialidad &&
+										Boolean(formik.errors.especialidad)
+									}
 									className="form-control"
 									disabled={false}
-									required
 									SelectProps={{
 										native: true,
 									}}
-                           variant={INPUT_TYPE}
+									variant={INPUT_TYPE}
 								>
-									<option value="">...</option>
+									<option value=""></option>
 									{specialties?.map((spec) => (
 										<option key={spec.id} value={spec.valor}>
 											{spec.descripcion}
 										</option>
 									))}
-								</TextField>  
-                      
+								</TextField>
+                           
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.especialidad &&
+									formik.errors.especialidad}
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
 								<TextField
-									label="# de hijos"
-									error={false}
+									label="Cel Nequi *"
+									id="celNequi"
+									type="number"
+									name="celNequi"
+									autoComplete="off"
+									size="small"
+									value={formik.values.celNequi}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.celNequi &&
+										Boolean(formik.errors.celNequi)
+									}
+									className="form-control"
+									inputProps={{
+										inputMode: "numeric",
+										pattern: "[0-9]*",
+									}}
+									variant={INPUT_TYPE}
+								/>
+							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.celNequi && formik.errors.celNequi}
+							</FormHelperText>
+						</Grid>                  
+
+						<Grid item xs={2}>
+							<Item>
+								<TextField
+									label="# de hijos *"
 									id="numHijos"
 									type="number"
 									name="numHijos"
 									autoComplete="off"
 									size="small"
-									required
-									value={numHijos}
-									onChange={handleInputChange}
+									value={formik.values.numHijos}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.numHijos &&
+										Boolean(formik.errors.numHijos)
+									}
 									className="form-control"
-									disabled={false}
-                           variant={INPUT_TYPE}
+									inputProps={{
+										inputMode: "numeric",
+										pattern: "[0-9]*",
+									}}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.numHijos && formik.errors.numHijos}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
 							<Item>
 								<TextField
-									label="Id Life Miles"
-									error={false}
+									label="Id Life Miles *"
 									id="idLifeMiles"
 									type="text"
 									name="idLifeMiles"
 									autoComplete="off"
 									size="small"
-									required
-									value={idLifeMiles}
-									onChange={handleInputChange}
+									value={formik.values.idLifeMiles}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.idLifeMiles &&
+										Boolean(formik.errors.idLifeMiles)
+									}
 									className="form-control"
-									disabled={false}
-                           variant={INPUT_TYPE}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.idLifeMiles &&
+									formik.errors.idLifeMiles}{" "}
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
-
-                     <FieldsComboBox
-										id="estadoRef"
-										label="Estado"
-										value={estadoRef}
-										type="estadosReferido"
-										handleChange={handleInputChange}
-                              valueType="valor"
-									/>       
-              
+								<FieldsComboBox
+									id="estadoRef"
+									label="Estado *"
+									value={formik.values.estadoRef}
+									type="estadosReferido"
+									handleChange={formik.handleChange}
+									valueType="valor"
+                           labelType="descripcion"
+									error={
+										formik.touched.estadoRef &&
+										Boolean(formik.errors.estadoRef)
+									}
+								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.estadoRef && formik.errors.estadoRef}
+							</FormHelperText>
+						</Grid>
+
+						<Grid item xs={3}>
+							<Item>
+								<FieldsComboBox
+									id="genero"
+									label="Genero *"
+									value={formik.values.genero}
+									type="genders"
+									handleChange={(e) => {
+										console.log(e.target.name, e.target.value);
+										formik.handleChange(e);
+									}}
+									valueType="valor"
+                           labelType="descripcion"
+									error={
+										formik.touched.genero &&
+										Boolean(formik.errors.genero)
+									}
+								/>
+							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.genero && formik.errors.genero}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={12}>
 							<Item>
 								<TextField
-									label="Referencias"
-									error={false}
+									label="Referencias *"
 									id="referencia1"
 									type="text"
 									name="referencia1"
 									autoComplete="off"
 									size="small"
-									required
-									value={referencia1}
-									onChange={handleInputChange}
+									value={formik.values.referencia1}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.referencia1 &&
+										Boolean(formik.errors.referencia1)
+									}
 									className="form-control"
-									disabled={false}
 									minRows={5}
 									maxRows={5}
 									multiline={true}
-                           variant={INPUT_TYPE}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
-							<FormHelperText className="helperText"> </FormHelperText>
+							<FormHelperText className="helperText">
+								{formik.touched.referencia1 &&
+									formik.errors.referencia1}
+							</FormHelperText>
 						</Grid>
 					</Grid>
 				</form>
+				<div className="container__blank">
+					<Button
+						color="error"
+						variant="contained"
+						className="mt-3 mx-2"
+						startIcon={<ClearIcon />}
+						style={{ textTransform: "none" }}
+						onClick={handleClickOut}
+					>
+						Cancelar
+					</Button>
+					<Button
+						form="referrer-form"
+						color="primary"
+						variant="contained"
+						className="mt-3 mx-2"
+						startIcon={<CheckIcon />}
+						style={{ textTransform: "none" }}
+						type="submit"
+						//enabled={saveBtnEnabled}
+					>
+						Guardar
+					</Button>
+				</div>
 			</TabPanel>
 		</div>
 	);

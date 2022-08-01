@@ -11,6 +11,22 @@ export const dateFormatter = (date) => {
 };
 
 export const dateFormatter2 = (date) => {
-   const m = moment(date).format('YYYY-MM-DD');   
+   const m = moment(date).format('YYYY-MM-DD');     
+   return m;
+};
+
+export const dateFormatter3 = (date) => {
+   //const m = moment(date).format('YYYY-MM-DD HH:mm:ss.SSSSSSS');     
+   const m = moment(date).format(`yyyy-MM-DDTHH:mm:ss`);     
+
+   
+   return m;
+};
+
+export const dateFormatter4 = (date) => {
+   //const m = moment(date).format('YYYY-MM-DD HH:mm:ss.SSSSSSS');     
+   const m = moment(date).format(`yyyy-MM-DDTHH:mm:ss.SSSZ`);     
+
+   
    return m;
 };

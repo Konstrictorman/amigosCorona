@@ -3,10 +3,10 @@ export const getReferenceProgramSalesPointColumns = () => {
       {
          field: "name",
          headerName: "Punto de venta",
-         flex:2,
+         flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center',
-         align: 'left'
+         align: 'center'
       },
       {
          field: "description",
@@ -18,8 +18,8 @@ export const getReferenceProgramSalesPointColumns = () => {
       },
       {
          field: "flagActivo",
-         headerName: "Activo",
-         flex:1,
+         headerName: "Habilitado para programa",
+         flex:2,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',

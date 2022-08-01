@@ -24,4 +24,15 @@ export const finishLoading = () => {
    }
 }
 
+export const setMessage = (msg) => ({
+   type: types.uiSetMessage,
+   payload: msg
+});
+
+export const removeMessage = () => {
+   return {
+      type: types.uiRemoveMessage,
+   }
+}
+
 

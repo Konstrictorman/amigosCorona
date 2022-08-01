@@ -16,6 +16,16 @@ const setPadres = async(hijos) => {
    return hijos;
 }
 
+const initialValues = {
+   id: 0,
+   campo: "",
+   descripcion: "",
+   //items: [],
+   permitePadre: false,
+   idCampoPadre: 0,
+};
+
+
 export const getFieldByIdWithItems = async (id) => {
 	if (id) {
 		const field = await getFieldById(id);
@@ -30,6 +40,6 @@ export const getFieldByIdWithItems = async (id) => {
 		};
 		return campo;
 	} else {
-		return null;
+		return initialValues;
 	}
 };

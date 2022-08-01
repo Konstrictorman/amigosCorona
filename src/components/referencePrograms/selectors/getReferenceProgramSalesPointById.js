@@ -1,24 +1,44 @@
 import { getSalesPoints } from "../../salesPoint/selectors/getSalesPoints";
-import { getReferenceProgramById } from "./getReferenceProgramById";
+import { getPRSalesPointsById } from "../api/referenceProgramsApi";
 
-const salesPoints = getSalesPoints();
 
-export const getReferenceProgramSalesPointById = (id) => {
-	let result = [];
-	if (id) {
-		const rp = getReferenceProgramById(id);
+export const getReferenceProgramSalesPointById = async (id) => {
 
-		result = salesPoints.map((sp) => {
-			const pvs = rp.programaPuntoVentas?.filter(
-				(ppv) => ppv.idPuntoVenta === sp.id
-			);
-			return {
-            ...sp,
-				flagActivo: pvs?.length > 0 ? true : false,
-			};
-		});
+   let pVentas = [];
+   const salesPoints = await getSalesPoints();
 
-      result = result.sort((a, b) => a.name.localeCompare(b.name));
-	}
-	return result;
+   if (id) {
+      const refProgramSps = await getPRSalesPointsById(id);
+      const array = refProgramSps?.data._embedded.programaPuntoVentas;
+      array.forEach((f) => {
+         delete f._links;
+      });
+   
+      pVentas = salesPoints.map((sp) => {
+         const result = array.find((rp)=> rp.idPuntoVenta === sp.id);
+         //console.log("result: ",result);
+         return {
+            id:result?result.id:0,
+            idProgramaReferenciacion:id,
+            idPuntoVenta: sp.id,
+            name: sp.puntoVenta,
+            description: sp.descripcion,
+            flagActivo: result?result.flagActivo:false,
+         }
+      })   
+   } else {
+      pVentas = salesPoints.map((sp)=> {
+         return {
+            id:0,
+            idProgramaReferenciacion:0,
+            idPuntoVenta: sp.id,
+            name: sp.puntoVenta,
+            description: sp.descripcion,
+            flagActivo: true,
+         }         
+      });
+   }
+   
+   //console.log("pVentas:",pVentas);
+	return pVentas;
 };

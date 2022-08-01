@@ -1,19 +1,13 @@
 import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
 import {
 	Button,
 	Checkbox,
 	FormControlLabel,
 	FormHelperText,
 	Grid,
-	Paper,
 	TextField,
 } from "@mui/material";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useCustomForm } from "../customHooks/useCustomForm";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import esLocale from "date-fns/locale/es";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,78 +15,60 @@ import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { INPUT_TYPE } from "../../config/config";
 import { PagedMovementDataTable } from "./PagedMovementDataTable";
 import { MovementsResume } from "./MovementsResume";
-import moment from "moment";
-import { dateFormatter2 } from "../../helpers/dateFormatter";
+import { Item } from "../general/Item";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { CustomDatePicker } from "../general/CustomDatePicker";
+import { Spinner } from "../general/Spinner";
 
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+const validationSchema = yup.object({
+	fechaInicial: yup.date().nullable().required("Se requiere la fecha inicial"),
+	fechaFinal: yup
+		.date()
+		.nullable()
+		.required("Se requiere la fecha final")
+		.min(
+			yup.ref("fechaInicial"),
+			"La fecha final debe ser mayor a la fecha inicial"
+		),
+	codeCliente: yup.string(),
+	llaveMaestraFlag: yup.boolean(),
+});
 
 export const MovementsList = () => {
 	const navigate = useNavigate();
 
 	const [params, setParams] = useState({});
 	const [show, setShow] = useState(false);
-	const [errors, setErrors] = useState({});
+   const [loading, setLoading] = useState(false);
 
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
-	] = useCustomForm({
+	const initialValues = {
 		codeCliente: "",
 		fechaInicial: null,
 		fechaFinal: null,
 		llaveMaestraFlag: false,
-	});
+	};
 
-	const { codeCliente, fechaInicial, fechaFinal, llaveMaestraFlag } =
-		formValues;
+
+	const formik = useFormik({
+		initialValues: initialValues,
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			handleSearch();
+		},
+
+		enableReinitialize: true,
+	});
 
 	const handleClick = (params) => {
 		console.log("click");
-		/*
-		const { field, row } = params;
-		if (field === "numeroFactura") {
-			navigate(`/bill?id=${row.id}`);
-		}
-      */
 	};
 
-
-
-	const validateForm = (values) => {
-		const errors = {};
-
-		if (!fechaInicial) {
-			errors.fechaInicial = "La fecha inicial es requerida";
-		}
-		if (!fechaFinal) {
-			errors.fechaFinal = "La fecha final es requerida";
-		}
-		const fInit = moment(fechaInicial);
-		const fFinal = moment(fechaFinal);
-
-		if (!fInit.isBefore(fFinal)) {
-			errors.fechaFinal =
-				"La fecha final debe ser posterior a la fecha inicial";
-		}
-
-		const x = Object.keys(errors).length;
-		setShow(x === 0);
-		return errors;
-	};
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		Object.entries(formValues).forEach((fv) => {
+	const handleSearch = () => {
+      setLoading(true);
+      setShow(false);
+      //console.log(JSON.stringify(formik.values, null, 2));
+		Object.entries(formik.values).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {
 					return {
@@ -102,15 +78,18 @@ export const MovementsList = () => {
 				});
 			}
 		});
-		//console.log("params:", params);
-
-		setErrors(validateForm(formValues));
+      setLoading(false);
+		setShow(true);      
 	};
 
-	const handleClean = () => {
-		reset();
-		setErrors({});
+	const handleReset = () => {
+		formik.resetForm();
+      setParams({});
 		setShow(false);
+	};
+
+	const handleCustomChange = (name, val) => {
+		formik.setFieldValue(name, val);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
@@ -131,96 +110,73 @@ export const MovementsList = () => {
 					width: "100%",
 				}}
 			>
-				<form className="container__form" onSubmit={handleSubmit}>
+				<form className="container__form" onSubmit={formik.handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
 									label="Cliente"
-									error={errors.cliente}
 									id="codeCliente"
 									type="text"
 									name="codeCliente"
 									autoComplete="off"
 									size="small"
-									value={codeCliente}
-									onChange={handleInputChange}
+									value={formik.values.codeCliente}
+									onChange={formik.handleChange}
 									className="form-control"
-									disabled={false}
+									error={
+										formik.touched.codeCliente &&
+										Boolean(formik.errors.codeCliente)
+									}
 									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{" "}
-								{errors.cliente}
+								{formik.touched.codeCliente &&
+									formik.errors.codeCliente}{" "}
 							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
 							<Item className="">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha inicial"
-										id="fechaInicial"
-										value={fechaInicial}
-										maxDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaInicial", dateFormatter2(newValue));
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												className="form-control"
-												error={errors.fechaInicial}
-												variant={INPUT_TYPE}
-												required={true}
-											/>
-										)}
-										disabled={false}
-									/>
-								</LocalizationProvider>
+								<CustomDatePicker
+									label="Fecha inicial *"
+									id="fechaInicial"
+									value={formik.values.fechaInicial}
+									maxDate={new Date()}
+									onChange={(val) => {
+										handleCustomChange("fechaInicial", val);
+									}}
+									error={
+										formik.touched.fechaInicial &&
+										Boolean(formik.errors.fechaInicial)
+									}
+								/>
 							</Item>
 							<FormHelperText className="helperText">
-								
-								{errors.fechaInicial}
+                     {formik.touched.fechaInicial && formik.errors.fechaInicial}
 							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
 							<Item className="">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha final"
+                     <CustomDatePicker
+										label="Fecha final *"
 										id="fechaFinal"
-										value={fechaFinal}
-										maxDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaFinal", dateFormatter2(newValue));
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												className="form-control"
-												error={false}
-												variant={INPUT_TYPE}
-												required={true}
-											/>
-										)}
-										disabled={false}
-									/>
-								</LocalizationProvider>
+									value={formik.values.fechaFinal}
+									maxDate={new Date()}
+									onChange={(val) => {
+										handleCustomChange("fechaFinal", val);
+									}}
+									error={
+										formik.touched.fechaFinal &&
+										Boolean(formik.errors.fechaFinal)
+									}
+								/>                        
+
 							</Item>
 							<FormHelperText className="helperText">
-								{" "}
-								{errors.fechaFinal}{" "}
+                     {formik.touched.fechaFinal && formik.errors.fechaFinal}
 							</FormHelperText>
 						</Grid>
 
@@ -231,8 +187,10 @@ export const MovementsList = () => {
 										<Checkbox
 											id="llaveMaestraFlag"
 											name="llaveMaestraFlag"
-											checked={llaveMaestraFlag}
-											onChange={handleCheckChange}
+											checked={formik.values.llaveMaestraFlag}
+                                 onChange={({target}) => {
+                                    formik.setFieldValue("llaveMaestraFlag", target.checked);
+                                 }}
 										/>
 									}
 									label="Llave maestra"
@@ -256,7 +214,7 @@ export const MovementsList = () => {
 									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
-									onClick={handleClean}
+									onClick={handleReset}
 								>
 									Limpiar
 								</Button>
@@ -275,17 +233,20 @@ export const MovementsList = () => {
 				</form>
 			</div>
 
+         {(loading &&
+               (<Spinner/>)
+         )}         
+
 			<PagedMovementDataTable
 				handleClick={handleClick}
 				params={params}
 				show={show}
 			/>
 
-
-			{show && fechaInicial && fechaFinal &&(
+			{show &&  (
 				<MovementsResume
-					fechaDesde={fechaInicial}
-					fechaHasta={fechaFinal}
+					fechaDesde={formik.values.fechaInicial}
+					fechaHasta={formik.values.fechaFinal}
 				/>
 			)}
 		</div>

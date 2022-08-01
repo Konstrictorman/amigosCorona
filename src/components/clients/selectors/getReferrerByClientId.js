@@ -9,7 +9,7 @@ export const getReferrerByClientId = async (id) => {
       referrer.forEach((p) => {
          delete p._links;
       });
-      return referrer;      
+      return referrer[0];      
    } else {
       return [];
    }

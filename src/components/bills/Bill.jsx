@@ -1,12 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { styled } from "@mui/material/styles";
+import React, { useEffect,  useRef, useState } from "react";
 import {
 	Button,
 	FormControlLabel,
-	FormHelperText,
 	Grid,
 	InputAdornment,
-	Paper,
 	Switch,
 	TextField,
 	Typography,
@@ -21,7 +18,6 @@ import esLocale from "date-fns/locale/es";
 import { getClientById } from "../clients/selectors/getClientById";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
-import { DataGrid } from "@mui/x-data-grid";
 import { getBillDetailColumns } from "./selectors/getBillDetailColumns";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -33,14 +29,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../general/actions/uiActions";
 import { delay } from "../../helpers/delay";
 import { getArticlesByBillId } from "./selectors/getArticlesByBillId";
-
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+import { Item } from "../general/Item";
+import { DataGrid } from "@mui/x-data-grid";
 
 export const Bill = () => {
 	const navigate = useNavigate();

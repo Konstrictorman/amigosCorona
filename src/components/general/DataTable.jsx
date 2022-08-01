@@ -1,47 +1,45 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DataGrid } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import { NoRowsOverlay } from "./NoRowsOverlay";
 
 export const DataTable = (props) => {
-	const { columns, rows, pageSize, onSelectionModelChange, onCellClick, checkboxSelection, disableSelectionOnClick, components, loading, editMode, editRowsModel, onEditRowsModelChange, className } =	props;
-
+	const { className } = props;
+	/*
    let css = "";
    if (className) {
       css = className;
    }else {
       css = "container__dataTable"
    }
-
+*/
 	return (
-         
+		<Box
+			sx={{
+            width:'100%',
+				"& .MuiDataGrid-root .MuiDataGrid-columnHeaderTitle": {
+					fontWeight: "900",
+				},
+
+			}}
+		>
 			<DataGrid
-            className={css}
+				{...props}
+				className={className}
             density="compact"
-            loading = {loading}
-				rows={rows}
-				columns={columns}
-				pageSize={pageSize}
-				rowsPerPageOptions={[5]}
-            onCellClick={(params) => onCellClick(params)}
-            onSelectionModelChange={(ids) => onSelectionModelChange(ids)}
             autoHeight={true}
             autoPageSize={true}
-            disableExtendRowFullWidth={true}
-            checkboxSelection={checkboxSelection}
-            components = {components}
-            
-            disableSelectionOnClick = {disableSelectionOnClick}
-            editMode={editMode}
-            editRowsModel={editRowsModel}
-            onEditRowsModelChange={onEditRowsModelChange}            
+            components={{
+               NoRowsOverlay: NoRowsOverlay,
+            }}               
 			/>
-
+		</Box>
 	);
 };
 
 DataTable.propTypes = {
 	columns: PropTypes.array.isRequired,
 	rows: PropTypes.array.isRequired,
-   pageSize: PropTypes.number.isRequired,
-
+	pageSize: PropTypes.number.isRequired,
 };

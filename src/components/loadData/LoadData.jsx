@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import {
 	Button,
 	Chip,
 	FormControlLabel,
+	FormHelperText,
 	FormLabel,
 	Grid,
 	Paper,
@@ -20,28 +21,58 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import useFileUpload from "react-use-file-upload";
-import { INPUT_TYPE } from "../../config/config";
-
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+import { ERROR_MSG, INPUT_TYPE } from "../../config/config";
+import { Item } from "../general/Item";
+import { FieldsComboBox } from "../fields/FieldsComboBox";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { Spinner } from "../general/Spinner";
+import { executeProcess, launchProcess } from "../reports/actions/reportsActions";
+import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
+import { getReportDefinitionsByProcessType } from "../reports/selectors/getReportDefinitionsByProcessType";
+import { setError, setMessage } from "../general/actions/uiActions";
+import { loadFile } from "./actions/loadDataActions";
 
 const Input = styled("input")({
 	display: "none",
 });
 
+const validationSchema = yup.object({
+	loadType: yup.string().required("El tipo de carga es requerido"),
+	fileName: yup.string().required("El archivo es requerido"),
+});
+
 export const LoadData = () => {
 	const navigate = useNavigate();
-	const [file, setFile] = useState(null);
-	const [formState, setFormState] = useState({
-		loadType: "Clientes",
+	const [loading, setLoading] = useState(false);
+	const [idDef, setIdDef] = useState(0);
+	const dispatch = useDispatch();
+
+	const initialValues = {
+		id: 0,
+		loadType: "",
 		fileName: "No ha sido seleccionado ningún archivo",
 		idProcess: "",
-	});
+	};
+
+	const [formState, setFormState] = useState(initialValues);
+
+	useEffect(() => {
+		const loadIdDef = async () => {
+			setLoading(true);
+			try {
+				const data = await getReportDefinitionsByProcessType("CARGA");
+				setIdDef(data[0].id);
+			} catch (e) {
+				console.log(e);
+				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
+			}
+			setLoading(false);
+		};
+
+		loadIdDef();
+	}, []);
 
 	const {
 		files,
@@ -56,49 +87,84 @@ export const LoadData = () => {
 		removeFile,
 	} = useFileUpload();
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/home",
+	const formik = useFormik({
+		initialValues: formState,
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			console.log(JSON.stringify(values, null, 2));
+			handleLoadData();
+		},
+		enableReinitialize: true,
 	});
 
-	const handleValueChange = (name, value) => {
-		setFormState({
-			...formState,
-			[name]: value,
-		});
-	};
-
 	const reset = () => {
-		setFormState({
-			...formState,
-			fileName: "No ha sido seleccionado ningún archivo",
-			idProcess: "",
-		});
+		formik.handleReset();
+		//setFiles(null);
 		clearAllFiles();
-	};
-
-	const handleInputChange = ({ target }) => {
-		setFormState({
-			...formState,
-			[target.name]: target.value,
-		});
 	};
 
 	const handleCapture = (e) => {
 		//https://www.npmjs.com/package/react-use-file-upload
 		//setFile(target.files[0]);
 		setFiles(e);
+		const name = e.target.files[0]
+			? e.target.files[0].name
+			: "No ha sido seleccionado ningún archivo";
+		formik.setFieldValue("fileName", name);
 	};
-	/*
-	useEffect(() => {
-		handleValueChange("fileName", file?.name);
-	}, [handleValueChange, file]);
-*/
+
 	const handleLoadData = (e) => {
-		e.preventDefault();
-		const data = createFormData();
-		console.log(formState, data);
+		setLoading(true);
+
+		launchProcess("PRUEBA", "CARGA", idDef)
+			.then(async (response) => {
+				console.log(response);
+            const data = createFormData();
+            data.append("tipoCarga", formik.values.loadType);
+            data.append("idProceso", response.data.id);
+            data.append("fileName", formik.values.fileName);
+            data.append("file", files[0]);
+            console.log(JSON.stringify(data));
+            const rta = await loadFile(response.data.id, data);
+            console.log(JSON.stringify(rta));
+            const res = await executeProcess(response.data.id);
+            console.log(JSON.stringify(res));
+            Swal.fire(
+					"Proceso lanzado con éxito",
+					`Se generó proceso con id ${response.data.id}`,
+					"success"
+				);
+            dispatch(
+					setMessage({
+						msg: `Se generó proceso con id ${response.data.id}`,
+						severity: "success",
+					})
+				);
+            reset();
+            setLoading(false);
+
+			})
+			.catch((err) => {
+				Swal.fire(
+					"Error",
+					`Error al lanzar el proceso. ${err.message}`,
+					"error"
+				);
+				dispatch(setError(err));
+            setLoading(false);
+			});
+		
+		
 	};
+
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/home",
+	});
+
+	if (loading) {
+		return <Spinner />;
+	}
 
 	return (
 		<div
@@ -116,8 +182,34 @@ export const LoadData = () => {
 					width: "100%",
 				}}
 			>
-				<form className="container__form">
+				<form
+					id="loadData-form"
+					className="container__form"
+					onSubmit={formik.handleSubmit}
+				>
 					<Grid container spacing={2} rowSpacing={1}>
+						<Grid item xs={4}>
+							<Item>
+								<FieldsComboBox
+									id="loadType"
+									label="Tipo de archivo *"
+									valueType="valor"
+									value={formik.values.loadType}
+									type="tiposCarga"
+									labelType="descripcion"
+									handleChange={formik.handleChange}
+									error={
+										formik.touched.loadType &&
+										Boolean(formik.errors.loadType)
+									}
+								/>
+							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								{formik.touched.loadType && formik.errors.loadType}{" "}
+							</FormHelperText>
+						</Grid>
+						{/*
 						<Grid item xs={8} className=" left-align">
 							<FormLabel id="radioGroupLabel">Tipo de archivo</FormLabel>
 							<RadioGroup
@@ -141,7 +233,8 @@ export const LoadData = () => {
 								/>
 							</RadioGroup>
 						</Grid>
-
+                     */}
+						{/*
 						<Grid item xs={4} className=" right-align">
 							<Item>
 								<TextField
@@ -160,34 +253,43 @@ export const LoadData = () => {
 								/>
 							</Item>
 						</Grid>
-
+                  */}
 						<Grid item xs={12} className="" />
 
 						<Grid item xs={8} className="">
-							<div>
+							<Item>
 								<TextField
-									label="Archivo"
-									error={false}
+									label="Archivo *"
 									id="fileName"
 									type="text"
 									name="fileName"
 									autoComplete="off"
 									size="small"
-									required
+									/*
 									value={
 										fileNames[0]
 											? fileNames[0]
 											: "No ha seleccionado ningún archivo"
 									}
-									onChange={handleInputChange}
+                           */
+									value={formik.values.fileName}
+									handleChange={formik.handleChange}
 									className="form-control"
 									disabled={true}
 									variant={INPUT_TYPE}
+									error={
+										formik.touched.fileName &&
+										Boolean(formik.errors.fileName)
+									}
 								/>
-							</div>
+							</Item>
+							<FormHelperText className="helperText">
+								{" "}
+								{formik.touched.fileName && formik.errors.fileName}
+							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={4} className=" left-align">
+						<Grid item xs={4} className=" left-align mt-2">
 							<div>
 								<label htmlFor="contained-button-file">
 									<Input
@@ -240,11 +342,13 @@ export const LoadData = () => {
 				</Button>
 
 				<Button
+					form="loadData-form"
 					className="mt-3 mx-2 btn-primary"
 					variant="contained"
 					style={{ textTransform: "none" }}
 					startIcon={<UploadFileIcon />}
-					onClick={handleLoadData}
+					type="submit"
+					disabled={!files.length > 0}
 				>
 					Cargar datos
 				</Button>

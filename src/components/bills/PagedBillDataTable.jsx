@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -7,6 +7,7 @@ import { PAGE_SIZE } from "../../config/config";
 import { setError } from "../general/actions/uiActions";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import { Spinner } from "../general/Spinner";
+import { getBillColumns } from "./selectors/getBillColumns";
 import { getBillsByParams } from "./selectors/getBillsByParams";
 
 const useQuery = (page, pageSize, params, show, estados) => {
@@ -57,8 +58,9 @@ const useQuery = (page, pageSize, params, show, estados) => {
 };
 
 export const PagedBillDataTable = (attrs) => {
-	const { columns, handleClick, params, show } = attrs;
+	const { handleClick, params, show } = attrs;
 	const { estados } = useSelector((state) => state.lists);
+   const columns = getBillColumns();
 
    //console.log("params:", params);
 

@@ -3,6 +3,7 @@ import { types } from "../../../types/types";
 const initialState = {
 	loading: false,
 	error: null,
+   message: null,
 };
 
 export const uiReducer = (state = { initialState }, action) => {
@@ -30,7 +31,18 @@ export const uiReducer = (state = { initialState }, action) => {
 				...state,
 				loading: false,
 			};
+      
+      case types.uiSetMessage:
+         return {
+            ...state,
+            message: action.payload,
+         }
 
+      case types.uiRemoveMessage:
+         return {
+            ...state,
+            message: null,
+         }         
 		default:
 			return state;
 	}

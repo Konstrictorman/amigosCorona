@@ -39,6 +39,7 @@ import { useDispatch } from "react-redux";
 const StyledTabs = withStyles({
 	indicator: {
 		backgroundColor: "pantone300C",
+      height: "3px",
 	},
 })(TabList);
 
@@ -91,28 +92,7 @@ export const Client = () => {
 		};
 	}, [id, dispatch]);
 
-	//Desestructura del event, el objeto target en el argumento
-	const handleRefInputChange = ({ target }) => {
-		setClient({
-			...client,
-			referenciador: {
-				...referenciador,
-				[target.name]: target.value,
-			},
-		});
-	};
 
-	const handleRefValueChange = ({target}) => {
-		setClient({
-			...client,
-			referenciador: {
-				...referenciador,
-				[target.name]: target.value,
-            "especialidad": "",
-			},
-		});
-
-	};
 
 	const [tabIndex, setTabIndex] = useState("0");
 	const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
@@ -261,8 +241,7 @@ export const Client = () => {
 							<ClientReferrerTab
 								formValues={referenciador}
 								index="0"
-								handleInputChange={handleRefInputChange}
-								handleValueChange={handleRefValueChange}
+                        handleClickOut={handleClickOut}
 							/>
 							<ClientPhonesTab client={client} index="1" />
 							<ClientAddressTab client={client} index="2" />
@@ -274,30 +253,6 @@ export const Client = () => {
       */}
 						</TabContext>
 					</Box>
-				</div>
-
-				<div>
-					<Button
-						color="error"
-						variant="contained"
-						className="mt-3 mx-2"
-						startIcon={<ClearIcon />}
-						style={{ textTransform: "none" }}
-						onClick={handleClickOut}
-					>
-						Cancelar
-					</Button>
-					<Button
-						color="primary"
-						variant="contained"
-						className="mt-3 mx-2"
-						startIcon={<CheckIcon />}
-						style={{ textTransform: "none" }}
-						onClick={handleSave}
-						enabled={saveBtnEnabled}
-					>
-						Guardar
-					</Button>
 				</div>
 			</div>
 		</div>

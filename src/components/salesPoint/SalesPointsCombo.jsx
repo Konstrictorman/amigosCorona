@@ -7,32 +7,37 @@ import { getSalesPointsForCombo } from "./selectors/getSalesPointsForCombo";
 import {setError} from "../general/actions/uiActions";
 
 export const SalesPointsCombo = (props) => {
-	const { id, handleValueChange } = props;
+	const { value, handleValueChange, error, label} = props;
 
-   console.log("props:", id);
-
-	const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
+   const [selected, setSelected] = useState({});
+   const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
 	const componentMounted = useRef(true);
 	const [loading, setLoading] = useState(false);
-	const [inputValue, setInputValue] = useState("");
-   const [selected, setSelected] = useState({});
+	
+   
    const dispatch = useDispatch();
 
 	useEffect(() => {
 		const getSalesPointsList = async () => {
 			setLoading(true);
 			try {
-				const sps = await getSalesPointsForCombo();
-
+				
+            let sps = [];
 				if (componentMounted.current) {
+               sps = await getSalesPointsForCombo();
 					setSortedSalesPoints(sps);
             }
 
-            const sel = sps.filter((s) => s.id === id.toString());
-            setSelected(sel[0]);            
+            const sel = sps.filter((s) => s.id === value?.toString());
+            if (sel.length >0) {
+               setSelected(sel[0]);            
+            } else {
+               setSelected("");            
+            }
+            
+          
             
 			} catch (e) {
-				console.log(e);
             Swal.fire(
 					"Error",
 					e.message + ` - ${ERROR_MSG}`,
@@ -44,12 +49,14 @@ export const SalesPointsCombo = (props) => {
 		};
 
 		getSalesPointsList();
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
-	}, [id,dispatch]);
 
+	}, [dispatch,value]);
+/*
+   useEffect(() => {
+     setSelected("");
+   }, [value]);
+   
+*/
 	if (loading) {
 		return (
 			<TextField
@@ -64,31 +71,25 @@ export const SalesPointsCombo = (props) => {
 
    const handleChange = (event, newValue) => {
 		setSelected(newValue);
-      handleValueChange("idPuntoVenta", newValue?.id);      
+      handleValueChange( newValue?.id);    
+      
    }
 
 	return (
 		<Autocomplete
-         disablePortal      
-         id="salesPoint"
-			options={sortedSalesPoints}         
-
+         disablePortal               
+			options={sortedSalesPoints}                  
 			value={selected}
-         onChange={(event, newValue) => handleChange(event, newValue)}  
-
-			inputValue={inputValue}
-			onInputChange={(event, newInputValue) => {
-				setInputValue(newInputValue);
-			}}
-
+         onChange={handleChange}  
+         filterSelectedOptions
 			renderInput={(params) => (
 				<TextField
 					{...params}
+               error={error}
 					className="form-control"
 					size="small"
-					label="Punto de venta"
-					required
-               variant={INPUT_TYPE}
+               label={label}
+               variant={INPUT_TYPE}               
 				/>
 			)}
 		/>

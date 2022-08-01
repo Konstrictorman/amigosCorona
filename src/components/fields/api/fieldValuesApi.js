@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../../../config/config';
+import { processParams } from '../../../helpers/processParams';
 
 export const getValoresCampos = () => {
 
@@ -68,6 +69,22 @@ export const addValorCampo = (valorCampo) => {
          'Access-Control-Allow-Origin': '*',
        },
        data: valorCampo
+   };
+   return axios(config);
+}
+
+export const searchValoresCampo = (params) => {
+   const pParams = processParams(params);
+
+   const config = {
+      method: 'get',
+      url: `${API_URL}/api/valoresCampos/search/findByIdCampoValDescr?`+pParams,
+      headers: { 
+         'Content-Type': 'application/json',
+         'Accept': '*/*',
+         'Access-Control-Allow-Origin': '*',
+       },
+       "Access-Control-Allow-Headers": "Access-Control-Allow-Origin"
    };
    return axios(config);
 }

@@ -7,5 +7,7 @@
          "tab.unfocusedActiveBorder": "#000000",
          "activityBar.background": "#00AA00"
       }
-   }
+   },
+   "appService.defaultWebAppToDeploy": "/subscriptions/60f09cfe-152f-4557-81b5-171be323b37b/microsoft.web/sites/subscriptions/60f09cfe-152f-4557-81b5-171be323b37b/resourceGroups/RG-DEV-Fidelizacion/providers/Microsoft.Web/sites/wa-dev-fidelizacion",
+   "appService.deploySubpath": "."
 }

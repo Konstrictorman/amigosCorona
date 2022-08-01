@@ -5,7 +5,7 @@ import { getRedemptionBasicColumns } from "../selectors/getRedemptionBasicColumn
 import { DataGrid } from "@mui/x-data-grid";
 
 export const RedemptionBasicDataTab = ({ index, rows, handleClick }) => {
-	const columns = getRedemptionBasicColumns();
+	const columns = getRedemptionBasicColumns(handleClick);
 
 	return (
 		<div>
@@ -19,7 +19,7 @@ export const RedemptionBasicDataTab = ({ index, rows, handleClick }) => {
 					density="compact"
 					autoHeight={true}
 					autoPageSize={true}
-               onCellClick={handleClick}
+               //onCellClick={handleClick}
 					components={{
 						NoRowsOverlay: NoRowsOverlay,
 					}}

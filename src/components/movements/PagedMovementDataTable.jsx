@@ -107,7 +107,7 @@ export const PagedMovementDataTable = (attrs) => {
 			{show > 0 && (
 				<div className="topMargin">
 					<Typography variant="h6" className="left-align">
-						{rowCountState} Resultados
+						{rowCountState} Resultado(s)
 					</Typography>
 					<Box
 						className="align-self-center container__dataTable "

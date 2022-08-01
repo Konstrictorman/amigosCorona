@@ -1,5 +1,16 @@
-import { promos } from "../../../data/promos";
+import { TIME_OUT } from "../../../config/config";
+import { getPromocionesById } from "../api/promotionsApi";
+import { delay } from "../../../helpers/delay";
 
-export const getPromoById = (id) => {
-   return promos.find(promo=> promo.id === parseInt(id,10));
+export const getPromoById = async (id) => {
+   if (id) {
+      const {data} = await getPromocionesById(id);
+      delay(TIME_OUT);
+
+      delete data._links;
+
+      return data;
+   } else {
+      return null;
+   }
 }

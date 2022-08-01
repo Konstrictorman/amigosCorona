@@ -47,7 +47,7 @@ export const getCampoById = (id) => {
    return axios(config);
 }
 
-export const saveCampo = (campo) => {
+export const saveCampo = (campo) => {   
    const config = {
       method: 'post',
       url: `${API_URL}/api/campos`,

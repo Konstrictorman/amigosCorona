@@ -67,3 +67,33 @@ export const getMovimientosResumen = (fInit, fFinal) => {
    
 	return axios(config);      
 }
+
+
+export const getRegistrosMovimiento = ()=> {
+	const config = {
+		method: "get",
+		url: `${API_URL}/api/registroMovimientos`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);   
+}
+
+export const saveRegistroMovimiento = (rMovement)=> {
+	const config = {
+		method: "post",
+		url: `${API_URL}/api/registroMovimientos`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		data: rMovement,
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);   
+}

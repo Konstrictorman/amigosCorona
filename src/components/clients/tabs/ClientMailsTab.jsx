@@ -3,11 +3,21 @@ import { TabPanel } from "@mui/lab";
 import { DataGrid } from "@mui/x-data-grid";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { getClientMailColumns } from "../selectors/getClientMailColumns";
+import { Button } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
+import { useNavigate } from "react-router";
 
 export const ClientMailsTab = ({client, index}) => {
 
    const rows = client?.emailsCliente;
    const mailColumns = getClientMailColumns();
+	const navigate = useNavigate();
+
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/clientList",
+	});   
   
    return (
 		<div>
@@ -26,6 +36,17 @@ export const ClientMailsTab = ({client, index}) => {
 						NoRowsOverlay: NoRowsOverlay,
 					}}
 				/>
+				<div className="container__blank">
+					<Button
+						className="mt-3 mx-2 btn-warning"
+						variant="contained"
+						style={{ textTransform: "none" }}
+						startIcon={<ArrowBackIcon />}
+						onClick={handleClickOut}
+					>
+						Volver
+					</Button>
+				</div>            
 			</TabPanel>
 		</div>
 	);  

@@ -178,6 +178,21 @@ export const deleteClienteById = (id) => {
 	return axios(config);
 };
 
+export const createReferenciador = (referrer) => {
+	const config = {
+		method: "post",
+		url: `${API_URL}/api/matriculaReferenciadores`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		data: referrer,
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);
+};
+
 export const updateReferenciador = (id, referrer) => {
 	const config = {
 		method: "put",
@@ -220,3 +235,17 @@ export const getNivelesReferenciadorByIdRef = (id) => {
 	};
 	return axios(config);
 };
+
+export const getSaldoReferenciadoByCodigo = (code) => {
+	const config = {
+		method: "get",
+		url: `${API_URL}/api/saldoReferenciador/search/ObtenerSaldo?codCliente=${code}`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);   
+}

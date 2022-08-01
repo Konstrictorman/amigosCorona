@@ -71,3 +71,16 @@ export const addPuntoVenta = (salesPoint) => {
    };
    return axios(config);
 }
+
+export const getPuntosVentaByEstado = (val) => {
+   const config = {
+      method: 'get',
+      url: `${API_URL}/api/puntosVenta/search/findByEstado?estado=${val}`,
+      headers: { 
+         'Content-Type': 'application/json',
+         'Accept': '*/*',
+         'Access-Control-Allow-Origin': '*',
+       },
+   };
+   return axios(config);
+}

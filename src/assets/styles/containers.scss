@@ -9,6 +9,10 @@
    border-radius: 5px;      
 }
 
+.container__blank {
+   background-color: white;
+}
+
 .container__dataTable, .container__dataTable2, .container__dataTable3{
    background-color: whitesmoke;
    width: 100%;
@@ -19,7 +23,7 @@
    //box-shadow: 1px 1px $warmGray;
 }
 
-.container__dataTable {
+.container__dataTable  {
    border: none !important;             
    //border: 2px solid $pantone298C !important;             
    

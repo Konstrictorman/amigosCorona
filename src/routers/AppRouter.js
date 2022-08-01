@@ -6,9 +6,14 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
+   loadGenders,
+	loadLoadTypes,
 	loadPeriods,
+	loadProcessTypes,
 	loadPrograms,
+	loadRedemptionTypes,
 	loadReferredStatus,
+	loadSpecialties,
 	loadStates,
 } from "../components/fields/actions/fieldActions";
 import { Spinner } from "../components/general/Spinner";
@@ -32,6 +37,11 @@ export const AppRouter = () => {
 			dispatch(loadPeriods());
 			dispatch(loadReferredStatus());
          dispatch(loadPrograms());
+         dispatch(loadGenders());
+         dispatch(loadSpecialties());
+         dispatch(loadRedemptionTypes());
+         dispatch(loadProcessTypes());
+         dispatch(loadLoadTypes());
 			dispatch(removeError());
 		} catch (e) {
 			console.log(e);

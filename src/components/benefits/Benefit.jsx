@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
 import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
@@ -29,26 +27,11 @@ import { addBenefit, updateBenefit } from "./actions/benefitsAction";
 import { setError } from "../general/actions/uiActions";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { Item } from "../general/Item";
+import { FieldsComboBox } from "../fields/FieldsComboBox";
 
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
 
 const validationSchema = yup.object({
-	/*
-   email: yup
-     .string('Enter your email')
-     .email('Enter a valid email')
-     .required('Email is required'),
-   password: yup
-     .string('Enter your password')
-     .min(8, 'Password should be of minimum 8 characters length')
-     .required('Password is required'),
-     */
 	nivelBeneficio: yup
 		.string("Nivel de beneficio")
 		.min(
@@ -97,19 +80,18 @@ const validationSchema = yup.object({
 		.required("Valor requerido"),
 	valMaxmo: yup
 		.number("valMaxmo")
-		.moreThan(yup.ref('valMinimo'), 'El vr. máximo debe ser mayor que el vr. mínimo')
-		.required("Valor requerido")
-      
+		.moreThan(
+			yup.ref("valMinimo"),
+			"El vr. máximo debe ser mayor que el vr. mínimo"
+		)
+		.required("Valor requerido"),
 });
 
 export const Benefit = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const componentMounted = useRef(true);
 	const [loading, setLoading] = useState(false);
-	const { programas } = useSelector((state) => state.lists);
-	const [errors, setErrors] = useState({});
 	const [flagEstado, setFlagEstado] = useState(false);
 	const dispatch = useDispatch();
 
@@ -134,38 +116,21 @@ export const Benefit = () => {
 
 	const [formState, setFormState] = useState(initialValues);
 
-	const {
-		nivelBeneficio,
-		descripcion,
-		estado,
-		flagDefecto,
-		flagEnvEle,
-		frecuenciaComp,
-		idProgramaReferenciacion,
-		numMesesCom,
-		numMesesVigencia,
-		pctValInicial,
-		pctValNormal,
-		pctValPropio,
-		valMaxmo,
-		valMinRedencion,
-		valMinimo,
-	} = formState;
-
 	useEffect(() => {
 		const getBenefit = async (id) => {
 			setLoading(true);
 			try {
-				const data = await getBenefitById(id);
-				console.log("data:", data);
-				if (componentMounted.current) {
+				if (id) {
+					const data = await getBenefitById(id);
+					//console.log("data:", data);
+
 					setFormState({
 						...data,
 					});
 					setFlagEstado(data.estado === "A" ? true : false);
 				}
 			} catch (e) {
-				console.log(e);
+				//console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
 			}
 
@@ -173,10 +138,6 @@ export const Benefit = () => {
 		};
 
 		getBenefit(id);
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
 	}, [id]);
 
 	const formik = useFormik({
@@ -184,99 +145,27 @@ export const Benefit = () => {
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			console.log(JSON.stringify(values, null, 2));
+			if (id) {
+				console.log("updating...");
+				update(values);
+			} else {
+				console.log("creating...");
+				create(values);
+			}
 		},
 		enableReinitialize: true,
 	});
 
-	const handleCheckChange = ({ target }) => {
-		setFormState({
-			...formState,
-			[target.name]: target.checked,
-		});
-	};
 
-	//Desestructura del event, el objeto target en el argumento
-	const handleInputChange = ({ target }) => {
-		setFormState({
-			...formState,
-			[target.name]: target.value,
-		});
-	};
-
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/benefitsList",
-	});
 
 	const handleChange = (e) => {
 		setFlagEstado(e.target.checked);
-		/*
-		setFormState({
-			...formState,
-			estado: e.target.checked ? "A" : "I",
-			flagEstado: e.target.checked,
-		});
-      */
 		formik.setFieldValue("estado", e.target.checked ? "A" : "I");
 	};
 
-	const validateForm = (values) => {
-		const errors = {};
-
-		if (!nivelBeneficio) {
-			errors.nivelBeneficio =
-				"El nombre del nivel de beneficios es requerido";
-		}
-		if (nivelBeneficio.length < 4) {
-			errors.nivelBeneficio =
-				"El nombre del nivel de beneficios debe tener una longitud mayor de 3 caracteres";
-		}
-		if (!idProgramaReferenciacion) {
-			errors.idProgramaReferenciacion =
-				"El programa de referidos es requerido";
-		}
-		if (!descripcion) {
-			errors.descripcion = "La descripcion es requerida";
-		}
-		if (!pctValInicial) {
-			errors.pctValInicial = "El % de venta inicial es requerido";
-		}
-		if (!pctValNormal) {
-			errors.pctValNormal = "El % de ventas referenciadas es requerido";
-		}
-		if (!pctValPropio) {
-			errors.pctValPropio = "El % de ventas propas es requerido";
-		}
-		if (!valMinRedencion) {
-			errors.valMinRedencion = "El valor mínimo de redención es requerido";
-		}
-		if (!numMesesVigencia) {
-			errors.numMesesVigencia = "El periodo de vigencia es requerido";
-		}
-		if (!frecuenciaComp) {
-			errors.frecuenciaComp = "La frecuencia de compras es requerida";
-		}
-		if (!numMesesCom) {
-			errors.numMesesCom = "El periodo de compras es requerido";
-		}
-		if (!valMinimo) {
-			errors.valMinimo = "El monto mínimo total de compra es requerido";
-		}
-		if (!valMaxmo) {
-			errors.valMaxmo = "El monto máximo total de compra es requerido";
-		}
-		return errors;
-	};
-	/*
-	const reset = () => {
-		setFormState(initialState);
-		setErrors({});
-	};
-*/
-	const update = () => {
-		console.log("update");
+	const update = (values) => {
 		setLoading(true);
-		updateBenefit(id, formState)
+		updateBenefit(id, values)
 			.then((response) => {
 				setLoading(false);
 				Swal.fire(
@@ -287,50 +176,46 @@ export const Benefit = () => {
 			})
 			.catch((e) => {
 				setLoading(false);
-				console.log(e);
-				Swal.fire("Error", e.message, "error");
+				console.log(e.response);
+				Swal.fire(
+					"Error",
+					e.response?.data?.cause?.cause?.message,
+					"error"
+				);
 				dispatch(setError(e));
 			});
 	};
 
-	const create = () => {
+	const create = (values) => {
 		console.log("create");
 		setLoading(true);
-		addBenefit(formState)
+		addBenefit(values)
 			.then((response) => {
 				setLoading(false);
-				//reset();
+				formik.resetForm(initialValues);
 				Swal.fire(
 					"Registro exitoso",
 					"El registro se creó con éxito",
 					"success"
 				);
 			})
-			.catch((e) => {
-				setLoading(false);
-				console.log(e);
-				Swal.fire("Error", e.message, "error");
-				dispatch(setError(e));
-			});
+			.catch((err) => {
+				setLoading(false);				
+				Swal.fire(
+					"Error",
+					err.cause ? err.cause.message : (err.message? err.message:err),
+					"error"
+				);
+				dispatch(setError(err));
+			}); 
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		//console.log(formState);
-		setErrors(validateForm(formState));
-		console.log("Errors:", errors);
-		//setIsSubmit(true);
 
-		if (Object.keys(errors).length === 0) {
-			if (id) {
-				update();
-			} else {
-				create();
-			}
-		} else {
-			dispatch(setError(new Error("El formulario contiene errores !")));
-		}
-	};
+   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/benefitsList",
+	});
+
 
 	if (loading) {
 		return <Spinner />;
@@ -352,7 +237,11 @@ export const Benefit = () => {
 					width: "80%",
 				}}
 			>
-				<form className="container__form" onSubmit={formik.handleSubmit}>
+				<form
+					id="benefit-form"
+					className="container__form"
+					onSubmit={formik.handleSubmit}
+				>
 					<Grid container spacing={2}>
 						<Grid item xs={5}>
 							<Item>
@@ -381,35 +270,22 @@ export const Benefit = () => {
 
 						<Grid item xs={3}>
 							<Item>
-								<TextField
-									label="Programa *"
+                        
+                     <FieldsComboBox
 									id="idProgramaReferenciacion"
-									select
-									type="text"
-									name="idProgramaReferenciacion"
-									size="small"
+									label="Programa *"
 									value={formik.values.idProgramaReferenciacion}
-									onChange={formik.handleChange}
+									type="programas"
+									handleChange={(e) => {
+										formik.handleChange(e);
+									}}
+									valueType="idProgramaReferenciacion"
+                           labelType="valor"
 									error={
 										formik.touched.idProgramaReferenciacion &&
 										Boolean(formik.errors.idProgramaReferenciacion)
 									}
-									className="form-control"
-									variant={INPUT_TYPE}
-									SelectProps={{
-										native: true,
-									}}
-								>
-									<option value=""></option>
-									{programas?.map((sp) => (
-										<option
-											key={sp.idProgramaReferenciacion}
-											value={sp.idProgramaReferenciacion}
-										>
-											{sp.descripcion}
-										</option>
-									))}
-								</TextField>
+								/>                                              
 							</Item>
 							<FormHelperText className="helperText">
 								{formik.touched.idProgramaReferenciacion &&
@@ -463,12 +339,20 @@ export const Benefit = () => {
 									formik.errors.descripcion}
 							</FormHelperText>
 						</Grid>
-
+{/*
 						<Grid item xs={12}>
 							<Separator
 								title="Porcentajes asignados por ventas"
 								icon={<PercentIcon color="white" />}
 							/>
+						</Grid>
+                        */}
+                  
+						<Grid item xs={12}>
+							<PercentIcon color="primary" />
+							<Typography variant="caption" className="left-align">
+                     Porcentajes asignados por ventas
+							</Typography>
 						</Grid>
 
 						<Grid item xs={4} className="grid-item-noPadding">
@@ -791,27 +675,28 @@ export const Benefit = () => {
 							</FormHelperText>
 						</Grid>
 					</Grid>
-					<div>
-						<Button
-							variant="contained"
-							className="mt-3 mx-2 btn-error"
-							startIcon={<ClearIcon />}
-							style={{ textTransform: "none" }}
-							onClick={handleClickOut}
-						>
-							Cancelar
-						</Button>
-						<Button
-							variant="contained"
-							className="mt-3 mx-2 btn-primary"
-							startIcon={<CheckIcon />}
-							style={{ textTransform: "none" }}
-							type="submit"
-						>
-							Guardar
-						</Button>
-					</div>
 				</form>
+				<div>
+					<Button
+						variant="contained"
+						className="mt-3 mx-2 btn-error"
+						startIcon={<ClearIcon />}
+						style={{ textTransform: "none" }}
+						onClick={handleClickOut}
+					>
+						Cancelar
+					</Button>
+					<Button
+						form="benefit-form"
+						variant="contained"
+						className="mt-3 mx-2 btn-primary"
+						startIcon={<CheckIcon />}
+						style={{ textTransform: "none" }}
+						type="submit"
+					>
+						Guardar
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

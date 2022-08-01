@@ -1,5 +1,5 @@
 import { delay } from "../../../helpers/delay";
-import { addCliente, deleteClienteById, getEstadosReferenciador, updateCliente, updateReferenciador } from "../api/clientApi";
+import { addCliente, createReferenciador, deleteClienteById, getEstadosReferenciador, updateCliente, updateReferenciador } from "../api/clientApi";
 import { TIME_OUT } from '../../../config/config';
 import { getClientById } from "../selectors/getClientById";
 import { getPhonesByClientId } from "../selectors/getPhonesByClientId";
@@ -71,5 +71,10 @@ export const loadClientById = async (id) => {
 
 export const updateReferrer = async (id, referrer) => {
    await updateReferenciador(id, referrer);
+   await delay(TIME_OUT);
+}
+
+export const createReferrer = async (referrer) => {
+   await createReferenciador(referrer);
    await delay(TIME_OUT);
 }

@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
@@ -39,6 +40,10 @@ export const MovementsResume = (props) => {
 
 	return (
 		<div className="topMargin">
+         		<Typography variant="h6" className="left-align">
+						Resumen
+					</Typography>
+         
 			<DataGrid
 				getRowId={(r) => r.saldoInicial}
 				className="container__dataTable"

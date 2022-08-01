@@ -1,15 +1,4 @@
 import React from "react";
-import GroupsIcon from "@mui/icons-material/Groups";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import LocalPlayIcon from "@mui/icons-material/LocalPlay";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
-import SellIcon from "@mui/icons-material/Sell";
-import Inventory2Icon from "@mui/icons-material/Inventory2";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import { HomeCard } from "./HomeCard";
 import { useNavigate } from "react-router";
 import { Grid } from "@mui/material";
@@ -103,7 +92,7 @@ export const Home = () => {
 						title="PARÁMETROS"
 						icon={<ParametersIcon className="home__icon" />}
 						handleClick={(e) => {
-							handleClick(e, "/parameters");
+							handleClick(e, "/parametersGroupList");
 						}}
 					/>
 
@@ -140,10 +129,10 @@ export const Home = () => {
 					/>
 
 					<HomeCard
-						title="REGISTRAR MOVIMIENTOS"
+						title="REPORTES & PROCESOS"
 						icon={<RegisterMovementIcon className="home__icon" />}
 						handleClick={(e) => {
-							handleClick(e, "/recordMovement");
+							handleClick(e, "/reports");
 						}}
 					/>
 				</Grid>

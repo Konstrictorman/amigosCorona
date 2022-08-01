@@ -115,7 +115,7 @@ export const AppMenu = () => {
                <ListItemText>Nivel de beneficios</ListItemText>
             </MenuItem>  
 
-            <MenuItem onClick={() => {handleMenuClick('/parameters')}}>
+            <MenuItem onClick={() => {handleMenuClick('/parametersGroupList')}}>
                <ListItemIcon>
                   <ParametersIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
@@ -150,11 +150,11 @@ export const AppMenu = () => {
                <ListItemText>Redenciones</ListItemText>
             </MenuItem>                
           
-            <MenuItem onClick={() => {handleMenuClick('/recordMovement')}}>
+            <MenuItem onClick={() => {handleMenuClick('/reports')}}>
                <ListItemIcon>
                   <RegisterMovementIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          
-               <ListItemText>Registrar movimientos</ListItemText>
+               <ListItemText>Reportes & Procesos</ListItemText>
             </MenuItem>                
           
             

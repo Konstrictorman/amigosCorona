@@ -1,6 +1,11 @@
-import { referencePrograms } from "../../../data/referencePrograms";
+import {getProgramaReferenciacionById} from "../api/referenceProgramsApi";
 
-
-export const getReferenceProgramById = (id) => {
-   return referencePrograms.find(rp => rp.id === parseInt(id,10));
+export const getReferenceProgramById =async (id) => {
+   if (id) {
+      const {data} = await getProgramaReferenciacionById(id);
+      delete data._links;
+      return data;
+   } else {
+      return null;
+   }
 }

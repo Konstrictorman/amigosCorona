@@ -44,7 +44,7 @@ export const BenefitsList = () => {
                   b.programa = prog?.descripcion;
               })
               
-              console.log("data:",data);
+              //console.log("data:",data);
               setRows(data);
            }
          } catch (e) {
@@ -79,7 +79,7 @@ export const BenefitsList = () => {
 	});
 
 	const handleRowChange = (ids) => {
-		console.log("Ids:", ids);
+		//console.log("Ids:", ids);
 		setSelectedIds(ids);
 	};
 
@@ -120,7 +120,7 @@ export const BenefitsList = () => {
 
 	const handleRemoveRows = () => {
 		const result = aFilter(rows, selectedIds);
-		console.log("result:", result);
+		//console.log("result:", result);
 		setRows(result);
       setSelectedIds([]);
 	};   
@@ -145,13 +145,16 @@ export const BenefitsList = () => {
 				{
                
 					<DataTable
+                  className="container__dataTable"
+                  loading={loading}                  
 						rows={rows}
 						columns={columns}
 						pageSize={PAGE_SIZE}
+                  
 						onCellClick={handleClick}
 						onSelectionModelChange={handleRowChange}
                   checkboxSelection={true}
-                  loading={loading}
+                  
 					/>
                
 				}

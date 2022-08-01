@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { PAGE_SIZE } from "../../config/config";
 import { getClientsByParams } from "./selectors/getClientsByParams";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import { Spinner } from "../general/Spinner";
@@ -45,17 +44,17 @@ const useQuery = (page, pageSize, params, show) => {
 			active = false;
 			setLoading(false);
 		};
-	}, [page, pageSize, params, show]);
+	}, [page, pageSize, params, show, dispatch]);
 
 	return { loading, rows, rowCount };
 };
 
 export const PagedClientDataTable = (attrs) => {
-	const { columns, handleClick, params, show } = attrs;
+	const { columns, handleClick, params, show, pageSize } = attrs;
 
 	const [rowsState, setRowsState] = useState({
 		page: 0,
-		pageSize: PAGE_SIZE,
+		pageSize: pageSize,
 	});
 
 	const { loading, rows, rowCount } = useQuery(
@@ -99,7 +98,7 @@ export const PagedClientDataTable = (attrs) => {
 							rowsPerPageOptions={[5]}
 							rows={rows}
 							columns={columns}
-							pageSize={PAGE_SIZE}
+							pageSize={pageSize}
 							onCellClick={handleClick}
 							disableSelectionOnClick={true}
 							components={{

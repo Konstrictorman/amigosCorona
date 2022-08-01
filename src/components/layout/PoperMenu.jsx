@@ -171,7 +171,7 @@ export const PoperMenu = () => {
                <ListItemText>Redenciones</ListItemText>
             </MenuItem>                
           
-            <MenuItem onClick={(e) => {handleMenuClick(e,'/recordMovement')}}>
+            <MenuItem onClick={(e) => {handleMenuClick(e,'/reports')}}>
                <ListItemIcon>
                   <DriveFileRenameOutlineIcon color="primary" fontSize="medium"/>
                </ListItemIcon>          

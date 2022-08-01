@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getClientColumns } from "./selectors/getClientColumns";
-import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Button, Grid, Paper, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Spinner } from "../general/Spinner";
 import { styled } from "@mui/material/styles";
-import { INPUT_TYPE } from "../../config/config";
+import { INPUT_TYPE, PAGE_SIZE } from "../../config/config";
 import { useCustomForm } from "../customHooks/useCustomForm";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
@@ -25,7 +24,7 @@ export const ClientList = () => {
 	const columns = getClientColumns();
 
 	const [params, setParams] = useState({});
-   const [show, setShow] = useState(false);
+	const [show, setShow] = useState(false);
 
 	const [
 		formValues,
@@ -48,27 +47,26 @@ export const ClientList = () => {
 		}
 	};
 
-   const handleReset = () => {
-      reset();
-      setParams({});
-      setShow(false);
-   }
+	const handleReset = () => {
+		reset();
+		setParams({});
+		setShow(false);
+	};
 
+	//De esta forma se construyen las parejas de queryParams
 	const handleSearch = () => {
 		Object.entries(formValues).forEach((fv) => {
-			
 			if (fv[1]) {
-				setParams(_params => {
-               return (
-               {
-					   ..._params,
-					   [fv[0]]: fv[1],
-				   })
-            });
+				setParams((_params) => {
+					return {
+						..._params,
+						[fv[0]]: fv[1],
+					};
+				});
 			}
 		});
 
-      setShow(true);
+		setShow(true);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
@@ -121,88 +119,48 @@ export const ClientList = () => {
 							</Item>
 						</Grid>
 
-						<Grid item xs={12}>
-							<div>
-								<Button
-									className="mt-3 mx-2 btn-warning"
-									variant="contained"
-									style={{ textTransform: "none" }}
-									startIcon={<ArrowBackIcon />}
-									onClick={handleClickOut}
-								>
-									Volver
-								</Button>
-
-								<Button
-									variant="contained"
-									className="mt-3 mx-2 btn-error"
-									startIcon={<CleaningServicesIcon />}
-									style={{ textTransform: "none" }}
-									onClick={handleReset}
-								>
-									Limpiar
-								</Button>
-								<Button
-									variant="contained"
-									className="mt-3 mx-2 btn-primary"
-									startIcon={<SearchIcon />}
-									style={{ textTransform: "none" }}
-									onClick={handleSearch}
-								>
-									Buscar
-								</Button>
-							</div>
-						</Grid>
+						<Grid item xs={12}></Grid>
 					</Grid>
+					<div>
+						<Button
+							className="mt-3 mx-2 btn-warning"
+							variant="contained"
+							style={{ textTransform: "none" }}
+							startIcon={<ArrowBackIcon />}
+							onClick={handleClickOut}
+						>
+							Volver
+						</Button>
+
+						<Button
+							variant="contained"
+							className="mt-3 mx-2 btn-error"
+							startIcon={<CleaningServicesIcon />}
+							style={{ textTransform: "none" }}
+							onClick={handleReset}
+						>
+							Limpiar
+						</Button>
+						<Button
+							variant="contained"
+							className="mt-3 mx-2 btn-primary"
+							startIcon={<SearchIcon />}
+							style={{ textTransform: "none" }}
+							onClick={handleSearch}
+						>
+							Buscar
+						</Button>
+					</div>
 				</form>
 
-				{/*
-							<DataGrid
-								className="container__dataTable"
-								density="compact"
-								autoHeight={true}
-								autoPageSize={false}
-								disableExtendRowFullWidth={true}
-								rowsPerPageOptions={[5]}
-								rows={rows}
-								columns={columns}
-								pageSize={PAGE_SIZE}
-								onCellClick={handleClick}
-								disableSelectionOnClick={true}
-								components={{
-									NoRowsOverlay: NoRowsOverlay,
-								}}
-								loading={loading}
-								pagination
-								{...rowsState}
-								paginationMode="server"
-								rowCount={rowCountState}
-								onPageChange={(page) =>
-									setRowsState((prev) => ({ ...prev, page }))
-								}
-							/>
-
-                     */}
 				<PagedClientDataTable
 					columns={columns}
 					handleClick={handleClick}
 					params={params}
-               show = {show}
+					show={show}
+					pageSize={PAGE_SIZE}
 				/>
 			</div>
-			{/** 
-			<div className="align-self-center">
-				<Button
-					className="mt-3 mx-2 btn-warning"					
-					variant="contained"
-					style={{ textTransform: "none" }}
-					startIcon={<ArrowBackIcon />}
-					onClick={handleClickOut}
-				>
-					Volver
-				</Button>
-			</div>
-         */}
 		</div>
 	);
 };

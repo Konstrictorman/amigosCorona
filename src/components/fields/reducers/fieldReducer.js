@@ -24,11 +24,22 @@ const initialState = {
 	estados: [],
 	periodos: [],
 	estadosReferido: [],
-   programas: [],
+	programas: [],
+	genders: [],
+	especialidades: [],
+	tiposRedencion: [],
+	tiposProceso: [],
+   tiposCarga: [],
 };
 
 export const fieldReducer = (state = { initialState }, action) => {
 	switch (action.type) {
+		case types.fieldsSetGenders:
+			return {
+				...state,
+				genders: action.payload,
+			};
+
 		case types.fieldsSetStates:
 			return {
 				...state,
@@ -46,12 +57,36 @@ export const fieldReducer = (state = { initialState }, action) => {
 				...state,
 				estadosReferido: action.payload,
 			};
-         
-      case types.fieldsSetPrograms:
-         return {
-            ...state,
-            programas: action.payload,
-         }
+
+		case types.fieldsSetPrograms:
+			return {
+				...state,
+				programas: action.payload,
+			};
+
+		case types.fieldsSetSpecialties:
+			return {
+				...state,
+				especialidades: action.payload,
+			};
+
+		case types.fieldsSetRedemptionTypes:
+			return {
+				...state,
+				tiposRedencion: action.payload,
+			};
+
+		case types.fieldsSetProcessTypes:
+			return {
+				...state,
+				tiposProceso: action.payload,
+			};
+
+         case types.fieldsSetLoadTypes:
+            return {
+               ...state,
+               tiposCarga: action.payload,
+            };         
 
 		default:
 			return state;

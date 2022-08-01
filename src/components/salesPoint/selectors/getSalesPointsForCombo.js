@@ -1,8 +1,8 @@
-import { getSalesPoints } from "./getSalesPoints"
+import { getSalesPointsActive } from "./getSalesPointsActive";
 
 export const getSalesPointsForCombo = async () => {
    
-   const list = await getSalesPoints();
+   const list = await getSalesPointsActive();
 
    let salesPoints = [];
    const array = list
@@ -15,5 +15,13 @@ export const getSalesPointsForCombo = async () => {
       obj["label"] = i.puntoVenta + " - " + i.descripcion
       salesPoints.push(obj);
    });
+   /*
+   const defaultObj = {
+      id:"",
+      label: ""
+   }
+
+   salesPoints.unshift(defaultObj);
+   */
    return salesPoints;
 }

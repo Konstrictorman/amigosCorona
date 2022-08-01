@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
 	Autocomplete,
 	Button,
+	FormHelperText,
 	Grid,
 	Paper,
 	Tab,
@@ -36,55 +37,91 @@ import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { Spinner } from "../general/Spinner";
 import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
 import { INPUT_TYPE } from "../../config/config";
-
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+import { Item } from "../general/Item";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { CustomDatePicker } from "../general/CustomDatePicker";
+import { ReverseConfirmationModal } from "../general/ReverseConfirmationModal";
+import { reverseRedemption } from "./actions/redemptionActions";
+import { dateFormatter, dateFormatter3 } from "../../helpers/dateFormatter";
+import Swal from "sweetalert2";
+import { setError, setMessage } from "../general/actions/uiActions";
+import { useDispatch } from "react-redux";
 
 const StyledTabs = withStyles({
 	indicator: {
 		backgroundColor: "pantone300C",
+		height: "3px",
 	},
 })(TabList);
+
+const validationSchema = yup.object({
+	fechaInicial: yup.date().required("Se requiere la fecha inicial").nullable(),
+	fechaFinal: yup
+		.date()
+		.nullable()
+		.required("Se requiere la fecha final")
+		.min(
+			yup.ref("fechaInicial"),
+			"La fecha final debe ser mayor a la fecha inicial"
+		),
+});
 
 export const RedemptionsList = () => {
 	const navigate = useNavigate();
 	const [tabIndex, setTabIndex] = useState("0");
 	const [rows, setRows] = useState([]);
-   const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [show, setShow] = useState(false);
+	const [params, setParams] = useState({});
+	const [openModal, setOpenModal] = useState(false);
+	const handleOpenModal = () => setOpenModal(true);
+	const handleCloseModal = () => setOpenModal(false);
+	const [selected, setSelected] = useState({});
+	const dispatch = useDispatch();
 
-	const search = () => {
-		setRows(getRedemptions());
-	};
-
-	const clear = () => {
-		setRows([]);
-		reset();
-	};
-
-	const [
-		formValues,
-		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
-		reset,
-	] = useCustomForm({
+	const initialValues = {
 		codeCliente: "",
 		idPuntoVenta: "",
 		fechaInicial: null,
 		fechaFinal: null,
+	};
+
+	const formik = useFormik({
+		initialValues: initialValues,
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			//console.log(JSON.stringify(values, null, 2));
+			handleSearch();
+		},
+
+		enableReinitialize: true,
 	});
 
-	const { codeCliente, idPuntoVenta, fechaInicial, fechaFinal } = formValues;
+	const handleSearch = async () => {
+		setLoading(true);
+		setShow(false);
+		Object.entries(formik.values).forEach((fv) => {
+			if (fv[1]) {
+				setParams((_params) => {
+					//console.log("fv:", fv);
+					return {
+						..._params,
+						[fv[0]]: fv[1],
+					};
+				});
+			}
+		});
+		const redemptions = await getRedemptions();
+		setRows(redemptions);
+		setLoading(false);
+		setShow(true);
+	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		search();
+	const handleReset = () => {
+		formik.resetForm();
+		setRows([]);
+		setShow(false);
 	};
 
 	const handleTabChange = (e, newValue) => {
@@ -92,12 +129,49 @@ export const RedemptionsList = () => {
 	};
 
 	const handleClick = (params) => {
-		const { field, row } = params;
+		setSelected(params);
+		handleOpenModal();
+		/*
+      const { field, row } = params;
 		if (field === "revertir") {
-         const redem = getRedemptionById(row.id);
-         redem.estado = "Inactivo";
+			const redem = getRedemptionById(row.id);
+			redem.estado = "Inactivo";
 			console.log("Se revirtió el ítem con id:" + row.id);
 		}
+      */
+	};
+
+	const reverseItem = () => {
+		handleCloseModal();
+		setLoading(true);
+		const index = rows.findIndex((item) => item.id === selected.id);
+
+		reverseRedemption(selected)
+			.then((response) => {
+				setLoading(false);
+				//handleReset();
+				dispatch(
+					setMessage({
+						msg: "Registro actualizado exitosamente",
+						severity: "success",
+					})
+				);
+				setSelected(null);
+			})
+			.catch((err) => {
+				setLoading(false);
+				console.log(err);
+				Swal.fire(
+					"Error",
+					err.cause ? err.cause.message : err.message ? err.message : err,
+					"error"
+				);
+				dispatch(setError(err));
+			});
+	};
+
+	const handleCustomChange = (name, val) => {
+		formik.setFieldValue(name, val);
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
@@ -112,7 +186,7 @@ export const RedemptionsList = () => {
 
 	if (loading) {
 		return <Spinner />;
-	}   
+	}
 
 	return (
 		<div
@@ -133,74 +207,68 @@ export const RedemptionsList = () => {
 				}}
 			>
 				<form
+					id="search-form"
 					className="container__form"
-					onSubmit={handleSubmit}
+					onSubmit={formik.handleSubmit}
 				>
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={3}>
 							<Item className="">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha inicial"
-										id="fechaInicial"
-										value={fechaInicial}
-										maxDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaInicial", newValue);
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												className="form-control"
-												error={false}
-                                    variant={INPUT_TYPE}
-											/>
-										)}
-										disabled={false}
-                              
-									/>
-								</LocalizationProvider>
+								<CustomDatePicker
+									label="Fecha inicial *"
+									id="fechaInicial"
+									value={formik.values.fechaInicial}
+									maxDate={new Date()}
+									onChange={(val) => {
+										handleCustomChange("fechaInicial", val);
+									}}
+									error={
+										formik.touched.fechaInicial &&
+										Boolean(formik.errors.fechaInicial)
+									}
+								/>
 							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.fechaInicial &&
+									formik.errors.fechaInicial}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
 							<Item className="">
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha final"
-										id="fechaFinal"
-										value={fechaFinal}
-										maxDate={new Date()}
-										onChange={(newValue) => {
-											handleValueChange("fechaFinal", newValue);
-										}}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												className="form-control"
-												error={false}
-                                    variant={INPUT_TYPE}
-											/>
-										)}
-										disabled={false}
-                              
-									/>
-								</LocalizationProvider>
+								<CustomDatePicker
+									label="Fecha final *"
+									id="fechaFinal"
+									value={formik.values.fechaFinal}
+									maxDate={new Date()}
+									onChange={(val) => {
+										handleCustomChange("fechaFinal", val);
+									}}
+									error={
+										formik.touched.fechaFinal &&
+										Boolean(formik.errors.fechaFinal)
+									}
+								/>
 							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.fechaFinal && formik.errors.fechaFinal}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={4}>
 							<Item className="">
-
-                        <SalesPointsCombo id={idPuntoVenta} handleValueChange={handleValueChange}/>
+								<SalesPointsCombo
+									label="Punto de venta"
+									id="salesPoint"
+									value={formik.values.idPuntoVenta}
+									handleValueChange={(val) => {
+										handleCustomChange("idPuntoVenta", val);
+									}}
+									error={
+										formik.touched.idPuntoVenta &&
+										Boolean(formik.errors.idPuntoVenta)
+									}
+								/>
 							</Item>
 						</Grid>
 
@@ -208,19 +276,25 @@ export const RedemptionsList = () => {
 							<Item className="">
 								<TextField
 									label="Código cliente"
-									error={false}
 									id="codeCliente"
 									type="text"
 									name="codeCliente"
 									autoComplete="off"
 									size="small"
-									value={codeCliente}
-									onChange={handleInputChange}
+									value={formik.values.codeCliente}
+									onChange={formik.handleChange}
 									className="form-control"
-									disabled={false}
-                           variant={INPUT_TYPE}
+									error={
+										formik.touched.codeCliente &&
+										Boolean(formik.errors.codeCliente)
+									}
+									variant={INPUT_TYPE}
 								/>
 							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.codeCliente &&
+									formik.errors.codeCliente}
+							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={12}>
@@ -235,7 +309,7 @@ export const RedemptionsList = () => {
 									Volver
 								</Button>
 								<Button
-									className="mt-3 mx-2 btn-secondary"									
+									className="mt-3 mx-2 btn-secondary"
 									variant="contained"
 									style={{ textTransform: "none" }}
 									startIcon={<SellIcon />}
@@ -248,17 +322,17 @@ export const RedemptionsList = () => {
 									className="mt-3 mx-2 btn-error"
 									startIcon={<CleaningServicesIcon />}
 									style={{ textTransform: "none" }}
-									onClick={clear}
+									onClick={handleReset}
 								>
 									Limpiar
 								</Button>
 								<Button
+									form="search-form"
 									variant="contained"
 									className="mt-3 mx-2 btn-primary"
 									startIcon={<SearchIcon />}
 									style={{ textTransform: "none" }}
 									type="submit"
-									onClick={handleSubmit}
 								>
 									Buscar
 								</Button>
@@ -267,7 +341,9 @@ export const RedemptionsList = () => {
 					</Grid>
 				</form>
 
-				{rows.length > 0 && (
+				{loading && <Spinner />}
+
+				{show && rows.length > 0 && (
 					<div className="topMargin">
 						<Typography variant="h6" className="left-align">
 							{rows.length} Resultados
@@ -296,7 +372,7 @@ export const RedemptionsList = () => {
 										value="1"
 										label="Auditoría"
 										style={{ textTransform: "none" }}
-										icon={<LocationSearchingIcon fontSize="large"/>}
+										icon={<LocationSearchingIcon fontSize="large" />}
 										wrapped
 									/>
 								</StyledTabs>
@@ -310,7 +386,23 @@ export const RedemptionsList = () => {
 						</Box>
 					</div>
 				)}
+
+				{show && rows.length === 0 && (
+					<div className="topMargin">
+						<Typography variant="h6" className="left-align">
+							No se encontraron resultados
+						</Typography>
+					</div>
+				)}
 			</div>
+
+			<ReverseConfirmationModal
+				handleClose={handleCloseModal}
+				handleAction={reverseItem}
+				open={openModal}
+				items={selected?.id}
+				recordDesc={selected?.referencia}
+			/>
 		</div>
 	);
 };

@@ -14,6 +14,7 @@ import { getSalesPoints } from "./selectors/getSalesPoints";
 import { deleteSalesPoint } from "./actions/salesPointActions";
 import Swal from "sweetalert2";
 import { ERROR_MSG, PAGE_SIZE } from "../../config/config";
+import { aFilter } from "../../helpers/aFilter";
 
 export const SalesPointList = () => {
 	const navigate = useNavigate();
@@ -53,16 +54,6 @@ export const SalesPointList = () => {
 		};
 	}, []);
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/home",
-	});
-
-	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
-		navigate,
-		path: "/salesPoint",
-	});
-
 	const deleteItems = () => {
 		handleCloseModal();
 		setLoading(true);
@@ -70,12 +61,13 @@ export const SalesPointList = () => {
 			selectedIds.forEach(async (id) => {
 				await deleteSalesPoint(id);
 			});
+         handleRemoveRows();
 			Swal.fire(
 				"Eliminación exitosa",
 				"Registro(s) exitosamente eliminado(s)",
 				"success"
 			);
-			setRows(rows.filter((r) => !selectedIds.includes(r.id)));
+
 		} catch (e) {
 			Swal.fire(
 				"Error",
@@ -100,9 +92,28 @@ export const SalesPointList = () => {
 		}
 	};
 
+   const handleRemoveRows = () => {
+		const result = aFilter(rows, selectedIds);
+		//console.log("result:", result);
+		setRows(result);
+      setSelectedIds([]);
+	};  
+
+   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+		navigate,
+		path: "/home",
+	});
+
+	const [animatedStyle2, handleClickCreate] = useAnimatedStyle({
+		navigate,
+		path: "/salesPoint",
+	}); 
+
 	if (loading) {
 		return <Spinner />;
 	}
+
+  
 
 	return (
 		<div

@@ -20,9 +20,8 @@ export const getPromosColumns = () => {
    const columns = [
       /*{ field: "id", headerName: "ID", width: 50, headerClassName: 'headerCol',headerAlign: 'center', align: 'center' ,cellClassName: 'clickableCell'},*/
       { 
-         field: "name", 
+         field: "tipoPromo", 
          headerName: "Nombre", 
-         //width: 120, 
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
@@ -34,11 +33,11 @@ export const getPromosColumns = () => {
          field: "idArticulo", 
          headerName: "Artículo", 
          flex:0.8,
-         //width: 100, 
          headerClassName: 'headerCol',
          headerAlign: 'center',
          type: 'number'
       },
+
       {
           field: "fechaInicio", 
           headerName: "F. inicial vigencia", 
@@ -61,57 +60,48 @@ export const getPromosColumns = () => {
          type: 'dateTime',         
          valueFormatter: ({ value }) => dateFormatter(value),          
       },
-      {
-         field: "tipoPromo",
-         headerName: "Tipo prom.",
-         flex:0.8,
-         //width: 120,
-         headerClassName: 'headerCol',
-         headerAlign: 'center',
-         align: 'center',
-         type: 'string'
-      },
+
       {
          field: "pctPromo",
          headerName: "%",
          flex:0.4,
-         //width: 50,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
          type: 'number'
-      },      
+      },    
+
       {
          field: "flagExclusion",
          headerName: "Excluido",
          flex:0.8,
-         //width: 90,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
          type: 'boolean',
       },    
+            
       {
          field: "flagTodos",
          headerName: "Todos",
          flex:0.7,
-         //width: 70,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
          type: 'boolean',
       },    
+
       {
          field: "idPuntoVenta",
          headerName: "Pto de venta",
          flex:1,
-         //width: 120,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'center',
          type: 'string',
-         valueFormatter: ({ value }) => getSalesPointName(value),  
-      },              
+         //valueFormatter: ({ value }) => getSalesPointName(value),  
+      },          
+ 
    ];   
    return columns;   
 }

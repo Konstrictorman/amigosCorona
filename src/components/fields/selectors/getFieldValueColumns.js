@@ -1,5 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { GridActionsCellItem } from '@mui/x-data-grid';
+import { GridActionsCellItem } from "@mui/x-data-grid";
+
 
 export const getFieldValueColumns = (handleDelete) => {
 
@@ -18,7 +19,7 @@ export const getFieldValueColumns = (handleDelete) => {
       {
          field: "valor", 
          headerName: "Valor", 
-         flex:1,
+         //flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
@@ -28,7 +29,7 @@ export const getFieldValueColumns = (handleDelete) => {
       {
          field: "valorPadre", 
          headerName: "Padre", 
-         flex:1,
+         //flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
