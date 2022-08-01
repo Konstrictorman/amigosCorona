@@ -1,4 +1,5 @@
 {
+   "homepage":"https://konstrictorman.github.io/amigosCorona",
   "name": "corona",
   "version": "0.1.0",
   "private": true,
@@ -62,6 +63,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^4.0.0",
     "redux-devtools-extension": "^2.13.9"
   }
 }
