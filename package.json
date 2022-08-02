@@ -1,69 +1,72 @@
 {
-   "homepage":"https://konstrictorman.github.io/amigosCorona",
-  "name": "corona",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
-    "@fontsource/roboto": "^4.5.1",
-    "@mui/icons-material": "^5.2.0",
-    "@mui/lab": "^5.0.0-alpha.54",
-    "@mui/material": "^5.0.6",
-    "@mui/styles": "^5.0.2",
-    "@mui/x-data-grid": "^5.15.0",
-    "@mui/x-date-pickers": "^5.0.0-alpha.7",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "animate.css": "^4.1.1",
-    "axios": "^0.26.1",
-    "date-fns": "^2.25.0",
-    "date-fns-tz": "^1.1.6",
-    "dateformat": "^5.0.2",
-    "formik": "^2.2.9",
-    "moment": "^2.29.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-number-format": "^4.8.0",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "^6.0.2",
-    "react-scripts": "4.0.3",
-    "react-use-file-upload": "^0.9.1",
-    "redux": "^4.1.2",
-    "redux-thunk": "^2.4.1",
-    "sass": "^1.49.9",
-    "sweetalert2": "^11.4.8",
-    "validator": "^13.7.0",
-    "web-vitals": "^1.1.2",
-    "yup": "^0.32.11"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "gh-pages": "^4.0.0",
-    "redux-devtools-extension": "^2.13.9"
-  }
+	"homepage": "https://github.com/Konstrictorman/amigosCorona",
+	"name": "corona",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@emotion/react": "^11.5.0",
+		"@emotion/styled": "^11.3.0",
+		"@fontsource/roboto": "^4.5.1",
+		"@mui/icons-material": "^5.2.0",
+		"@mui/lab": "^5.0.0-alpha.54",
+		"@mui/material": "^5.0.6",
+		"@mui/styles": "^5.0.2",
+		"@mui/x-data-grid": "^5.15.0",
+		"@mui/x-date-pickers": "^5.0.0-alpha.7",
+		"@testing-library/jest-dom": "^5.14.1",
+		"@testing-library/react": "^11.2.7",
+		"@testing-library/user-event": "^12.8.3",
+		"animate.css": "^4.1.1",
+		"axios": "^0.26.1",
+		"date-fns": "^2.25.0",
+		"date-fns-tz": "^1.1.6",
+		"dateformat": "^5.0.2",
+		"formik": "^2.2.9",
+		"moment": "^2.29.3",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-number-format": "^4.8.0",
+		"react-redux": "^7.2.6",
+		"react-router-dom": "^6.0.2",
+		"react-scripts": "4.0.3",
+		"react-use-file-upload": "^0.9.1",
+		"redux": "^4.1.2",
+		"redux-thunk": "^2.4.1",
+		"sass": "^1.49.9",
+		"sweetalert2": "^11.4.8",
+		"validator": "^13.7.0",
+		"web-vitals": "^1.1.2",
+		"yup": "^0.32.11"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+      "build:staging": "env-cmd -f .env.staging npm run build",
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d build",      
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"gh-pages": "^4.0.0",
+		"redux-devtools-extension": "^2.13.9"
+	}
 }
