@@ -146,6 +146,14 @@ export const ReportComponents = ({ idReporte, show }) => {
 		formik.setFieldValue(name, val);
 	};
 
+   const isRequired = (val)=> {
+      if (val) {
+         return "required";
+      } else {
+         return "";
+      }
+   }
+
 	if (loading) {
 		return <Spinner />;
 	}
@@ -161,6 +169,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 					>
 						<Grid container spacing={2}>
 							{params.map((p, index) => {
+                        console.log(p);
 								let css = "half-width";
 								let width = 6;
 								if (params.length === 1 && index === 0) {
@@ -189,7 +198,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={true}
+                                       required={p.requerido}
 												/>
 											</Item>
 											<FormHelperText className="helperText">
@@ -219,7 +228,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={true}
+                                       required={p.requerido}
 												/>
 											</Item>
 											<FormHelperText className="helperText">
@@ -250,7 +259,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={true}
+                                       required={p.requerido}
 												/>
 											</Item>
 											<FormHelperText className="helperText">

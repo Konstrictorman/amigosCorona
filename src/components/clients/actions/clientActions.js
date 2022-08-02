@@ -1,5 +1,5 @@
 import { delay } from "../../../helpers/delay";
-import { addCliente, createReferenciador, deleteClienteById, getEstadosReferenciador, updateCliente, updateReferenciador } from "../api/clientApi";
+import { addCliente, createReferenciador, deleteClienteById, updateCliente, updateReferenciador } from "../api/clientApi";
 import { TIME_OUT } from '../../../config/config';
 import { getClientById } from "../selectors/getClientById";
 import { getPhonesByClientId } from "../selectors/getPhonesByClientId";
@@ -39,11 +39,13 @@ export const loadClientById = async (id) => {
    const referrer = await getReferrerByClientId(id);
    const mails = await getEmailsByClientId(id);
 
-   const ref = referrer[0];
-   const states = await getStatusHistoryByReferrerId(ref?.id);
-   const levels = await getReferrerLevelsByReferrerId(ref?.id);
+   const ref = referrer?referrer:{};
+   ref.states = [];
+   ref.levels = [];
 
-   if (ref) {
+   if (referrer) {
+      const states = await getStatusHistoryByReferrerId(ref?.id);
+      const levels = await getReferrerLevelsByReferrerId(ref?.id);   
       ref.states = states;
       ref.levels = levels;   
    }
