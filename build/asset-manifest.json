@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "./static/css/main.067325cf.chunk.css",
+    "main.js": "./static/js/main.c025847e.chunk.js",
+    "main.js.map": "./static/js/main.c025847e.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.875e7830.js",
+    "runtime-main.js.map": "./static/js/runtime-main.875e7830.js.map",
+    "static/js/2.cf74f358.chunk.js": "./static/js/2.cf74f358.chunk.js",
+    "static/js/2.cf74f358.chunk.js.map": "./static/js/2.cf74f358.chunk.js.map",
+    "index.html": "./index.html",
+    "static/css/main.067325cf.chunk.css.map": "./static/css/main.067325cf.chunk.css.map",
+    "static/js/2.cf74f358.chunk.js.LICENSE.txt": "./static/js/2.cf74f358.chunk.js.LICENSE.txt",
+    "static/media/BENEFICIOS_Mesa de trabajo 1.ba04154d.svg": "./static/media/BENEFICIOS_Mesa de trabajo 1.ba04154d.svg",
+    "static/media/styles.scss": "./static/media/BrandonText-Regular.640ff234.woff2",
+    "static/media/CAMPOS_Mesa de trabajo 1.62b2d8be.svg": "./static/media/CAMPOS_Mesa de trabajo 1.62b2d8be.svg",
+    "static/media/CARGA DE DATOS_Mesa de trabajo 1.607be4aa.svg": "./static/media/CARGA DE DATOS_Mesa de trabajo 1.607be4aa.svg",
+    "static/media/CLIENTES_Mesa de trabajo 1.a979ac3e.svg": "./static/media/CLIENTES_Mesa de trabajo 1.a979ac3e.svg",
+    "static/media/Club_Maestros-01.29868e33.png": "./static/media/Club_Maestros-01.29868e33.png",
+    "static/media/FACTURAS_Mesa de trabajo 1.8fe00b49.svg": "./static/media/FACTURAS_Mesa de trabajo 1.8fe00b49.svg",
+    "static/media/G.PARAMETROS_Mesa de trabajo 1.aa8dd275.svg": "./static/media/G.PARAMETROS_Mesa de trabajo 1.aa8dd275.svg",
+    "static/media/MOVIMIENTOS_Mesa de trabajo 1.0854b5a4.svg": "./static/media/MOVIMIENTOS_Mesa de trabajo 1.0854b5a4.svg",
+    "static/media/PDV_Mesa de trabajo 1.7a7dc1ad.svg": "./static/media/PDV_Mesa de trabajo 1.7a7dc1ad.svg",
+    "static/media/PROMO_Mesa de trabajo 1.40d5f908.svg": "./static/media/PROMO_Mesa de trabajo 1.40d5f908.svg",
+    "static/media/Profesionales-01.5c4548c5.png": "./static/media/Profesionales-01.5c4548c5.png",
+    "static/media/REDENCIONES_Mesa de trabajo 1.2ba5ec4c.svg": "./static/media/REDENCIONES_Mesa de trabajo 1.2ba5ec4c.svg",
+    "static/media/REFERENCIACION_Mesa de trabajo 1.d20034e2.svg": "./static/media/REFERENCIACION_Mesa de trabajo 1.d20034e2.svg",
+    "static/media/REGISTRAR_Mesa de trabajo 1.006a0ccc.svg": "./static/media/REGISTRAR_Mesa de trabajo 1.006a0ccc.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.875e7830.js",
+    "static/js/2.cf74f358.chunk.js",
+    "static/css/main.067325cf.chunk.css",
+    "static/js/main.c025847e.chunk.js"
+  ]
+}
