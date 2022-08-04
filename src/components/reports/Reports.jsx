@@ -1,25 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { styled } from "@mui/material/styles";
+import React, { useState } from "react";
 import {
-	Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
-	IconButton,
-	InputAdornment,
-	Paper,
-	TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
-import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
-import { setError } from "../general/actions/uiActions";
 import { Item } from "../general/Item";
-import { INPUT_TYPE } from "../../config/config";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 

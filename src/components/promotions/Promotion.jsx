@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getPromoById } from "./selectors/getPromoById";
 import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";

@@ -5,20 +5,11 @@ import { getReferrerLevelColumns } from "../selectors/getReferrerLevelColumns";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
-import { useNavigate } from "react-router";
 
-export const ClientBenefitsTab = ({ client, index }) => {
+export const ClientBenefitsTab = ({ client, index, handleClickOut }) => {
 
    const referrerLevelColumns = getReferrerLevelColumns();
 	const rows = client?.referenciador?.levels? client.referenciador.levels: [];
-	const navigate = useNavigate();
-
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/clientList",
-	});
-
 
 	return (
 		<div>

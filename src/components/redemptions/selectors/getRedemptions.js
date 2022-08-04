@@ -1,5 +1,3 @@
-import { TIME_OUT } from "../../../config/config";
-import { delay } from "../../../helpers/delay";
 import { getSalesPointNameById } from "../../salesPoint/selectors/getSalesPointNameById";
 import { getRedenciones } from "../api/redemptionsApi";
 

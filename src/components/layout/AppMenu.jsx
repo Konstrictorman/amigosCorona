@@ -17,6 +17,9 @@ import { ReactComponent as PromotionsIcon } from "../../assets/images/PROMO_Mesa
 import { ReactComponent as RedemptionsIcon } from "../../assets/images/REDENCIONES_Mesa de trabajo 1.svg";
 import { ReactComponent as ReferredIcon } from "../../assets/images/REFERENCIACION_Mesa de trabajo 1.svg";
 import { ReactComponent as RegisterMovementIcon } from "../../assets/images/REGISTRAR_Mesa de trabajo 1.svg";
+import { ReactComponent as ProcessMonitorIcon } from "../../assets/images/PROCESOS-01.svg";
+import { ReactComponent as AmountsIcon } from "../../assets/images/MONTOS-01.svg";
+
 
 
 export const AppMenu = () => {
@@ -73,6 +76,13 @@ export const AppMenu = () => {
             </MenuItem>            
             <Divider />
 
+            <MenuItem onClick={() => {handleMenuClick('/amounts')}}>
+               <ListItemIcon>
+                  <AmountsIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Asignación de montos</ListItemText>
+            </MenuItem>             
+
             <MenuItem onClick={() => {handleMenuClick('/fieldsList')}}>
                <ListItemIcon>
                   <FieldIcon color="primary" fontSize="medium"/>
@@ -100,6 +110,13 @@ export const AppMenu = () => {
                </ListItemIcon>          
                <ListItemText>Facturas</ListItemText>
             </MenuItem>   
+
+            <MenuItem onClick={() => {handleMenuClick('/processMonitor')}}>
+               <ListItemIcon>
+                  <ProcessMonitorIcon color="primary" fontSize="medium"/>
+               </ListItemIcon>          
+               <ListItemText>Monitor de procesos</ListItemText>
+            </MenuItem>              
 
             <MenuItem onClick={() => {handleMenuClick('/movementList')}}>
                <ListItemIcon>

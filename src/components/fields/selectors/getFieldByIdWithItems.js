@@ -1,8 +1,6 @@
 import { getFieldById } from "./getFieldById";
 import { getFieldValuesByFieldId } from "./getFieldValuesByFieldId";
 import { getFieldValueById} from "./getFieldValueById";
-import { TIME_OUT } from "../../../config/config";
-import { delay } from "../../../helpers/delay";
 
 const setPadres = async(hijos) => {
 

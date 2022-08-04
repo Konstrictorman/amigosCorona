@@ -1,4 +1,3 @@
-import { delay } from "../../../helpers/delay";
 import { getPuntosVenta } from "../api/salesPointApi";
 
 /**

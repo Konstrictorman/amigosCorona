@@ -5,18 +5,11 @@ import { getClientPhoneColumns } from "../selectors/getClientPhoneColumns";
 import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
-import { useNavigate } from "react-router";
 
-export const ClientPhonesTab = ({ client, index }) => {
+export const ClientPhonesTab = ({ client, index, handleClickOut }) => {
 	const phoneColumns = getClientPhoneColumns();
 	const rows = client?.telefonosclientes ? client.telefonosclientes : [];
-	const navigate = useNavigate();
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/clientList",
-	});
 
 	return (
 		<div>

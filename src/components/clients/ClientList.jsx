@@ -10,6 +10,7 @@ import { useCustomForm } from "../customHooks/useCustomForm";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { PagedClientDataTable } from "./PagedClientDataTable";
+import { useSelector } from "react-redux";
 
 const Item = styled(Paper)(({ theme }) => ({
 	...theme.typography.body2,
@@ -21,7 +22,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const ClientList = () => {
 	const navigate = useNavigate();
-	const columns = getClientColumns();
+   const {tiposDocumento} = useSelector((state) => state.lists);
+	const columns = getClientColumns(tiposDocumento);
 
 	const [params, setParams] = useState({});
 	const [show, setShow] = useState(false);
@@ -29,9 +31,6 @@ export const ClientList = () => {
 	const [
 		formValues,
 		handleInputChange,
-		handleValueChange,
-		handleCheckChange,
-		handleComplexInputChange,
 		reset,
 	] = useCustomForm({
 		codigoCliente: "",

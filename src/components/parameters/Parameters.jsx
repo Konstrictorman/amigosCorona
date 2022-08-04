@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
 	Button,
-	ClickAwayListener,
 	FormHelperText,
 	Grid,
 	TextField,
 	Typography,
 } from "@mui/material";
-import { Separator } from "../general/Separator";
 import TuneIcon from "@mui/icons-material/Tune";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Spinner } from "../general/Spinner";
@@ -27,7 +25,6 @@ import {
 } from "./actions/parameterActions";
 import { useDispatch } from "react-redux";
 import { setError, setMessage } from "../general/actions/uiActions";
-import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { useNavigate } from "react-router-dom";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import { aFilter } from "../../helpers/aFilter";
@@ -40,8 +37,7 @@ const validationSchema = yup.object({
 	valor: yup.string().required("El valor del parámetro es requerido"),
 });
 
-export const Parameters = ({ isLoading, parameterGroupId }) => {
-	const [value, setValue] = useState(null);
+export const Parameters = ({ isLoading, parameterGroupId, handleClickOut }) => {
 	const [rows, setRows] = useState([]);
 	const [loading, setLoading] = useState(isLoading);
 	const navigate = useNavigate();
@@ -54,7 +50,7 @@ export const Parameters = ({ isLoading, parameterGroupId }) => {
 	const handleDelete = (id) => {
 		setSelectedIds([id]);
 		handleOpenModal();
-		console.log("id para borrar...", id);
+		//console.log("id para borrar...", id);
 	};
 
 	const columns = getParametersColumns(handleDelete);
@@ -225,10 +221,7 @@ export const Parameters = ({ isLoading, parameterGroupId }) => {
 		}
 	};
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/parametersGroupList",
-	});
+
 
 	if (loading) {
 		return <Spinner />;

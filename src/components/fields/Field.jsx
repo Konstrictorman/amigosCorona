@@ -18,7 +18,12 @@ import { Spinner } from "../general/Spinner";
 import Swal from "sweetalert2";
 import { getFieldByIdWithItems } from "./selectors/getFieldByIdWithItems";
 import { saveField } from "./actions/fieldActions";
-import { ERROR_MSG, ID_PROGRAMS, INPUT_TYPE, TIME_OUT } from "../../config/config";
+import {
+	ERROR_MSG,
+	ID_PROGRAMS,
+	INPUT_TYPE,
+	TIME_OUT,
+} from "../../config/config";
 import { getFields } from "./selectors/getFields";
 import { getFieldValuesByFieldId } from "./selectors/getFieldValuesByFieldId";
 import { setError, setMessage } from "../general/actions/uiActions";
@@ -26,10 +31,8 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { FieldValues } from "./FieldValues";
-import { getFieldValueColumns } from "./selectors/getFieldValueColumns";
 import { delay } from "../../helpers/delay";
 import { Item } from "../general/Item";
-
 
 const validationSchema = yup.object({
 	campo: yup
@@ -62,7 +65,7 @@ export const Field = () => {
 	const [disabledFatherFieldcombo, setDisabledFatherFieldcombo] =
 		useState(false);
 	const dispatch = useDispatch();
-	const [disableAddBtn, setDisableAddBtn] = useState(
+	const [disableAddBtn] = useState(
 		id === ID_PROGRAMS ? true : false
 	);
 	const [rows, setRows] = useState([]);
@@ -82,21 +85,20 @@ export const Field = () => {
 		const field = async (id) => {
 			setLoading(true);
 			try {
-            const itemRows = await getFieldValuesByFieldId(id);            
-            setRows(itemRows);	
-            delay(TIME_OUT);
-            const data = await getFieldByIdWithItems(id);
-            setFormState(data);
-            const fields = await getFields();
-            const padres = fields.filter((f) => f.id?.toString() !== id);
-            setPadresCampo(padres);
-            setDisabledFatherFieldcombo(data.idCampoPadre ? false : true);
-            
+				const itemRows = await getFieldValuesByFieldId(id);
+				setRows(itemRows);
+				delay(TIME_OUT);
+				const data = await getFieldByIdWithItems(id);
+				setFormState(data);
+				const fields = await getFields();
+				const padres = fields.filter((f) => f.id?.toString() !== id);
+				setPadresCampo(padres);
+				setDisabledFatherFieldcombo(data.idCampoPadre ? false : true);
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
 			}
-         
+
 			setLoading(false);
 		};
 
@@ -113,16 +115,16 @@ export const Field = () => {
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			//Si no permite padre, el idCampoPadre debe ser null
 			if (!formik.values.permitePadre) {
 				formik.setFieldValue("idCampoPadre", null);
 			}
 			if (id) {
-				console.log("updating...");
+				//console.log("updating...");
 				updateField(values);
 			} else {
-				console.log("creating...");
+				//console.log("creating...");
 				createField(values);
 			}
 		},
@@ -148,14 +150,6 @@ export const Field = () => {
 	}, [formik.values.idCampoPadre]);
 
 
-   const func = (id) => {
-		//setSelectedIds([]);
-		//setSelectedIds([id]);
-		//handleOpenModal();
-		console.log("id para borrar...", id);
-	};
-	const columns = getFieldValueColumns(func);
-
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/fieldsList",
@@ -171,12 +165,14 @@ export const Field = () => {
 
 	const handleFatherChange = (e) => {
 		formik.setFieldValue("idCampoPadre", e.target.value);
-		dispatch(
-			setMessage({
-				msg: "Tenga en cuenta los valores de campo antes de cambiar este valor.  Podría dejar los datos inconsistentes",
-				severity: "warning",
-			})
-		);
+		if (id) {
+			dispatch(
+				setMessage({
+					msg: "Tenga en cuenta los valores de campo antes de cambiar este valor.  Podría dejar los datos inconsistentes",
+					severity: "warning",
+				})
+			);
+		}
 	};
 
 	const updateField = (values) => {
@@ -193,7 +189,7 @@ export const Field = () => {
 			})
 			.catch((e) => {
 				setLoading(false);
-				console.log(e.response);
+				//console.log(e.response);
 				Swal.fire(
 					"Error",
 					e.response?.data?.cause?.cause?.message,
@@ -215,16 +211,17 @@ export const Field = () => {
 					"El registro se creó con éxito",
 					"success"
 				);
+            navigate(`/field?id=${response.id}`);
 			})
 			.catch((err) => {
-				setLoading(false);				
+				setLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
 				dispatch(setError(err));
-			}); 
+			});
 	};
 
 	if (loading) {
@@ -372,7 +369,7 @@ export const Field = () => {
 								startIcon={<CheckIcon />}
 								style={{ textTransform: "none" }}
 								type="submit"
-                        disabled={disableAddBtn}
+								disabled={disableAddBtn}
 							>
 								{formState.id ? "Guardar" : "Crear"}
 							</Button>
@@ -380,15 +377,15 @@ export const Field = () => {
 					</Grid>
 				</form>
 
-				<div>					
-						<FieldValues
-							disabledFatherFieldcombo={disabledFatherFieldcombo}
-							disableActionBtn={disableAddBtn}
-                     rowItems={rows}
-							camposPadre={padresValor}
-							idCampo={id}
-                     tLoading={loading}
-						/>					
+				<div>
+					<FieldValues
+						disabledFatherFieldcombo={disabledFatherFieldcombo}
+						disableActionBtn={disableAddBtn}
+						rowItems={rows}
+						camposPadre={padresValor}
+						idCampo={id}
+						tLoading={loading}
+					/>
 				</div>
 
 				<div>

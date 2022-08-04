@@ -1,5 +1,3 @@
-import { TIME_OUT } from "../../../config/config";
-import { delay } from "../../../helpers/delay";
 import { getValoresCamposById } from "../api/fieldValuesApi";
 
 export const getFieldValueById = async (id) => {

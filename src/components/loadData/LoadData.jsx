@@ -3,13 +3,8 @@ import { styled } from "@mui/material/styles";
 import {
 	Button,
 	Chip,
-	FormControlLabel,
 	FormHelperText,
-	FormLabel,
 	Grid,
-	Paper,
-	Radio,
-	RadioGroup,
 	TextField,
 } from "@mui/material";
 
@@ -56,7 +51,7 @@ export const LoadData = () => {
 		idProcess: "",
 	};
 
-	const [formState, setFormState] = useState(initialValues);
+	//const [formState, setFormState] = useState(initialValues);
 
 	useEffect(() => {
 		const loadIdDef = async () => {
@@ -76,22 +71,19 @@ export const LoadData = () => {
 
 	const {
 		files,
-		fileNames,
-		fileTypes,
 		totalSize,
-		totalSizeInBytes,
-		handleDragDropEvent,
+
 		clearAllFiles,
 		createFormData,
 		setFiles,
-		removeFile,
+
 	} = useFileUpload();
 
 	const formik = useFormik({
-		initialValues: formState,
+		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			handleLoadData();
 		},
 		enableReinitialize: true,
@@ -124,11 +116,11 @@ export const LoadData = () => {
             data.append("idProceso", response.data.id);
             data.append("fileName", formik.values.fileName);
             data.append("file", files[0]);
-            console.log(JSON.stringify(data));
-            const rta = await loadFile(response.data.id, data);
-            console.log(JSON.stringify(rta));
-            const res = await executeProcess(response.data.id);
-            console.log(JSON.stringify(res));
+            //console.log(JSON.stringify(data));
+            await loadFile(response.data.id, data);
+            //console.log(JSON.stringify(rta));
+            await executeProcess(response.data.id);
+            //console.log(JSON.stringify(res));
             Swal.fire(
 					"Proceso lanzado con éxito",
 					`Se generó proceso con id ${response.data.id}`,

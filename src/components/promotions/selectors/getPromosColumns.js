@@ -10,12 +10,12 @@ const dateFormatter = (date) => {
    return d;
    //return dateFormat(date, "dd/mm/yyyy HH:mm:ss");   
 }
-
+/*
 const getSalesPointName = (id) => {
    const sp = getSalesPointById(id);
    return sp?.name? sp.name : '';
 }
-
+*/
 export const getPromosColumns = () => {
    const columns = [
       /*{ field: "id", headerName: "ID", width: 50, headerClassName: 'headerCol',headerAlign: 'center', align: 'center' ,cellClassName: 'clickableCell'},*/

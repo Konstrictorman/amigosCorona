@@ -1,27 +1,21 @@
 import React from "react";
 import queryString from "query-string";
 import {
-	Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
 	IconButton,
 	InputAdornment,
-	MenuItem,
 	TextField,
 	Typography,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { useCustomForm } from "../customHooks/useCustomForm";
-import { getClientByCode } from "../clients/selectors/getClientByCode";
 import UploadIcon from "@mui/icons-material/Upload";
-import { useMemo } from "react";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SellIcon from "@mui/icons-material/Sell";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { getSalesPoints } from "../salesPoint/selectors/getSalesPoints";
 import { useState } from "react";
 import { Item } from "../general/Item";
 import * as yup from "yup";

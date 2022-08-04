@@ -17,7 +17,7 @@ export const getClientes = (size, page) => {
 	return axios(config);
 };
 
-export const searchClientes = (size, page, params) => {
+export const buscarClientes = (size, page, params) => {
    const pParams = processParams(params);
 
 	const config = {

@@ -2,9 +2,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 
 
-export const getFieldValueColumns = (handleDelete) => {
+export const getFieldValueColumns = (handleDelete, valoresCampo) => {
 
 
+   const getFatherName = (val) => {
+
+      
+      if (valoresCampo) {
+         const desc = valoresCampo.filter(vc => vc.id===val);
+         return desc[0].descripcion;
+      } else {
+         return val;
+      }
+   }
 
    const columns = [
       {
@@ -27,13 +37,14 @@ export const getFieldValueColumns = (handleDelete) => {
       },    
          
       {
-         field: "valorPadre", 
+         field: "idValorPadre", 
          headerName: "Padre", 
-         //flex:1,
+         flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
+         valueGetter: ({value})=> getFatherName(value),     
       },     
       {
          field: "actions", 

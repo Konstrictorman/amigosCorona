@@ -6,9 +6,11 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
+   loadDocumentTypes,
    loadGenders,
 	loadLoadTypes,
 	loadPeriods,
+	loadProcessStates,
 	loadProcessTypes,
 	loadPrograms,
 	loadRedemptionTypes,
@@ -24,6 +26,7 @@ import {
 	startLoading,
 } from "../components/general/actions/uiActions";
 import Swal from "sweetalert2";
+import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
@@ -33,15 +36,18 @@ export const AppRouter = () => {
 	useEffect(() => {
 		dispatch(startLoading());
 		try {
-			dispatch(loadStates());
-			dispatch(loadPeriods());
-			dispatch(loadReferredStatus());
-         dispatch(loadPrograms());
-         dispatch(loadGenders());
          dispatch(loadSpecialties());
-         dispatch(loadRedemptionTypes());
+			dispatch(loadStates());
+         dispatch(loadProcessStates());
+         dispatch(loadReferredStatus());
+         dispatch(loadFieldValues());
+         dispatch(loadGenders());
+			dispatch(loadPeriods());
+         dispatch(loadPrograms());
+         dispatch(loadLoadTypes());      
+         dispatch(loadDocumentTypes());
          dispatch(loadProcessTypes());
-         dispatch(loadLoadTypes());
+         dispatch(loadRedemptionTypes());
 			dispatch(removeError());
 		} catch (e) {
 			console.log(e);

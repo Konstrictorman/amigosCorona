@@ -10,8 +10,7 @@ import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { getPromos } from "./selectors/getPromos";
 import Swal from "sweetalert2";
-import { ERROR_MSG, PAGE_SIZE } from "../../config/config";
-import { useRef } from "react";
+import { ERROR_MSG } from "../../config/config";
 import { aFilter } from "../../helpers/aFilter";
 import { deletePromotion } from "./actions/promotionActions";
 
@@ -24,7 +23,6 @@ export const PromotionsList = () => {
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
 	const navigate = useNavigate();
-	const componentMounted = useRef(true);
 
 	useEffect(() => {
 		const getPromotions = async () => {
