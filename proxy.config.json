@@ -1,7 +1,0 @@
-{
-   "/api/*": {
-      "target": "https://spa-dev-fidelizacion-amigoscorona.azuremicroservices.io",
-      "secure": false,
-      "logLevel": "debug"
-   }
-}

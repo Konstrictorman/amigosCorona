@@ -52,5 +52,5 @@ Thumbs.db
 #env
 .DS_Store
 .env.test
-.env.development
-.env.production
+#.env.development
+#.env.production
