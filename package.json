@@ -41,7 +41,7 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-      "build:staging": "CI=false env-cmd -f .env.staging npm run build",
+      "build:staging": "env-cmd -f .env.staging npm run build",
       "predeploy": "npm run build",
       "deploy": "gh-pages -d build",      
 		"test": "react-scripts test",
