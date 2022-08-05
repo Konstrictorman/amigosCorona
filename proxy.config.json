@@ -1,6 +1,6 @@
 {
    "/api/*": {
-      "target": "http://192.168.1.113:8123",
+      "target": "https://spa-dev-fidelizacion-amigoscorona.azuremicroservices.io",
       "secure": false,
       "logLevel": "debug"
    }
