@@ -25,7 +25,6 @@ import {
 } from "./actions/parameterActions";
 import { useDispatch } from "react-redux";
 import { setError, setMessage } from "../general/actions/uiActions";
-import { useNavigate } from "react-router-dom";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import { aFilter } from "../../helpers/aFilter";
 
@@ -40,7 +39,6 @@ const validationSchema = yup.object({
 export const Parameters = ({ isLoading, parameterGroupId, handleClickOut }) => {
 	const [rows, setRows] = useState([]);
 	const [loading, setLoading] = useState(isLoading);
-	const navigate = useNavigate();
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);

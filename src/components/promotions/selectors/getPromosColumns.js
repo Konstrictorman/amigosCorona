@@ -1,5 +1,4 @@
 import { format, parseISO } from 'date-fns';
-import { getSalesPointById } from "../../salesPoint/selectors/getSalesPointById";
 
 const dateFormatter = (date) => {
    let d = parseISO(date);

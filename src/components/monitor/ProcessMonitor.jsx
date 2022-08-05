@@ -13,6 +13,7 @@ import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PagedProcessesDataTable } from "./PagedProcessesDataTable";
 import { useSelector } from "react-redux";
+import { Spinner } from "../general/Spinner";
 
 const validationSchema = yup.object({
 	fechaDesde: yup
@@ -104,6 +105,10 @@ export const ProcessMonitor = () => {
 		navigate,
 		path: "/home",
 	});
+
+   if (loading) {
+      return (<Spinner/>);
+   }
 
 	return (
 		<div

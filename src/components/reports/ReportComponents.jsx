@@ -18,12 +18,13 @@ export const ReportComponents = ({ idReporte, show }) => {
 	const [params, setParams] = useState([]);
 	//const [validationSchema, setValidationSchema] = useState({});
 	const dispatch = useDispatch();
-	const initialValues = {};
+	//const initialValues = {};
    const [formState, setFormState] = useState({});
 
 	useEffect(() => {
 		if (show) {
 			setLoading(true);
+         const initialValues = {};
 			getReportDefinitionsParamsById(idReporte)
 				.then((response) => {
 					setParams(response);

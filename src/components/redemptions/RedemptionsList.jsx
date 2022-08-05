@@ -362,6 +362,7 @@ export const RedemptionsList = () => {
 								<RedemptionBasicDataTab
 									index="0"
 									rows={rows}
+                           params={params}
 									handleClick={handleClick}
 								/>
 								<RedemptionAuditTab index="1" rows={rows} />
