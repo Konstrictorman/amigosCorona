@@ -12,9 +12,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getBillById } from "./selectors/getBillById";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import esLocale from "date-fns/locale/es";
 import { getClientById } from "../clients/selectors/getClientById";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
@@ -31,6 +28,7 @@ import { delay } from "../../helpers/delay";
 import { getArticlesByBillId } from "./selectors/getArticlesByBillId";
 import { Item } from "../general/Item";
 import { DataGrid } from "@mui/x-data-grid";
+import { CustomDatePicker } from "../general/CustomDatePicker";
 
 export const Bill = () => {
 	const navigate = useNavigate();
@@ -153,6 +151,14 @@ export const Bill = () => {
 
 						<Grid item xs={4}>
 							<Item>
+
+                     <CustomDatePicker
+									label="Fecha factura"
+									id="fechaFactura"
+									value={fechaFactura}									
+                           disabled={true}
+								/>
+                        {/**
 								<LocalizationProvider
 									dateAdapter={AdapterDateFns}
 									locale={esLocale}
@@ -175,6 +181,7 @@ export const Bill = () => {
 										disabled={true}
 									/>
 								</LocalizationProvider>
+                         */}                        
 							</Item>
 						</Grid>
 

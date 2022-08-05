@@ -3,9 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 
 import queryString from "query-string";
-import { getClientById } from "./selectors/getClientById";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import {updateReferrer} from "../clients/actions/clientActions";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
@@ -13,9 +11,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
-import { Button, Grid, Paper, Tab, TextField } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
-import CheckIcon from "@mui/icons-material/Check";
+import { Grid, Tab } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import { TabContext, TabList } from "@mui/lab";
@@ -32,8 +28,6 @@ import { Spinner } from "../general/Spinner";
 import { ERROR_MSG } from "../../config/config";
 import { setError } from "../general/actions/uiActions";
 import { useDispatch } from "react-redux";
-
-
 
 
 const StyledTabs = withStyles({
@@ -95,7 +89,7 @@ export const Client = () => {
 
 
 	const [tabIndex, setTabIndex] = useState("0");
-	const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
+	//const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -104,31 +98,7 @@ export const Client = () => {
 
 	const handleTabChange = (e, newValue) => {
 		setTabIndex(newValue);
-		setsaveBtnEnabled(newValue === "0" ? true : false);
-	};
-
-	const handleSave = (e) => {
-		console.log(client);
-      
-		setLoading(true);
-		
-      if (client?.referenciador?.id) {
-			updateReferrer(client.referenciador.id, client.referenciador)
-				.then((response) => {
-					setLoading(false);
-					Swal.fire(
-						"Cambio exitoso",
-						"El registro se modificó con éxito",
-						"success"
-					);
-				})
-				.catch((e) => {
-					setLoading(false);
-					Swal.fire("Error", e.message, "error");
-				});
-		} else {
-         Swal.fire("Warning", "Se requiere un id de la matrícula referenciador para realizar la actualización", "warning");   
-      }
+		//setsaveBtnEnabled(newValue === "0" ? true : false);
 	};
 
 	if (loading) {
@@ -243,11 +213,11 @@ export const Client = () => {
 								index="0"
                         handleClickOut={handleClickOut}
 							/>
-							<ClientPhonesTab client={client} index="1" />
-							<ClientAddressTab client={client} index="2" />
-							<ClientMailsTab client={client} index="3" />
-							<ClientStateHistoryTab client={client} index="4" />
-							<ClientBenefitsTab client={client} index="5" />
+							<ClientPhonesTab client={client} index="1" handleClickOut={handleClickOut}/>
+							<ClientAddressTab client={client} index="2" handleClickOut={handleClickOut}/>
+							<ClientMailsTab client={client} index="3" handleClickOut={handleClickOut}/>
+							<ClientStateHistoryTab client={client} index="4" handleClickOut={handleClickOut}/>
+							<ClientBenefitsTab client={client} index="5" handleClickOut={handleClickOut}/>
 							{/*
                      <ClientAuditTab client={client} index="6" />
       */}

@@ -9,9 +9,13 @@ export const types = {
    uiSetMessage: '[UI] Set Message' ,
    uiRemoveMessage: '[UI] Remove Message',
 
+   fieldValuesSetFieldValues: '[FieldValues] Setting all field values list',
+
+   fieldsSetDocumentTypes:'[Field] Setting document types list',
    fieldsSetGenders: '[Field] Setting genders list',
    fieldsSetLoadTypes: '[Field] Setting load types list',
    fieldsSetPeriods: '[Field] Setting periods list',   
+   fieldsSetProcessStates: '[Field] Setting process states list',
    fieldsSetProcessTypes: '[Field Setting process types list',
    fieldsSetPrograms: '[Field] Setting programs list',
    fieldsSetRedemptionTypes: '[Field] Setting redemption types list',  

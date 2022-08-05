@@ -1,6 +1,6 @@
 import { TIME_OUT } from "../../../config/config";
 import { delay } from "../../../helpers/delay";
-import { addGrupoParametro, addParametro, deleteGrupoParametroById, deleteParametroById, updateGrupoParametro, updateParametro } from "../api/parametersApi"
+import { addGrupoParametro, addParametro, deleteGrupoParametroById, deleteParametroById, updateGrupoParametro } from "../api/parametersApi"
 
 export const deleteParameterGroup = async (id) => {
    await deleteGrupoParametroById(id);

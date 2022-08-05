@@ -39,7 +39,6 @@ export const ParameterGroup = () => {
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const [loading, setLoading] = useState(false);
-	const [flagEstado, setFlagEstado] = useState(false);
 	const dispatch = useDispatch();
 
 	const initialValues = {
@@ -239,7 +238,7 @@ export const ParameterGroup = () => {
 				{id && (
 					
 						<div item xs={12}>
-							<Parameters parameterGroupId={id} isLoading={loading} />
+							<Parameters parameterGroupId={id} isLoading={loading} handleClickOut={handleClickOut} />
 						</div>
             )}
 

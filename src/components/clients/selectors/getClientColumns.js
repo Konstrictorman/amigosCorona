@@ -1,4 +1,15 @@
-export const getClientColumns = () => {
+export const getClientColumns = (tiposDoc) => {
+
+   const getDocumentTypeName = (val) => {
+      if(tiposDoc) {
+         const desc = tiposDoc.filter((td)=> td.valor === val);
+         return desc[0].descripcion;
+      } else {
+         return val;
+      }
+      
+   }
+
 	const columns = [
       {
 			field: "codigoCliente",
@@ -16,17 +27,9 @@ export const getClientColumns = () => {
 			headerClassName: "headerCol",
 			headerAlign: "center",
 			align: "center",
+         valueGetter: ({value})=> getDocumentTypeName(value),     
 		},          
-      /*
-		{
-			field: "documento",
-			headerName: "Documento",
-			flex: 2,
-			headerClassName: "headerCol",
-			headerAlign: "center",
-			align: "center",
-		},
-      */
+
       {
 			field: "nombreCompleto",
 			headerName: "Nombre completo",

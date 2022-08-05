@@ -21,6 +21,7 @@
 		"date-fns": "^2.25.0",
 		"date-fns-tz": "^1.1.6",
 		"dateformat": "^5.0.2",
+		"env-cmd": "^10.1.0",
 		"formik": "^2.2.9",
 		"moment": "^2.29.3",
 		"react": "^17.0.2",

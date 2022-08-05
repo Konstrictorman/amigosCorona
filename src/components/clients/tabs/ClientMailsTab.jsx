@@ -5,19 +5,13 @@ import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { getClientMailColumns } from "../selectors/getClientMailColumns";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
-import { useNavigate } from "react-router";
 
-export const ClientMailsTab = ({client, index}) => {
+
+
+export const ClientMailsTab = ({client, index,handleClickOut}) => {
 
    const rows = client?.emailsCliente;
    const mailColumns = getClientMailColumns();
-	const navigate = useNavigate();
-
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/clientList",
-	});   
   
    return (
 		<div>

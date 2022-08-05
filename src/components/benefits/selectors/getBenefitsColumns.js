@@ -1,9 +1,3 @@
-import { getReferenceProgramById } from "../../referencePrograms/selectors/getReferenceProgramById";
-
-const getReferenceProgramName = (id) => {
-   const rp = getReferenceProgramById(id);
-   return rp?.programa? rp.programa:'';
-}
 
 export const getBenefitsColumns = () => {
    const columns = [
@@ -34,7 +28,6 @@ export const getBenefitsColumns = () => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
-         //valueFormatter: ({value}) => getReferenceProgramName(value),
       },        
       {
          field: "estadoDesc",

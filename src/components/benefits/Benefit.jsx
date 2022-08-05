@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import queryString from "query-string";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
@@ -16,11 +16,10 @@ import {
 import PercentIcon from "@mui/icons-material/Percent";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import { getBenefitById } from "./selectors/getBenefitById";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { ERROR_MSG, INPUT_TYPE } from "../../config/config";
-import { Separator } from "../general/Separator";
 import { Spinner } from "../general/Spinner";
 import Swal from "sweetalert2";
 import { addBenefit, updateBenefit } from "./actions/benefitsAction";

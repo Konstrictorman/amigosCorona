@@ -16,6 +16,8 @@ import { ReactComponent as PromotionsIcon } from "../../assets/images/PROMO_Mesa
 import { ReactComponent as RedemptionsIcon } from "../../assets/images/REDENCIONES_Mesa de trabajo 1.svg";
 import { ReactComponent as ReferredIcon } from "../../assets/images/REFERENCIACION_Mesa de trabajo 1.svg";
 import { ReactComponent as RegisterMovementIcon } from "../../assets/images/REGISTRAR_Mesa de trabajo 1.svg";
+import { ReactComponent as ProcessMonitorIcon } from "../../assets/images/PROCESOS-01.svg";
+import { ReactComponent as AmountsIcon } from "../../assets/images/MONTOS-01.svg";
 
 export const Home = () => {
 	const navigate = useNavigate();
@@ -39,6 +41,13 @@ export const Home = () => {
 						</p>
 					</Grid>
 
+					<HomeCard
+						title="ASIGNACIÓN DE MONTOS"
+						icon={<AmountsIcon className="home__icon" />}
+						handleClick={(e) => {
+							handleClick(e, "/amounts");
+						}}
+					/>
 
 					<HomeCard
 						title="CAMPOS"
@@ -71,6 +80,14 @@ export const Home = () => {
 							handleClick(e, "/billsList");
 						}}
 					/>
+
+               <HomeCard
+						title="MONITOR DE PROCESOS"
+						icon={<ProcessMonitorIcon className="home__icon" />}
+						handleClick={(e) => {
+							handleClick(e, "/processMonitor");
+						}}
+					/>               
 
 					<HomeCard
 						title="MOVIMIENTOS"

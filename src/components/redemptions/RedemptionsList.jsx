@@ -1,29 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
-	Autocomplete,
 	Button,
 	FormHelperText,
 	Grid,
-	Paper,
 	Tab,
 	TextField,
 	Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import { getRedemptions } from "./selectors/getRedemptions";
-import { getRedemptionById } from "./selectors/getRedemptionById";
-import { useCustomForm } from "../customHooks/useCustomForm";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
-	DesktopDatePicker,
-	LocalizationProvider,
 	TabContext,
 	TabList,
 } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import esLocale from "date-fns/locale/es";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
@@ -43,7 +34,6 @@ import * as yup from "yup";
 import { CustomDatePicker } from "../general/CustomDatePicker";
 import { ReverseConfirmationModal } from "../general/ReverseConfirmationModal";
 import { reverseRedemption } from "./actions/redemptionActions";
-import { dateFormatter, dateFormatter3 } from "../../helpers/dateFormatter";
 import Swal from "sweetalert2";
 import { setError, setMessage } from "../general/actions/uiActions";
 import { useDispatch } from "react-redux";
@@ -131,20 +121,13 @@ export const RedemptionsList = () => {
 	const handleClick = (params) => {
 		setSelected(params);
 		handleOpenModal();
-		/*
-      const { field, row } = params;
-		if (field === "revertir") {
-			const redem = getRedemptionById(row.id);
-			redem.estado = "Inactivo";
-			console.log("Se revirtió el ítem con id:" + row.id);
-		}
-      */
+
 	};
 
 	const reverseItem = () => {
 		handleCloseModal();
 		setLoading(true);
-		const index = rows.findIndex((item) => item.id === selected.id);
+		//const index = rows.findIndex((item) => item.id === selected.id);
 
 		reverseRedemption(selected)
 			.then((response) => {
@@ -379,6 +362,7 @@ export const RedemptionsList = () => {
 								<RedemptionBasicDataTab
 									index="0"
 									rows={rows}
+                           params={params}
 									handleClick={handleClick}
 								/>
 								<RedemptionAuditTab index="1" rows={rows} />

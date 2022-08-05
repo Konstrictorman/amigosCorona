@@ -21,9 +21,11 @@ import { Redemption } from '../components/redemptions/Redemption';
 import { FieldsList } from '../components/fields/FieldsList';
 import { Field } from '../components/fields/Field';
 import { LoadData } from '../components/loadData/LoadData';
-import { RecordMovement, Reports } from '../components/reports/Reports';
 import { ParametersGroupList } from '../components/parameters/ParametersGroupList';
 import { ParameterGroup } from '../components/parameters/ParameterGroup';
+import { ProcessMonitor } from '../components/monitor/ProcessMonitor';
+import { Reports } from '../components/reports/Reports';
+import { Amounts } from '../components/amounts/Amounts';
 
 
 export const DashRouter = () => {
@@ -33,6 +35,7 @@ export const DashRouter = () => {
             <div>
                <Routes>
                   <Route exact path="/home" element={<Home/>}/>
+                  <Route exact path="/amounts" element={<Amounts/>}/>
                   <Route exact path="/benefit" element={<Benefit/>}/>
                   <Route exact path="/benefitsList" element={<BenefitsList/>}/>
                   <Route exact path="/billsList" element={<BillsList/>}/>
@@ -45,6 +48,7 @@ export const DashRouter = () => {
                   <Route exact path="/field" element={<Field/>}/>
                   <Route exact path="/parameterGroup" element={<ParameterGroup/>}/>
                   <Route exact path="/parametersGroupList" element={<ParametersGroupList/>}/>
+                  <Route exact path="/processMonitor" element={<ProcessMonitor/>}/>
                   <Route exact path="/promotionsList" element={<PromotionsList/>}/>
                   <Route exact path="/promotion" element={<Promotion/>}/>
                   <Route exact path="/redemptionsList" element={<RedemptionsList/>}/>

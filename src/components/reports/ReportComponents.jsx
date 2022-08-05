@@ -11,109 +11,29 @@ import { getReportDefinitionsParamsById } from "./selectors/getReportDefinitions
 import ReplayCircleFilledIcon from "@mui/icons-material/ReplayCircleFilled";
 import { VistaCombo } from "./VistaCombo";
 import { CustomDatePicker } from "../general/CustomDatePicker";
-import * as yup from "yup";
 
-function Validator(id, validationType, validations) {
-	this.id = id;
-	this.validationType = validationType;
-	this.validations = validations;
-}
-
-const schema = {
-   $schema: "http://json-schema.org/draft-07/schema#",
-   $id: "http://example.com/person.schema.json",
-   title: "Person",
-   description: "A person",
-   type: "object",
-   properties: {
-      id_punto: {
-       type: "string",
-       required: true       
-     },
-     id_prog: {
-       type: "string",
-       required: true,
-     },
-     fecha_ini: {
-       type: "string",
-       required: true
-     },
-     fecha_fin: {
-       type: "string",
-       required: true
-     },
-     referen: {
-       type: "string",
-       required: true       
-     }
-   },
-   required: ["id_punto", "id_prog","fecha_ini","fecha_fin","referen"]
- };
-
- const config = {
-   // for error messages...
-   errMessages: {
-      id_punto: {
-       required: "You must enter an id_punto"
-     },
-     id_prog: {
-       required: "You must enter an id_prog ",
-     },
-     fecha_ini: {
-      required: "You must enter an fecha_ini ",
-    },
-    fecha_fin: {
-      required: "You must enter an fecha_fin ",
-    },
-    referen: {
-      required: "You must enter an referen ",
-    }
-   }
- };
 
 export const ReportComponents = ({ idReporte, show }) => {
 	const [loading, setLoading] = useState(false);
 	const [params, setParams] = useState([]);
 	//const [validationSchema, setValidationSchema] = useState({});
 	const dispatch = useDispatch();
-	const initialValues = {};
+	//const initialValues = {};
+   const [formState, setFormState] = useState({});
 
 	useEffect(() => {
 		if (show) {
 			setLoading(true);
-			//const config = [];
+         const initialValues = {};
 			getReportDefinitionsParamsById(idReporte)
 				.then((response) => {
 					setParams(response);
+               
 					response.forEach((p) => {
 						initialValues[`${p.codParametro}`] = null;
-                  /*
-						let id = p.codParametro;
-						let type = "";
-						if (p.tipoDato === "DATE") {
-							type = "date";
-						} else if (p.ptioDato === "NUMBER") {
-							type = "number";
-						} else {
-							type = "string";
-						}
-						let vals = [
-							{
-								type: "required",
-								params: [`El campo ${p.descripcion} es requerido`],
-							},
-						];
-
-						let obj = new Validator(id, type, vals);
-						config.push(obj);
-                  */
 					});
-
-					//console.log("schema:", JSON.stringify(config, null, 2));
-               //const yupSchema = buildYup(schema, config);
-               //setValidationSchema(yupSchema);
 					setLoading(false);
-					//console.log(initialValues);
+               setFormState(initialValues);
 				})
 				.catch((e) => {
 					setLoading(false);
@@ -126,7 +46,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 		}
 	}, [show, dispatch, idReporte]);
 
-	const [formState, setFormState] = useState(initialValues);
+	
 
 	const formik = useFormik({
 		initialValues: formState,
@@ -137,22 +57,11 @@ export const ReportComponents = ({ idReporte, show }) => {
 		enableReinitialize: true,
 	});
 
-	const handleReset = () => {
-		formik.handleReset();
-		setParams([]);
-	};
 
 	const handleDateChange = (name, val) => {
 		formik.setFieldValue(name, val);
 	};
 
-   const isRequired = (val)=> {
-      if (val) {
-         return "required";
-      } else {
-         return "";
-      }
-   }
 
 	if (loading) {
 		return <Spinner />;

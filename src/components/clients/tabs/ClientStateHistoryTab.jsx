@@ -5,20 +5,13 @@ import { NoRowsOverlay } from "../../general/NoRowsOverlay";
 import { getStatusHistoryColumns } from "../selectors/getStatusHistoryColumns";
 import { Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useAnimatedStyle } from "../../customHooks/useAnimatedStyle";
-import { useNavigate } from "react-router";
 
-export const ClientStateHistoryTab = ({client, index}) => {
+export const ClientStateHistoryTab = ({client, index, handleClickOut}) => {
 
    //console.log(client);
 	const statusHistoryColumns = getStatusHistoryColumns();
 	const rows = client?.referenciador?.states? client.referenciador.states: [];
-	const navigate = useNavigate();
 
-	const [animatedStyle, handleClickOut] = useAnimatedStyle({
-		navigate,
-		path: "/clientList",
-	});   
 
   
 	return (

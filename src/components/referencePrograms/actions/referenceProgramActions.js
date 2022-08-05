@@ -1,6 +1,5 @@
 import { TIME_OUT } from "../../../config/config";
 import { delay } from "../../../helpers/delay";
-import { getSalesPoints } from "../../salesPoint/selectors/getSalesPoints";
 import { addProgramaReferenciacion, addProgramaReferenciacionEstado, addProgramaReferenciacionPuntoVenta, deleteProgramaReferenciacion, deleteProgramaReferenciacionPuntoVenta, updateProgramaReferenciacion } from "../api/referenceProgramsApi";
 
 

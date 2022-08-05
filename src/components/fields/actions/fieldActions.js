@@ -6,7 +6,7 @@ import {
 import { types } from "../../../types/types";
 import { delay } from "../../../helpers/delay";
 import { getFieldValuesByFieldId } from "../selectors/getFieldValuesByFieldId";
-import { ID_GENDERS, ID_LOAD_TYPES, ID_PERIODS, ID_PROCESS_TYPES, ID_PROGRAMS, ID_REDEMPTION_TYPES, ID_REFERRED_STATUS, ID_SPECIALTIES, ID_STATES, TIME_OUT } from "../../../config/config";
+import { ID_DOCUMENT_TYPES, ID_GENDERS, ID_LOAD_TYPES, ID_PERIODS, ID_PROCESS_STATES, ID_PROCESS_TYPES, ID_PROGRAMS, ID_REDEMPTION_TYPES, ID_REFERRED_STATUS, ID_SPECIALTIES, ID_STATES, TIME_OUT } from "../../../config/config";
 import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
 
 
@@ -126,22 +126,46 @@ export const setLoadTypes = (lt) => ({
    payload: lt
 });
 
+export const loadProcessStates = ()=> {
+   return async(dispatch) => {
+      const lt = await getFieldValuesByFieldId(ID_PROCESS_STATES);
+      dispatch(setProcessStates(lt));
+   }   
+}
+
+export const setProcessStates = (lt) => ({
+   type: types.fieldsSetProcessStates,
+   payload: lt
+});
+
+export const loadDocumentTypes = ()=> {
+   return async(dispatch) => {
+      const dt = await getFieldValuesByFieldId(ID_DOCUMENT_TYPES);
+      dispatch(setDocumentTypes(dt));
+   }   
+}
+
+export const setDocumentTypes = (dt) => ({
+   type: types.fieldsSetDocumentTypes,
+   payload: dt
+});
+
 
 export const saveField = async (field) => {
-   console.log("field:",field);
+   //console.log("field:",field);
    const res = await saveCampo(field);
    await delay(TIME_OUT);
-   return res;
+   return res.data;
 }
 
 export const updateField = async (id, field) => {
    const res = await updateCampo(id, field);
    await delay(TIME_OUT);
-   return res;
+   return res.data;
 }
 
 export const deleteField = async (id) => {
    const res = await deleteCampo(id);
    await delay(TIME_OUT);
-   return res;
+   return res.data;
 }

@@ -21,15 +21,18 @@ import { types } from "../../../types/types";
 */
 
 const initialState = {
-	estados: [],
-	periodos: [],
-	estadosReferido: [],
-	programas: [],
-	genders: [],
 	especialidades: [],
-	tiposRedencion: [],
+	estados: [],
+	estadosProceso: [],
+	estadosReferido: [],
+	valoresCampo: [],
+	generos: [],
+	periodos: [],
+	programas: [],
+	tiposCarga: [],
+   tiposDocumento: [],
 	tiposProceso: [],
-   tiposCarga: [],
+	tiposRedencion: [],
 };
 
 export const fieldReducer = (state = { initialState }, action) => {
@@ -37,7 +40,7 @@ export const fieldReducer = (state = { initialState }, action) => {
 		case types.fieldsSetGenders:
 			return {
 				...state,
-				genders: action.payload,
+				generos: action.payload,
 			};
 
 		case types.fieldsSetStates:
@@ -82,10 +85,29 @@ export const fieldReducer = (state = { initialState }, action) => {
 				tiposProceso: action.payload,
 			};
 
-         case types.fieldsSetLoadTypes:
+		case types.fieldsSetLoadTypes:
+			return {
+				...state,
+				tiposCarga: action.payload,
+			};
+
+		case types.fieldsSetProcessStates:
+			return {
+				...state,
+				estadosProceso: action.payload,
+			};
+
+		case types.fieldValuesSetFieldValues:
+			return {
+				...state,
+				valoresCampo: action.payload,
+			};
+
+
+         case types.fieldsSetDocumentTypes:
             return {
                ...state,
-               tiposCarga: action.payload,
+               tiposDocumento: action.payload,
             };         
 
 		default:

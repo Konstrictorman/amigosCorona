@@ -14,7 +14,7 @@ export const launchProcess = async (user, processType, idDefinition) => {
          usuarioActualizacion: user,
          usuarioCreacion: user
       }
-      console.log(JSON.stringify(data,null,2));
+      //console.log(JSON.stringify(data,null,2));
       const res = await lanzarProceso(data);
       delete res._links;
       return res;

@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -24,7 +24,6 @@ export const ReferenceProgramList = () => {
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
-	const componentMounted = useRef(true);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
 	const navigate = useNavigate();

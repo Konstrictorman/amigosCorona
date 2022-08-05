@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
+import React, { useState } from "react";
 import { Separator } from "../general/Separator";
 import { Button, FormHelperText, Grid, TextField } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { ERROR_MSG, INPUT_TYPE, TIME_OUT } from "../../config/config";
+import { INPUT_TYPE } from "../../config/config";
 import { getFieldValueColumns } from "./selectors/getFieldValueColumns";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,14 +14,11 @@ import {
 	updateFieldValue,
 } from "./actions/fieldValuesActions";
 import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setError, setMessage } from "../general/actions/uiActions";
-import { getFieldValuesByFieldId } from "./selectors/getFieldValuesByFieldId";
 import { DataTable } from "../general/DataTable";
 import { aFilter } from "../../helpers/aFilter";
-import { delay } from "../../helpers/delay";
 import { Item } from "../general/Item";
-import { useMemo } from "react";
 
 const validationSchema = yup.object({
 	descripcion: yup
@@ -54,7 +49,6 @@ export const FieldValues = (attrs) => {
 		idValorPadre: "",
 		idCampo: idCampo,
 	};
-	const componentMounted = useRef(true);
 	const [loading, setLoading] = useState(tLoading);
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [formState, setFormState] = useState(initialValues);
@@ -62,64 +56,22 @@ export const FieldValues = (attrs) => {
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
+   const {valoresCampo} = useSelector((state) => state.lists);
 	const dispatch = useDispatch();
 
 	const func = (id) => {
 		//setSelectedIds([]);
 		setSelectedIds([id]);
 		handleOpenModal();
-		console.log("id para borrar...", id);
+		//console.log("id para borrar...", id);
 	};
-	const columns = getFieldValueColumns(func);
-	/*
-	useMemo(async () => {
-		setLoading(true);
-		try {
-         const data = await getFieldValuesByFieldId(idCampo);
-			setRows(data);               
-		} catch (e) {
-			Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
-         
-		}
-		setLoading(false);
-	}, [idCampo]);
-*/
-	/*
-	useEffect(() => {
-		const getrows = async () => {
-			setLoading(true);
-			try {
-				//if (componentMounted.current) {
-               
-					getFieldValuesByFieldId(idCampo).then((response) => {
-						console.log("data:", response);
-						setRows(response);
-					});
+	const columns = getFieldValueColumns(func, valoresCampo);
 
-               const data = await getFieldValuesByFieldId(idCampo);
-               setRows(data);  
-					//await delay(TIME_OUT);
-				//}
-			} catch (e) {
-				//console.log(e);
-				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
-			}
-			setLoading(false);
-		};
-
-		getrows();
-
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
-	}, [idCampo]);
-*/
 	const formik = useFormik({
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			if (formik.values.id === 0) {
 				//console.log("adding...");
 				addItem(values);
