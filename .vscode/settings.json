@@ -9,5 +9,11 @@
       }
    },
    "appService.defaultWebAppToDeploy": "/subscriptions/60f09cfe-152f-4557-81b5-171be323b37b/microsoft.web/sites/subscriptions/60f09cfe-152f-4557-81b5-171be323b37b/resourceGroups/RG-DEV-Fidelizacion/providers/Microsoft.Web/sites/wa-dev-fidelizacion",
-   "appService.deploySubpath": "."
+   "appService.deploySubpath": ".",
+   "azureFunctions.deploySubpath": "api",
+   "azureFunctions.postDeployTask": "npm install (functions)",
+   "azureFunctions.projectLanguage": "JavaScript",
+   "azureFunctions.projectRuntime": "~4",
+   "debug.internalConsoleOptions": "neverOpen",
+   "azureFunctions.preDeployTask": "npm prune (functions)"
 }
