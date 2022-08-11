@@ -4,7 +4,7 @@ import { processParams } from '../../../helpers/processParams';
 
 
 
-export const getMovimientosSeq = (size, page) => {
+export const getRegistroMovimientosSeq = (size, page) => {
 
    const config = {
       method: 'get',
@@ -18,7 +18,7 @@ export const getMovimientosSeq = (size, page) => {
    return axios(config);
 }
 
-export const getMovimientoSeqById = (id) => {
+export const getRegistroMovimientoSeqById = (id) => {
    const config = {
       method: 'get',
       url: `${API_URL}/api/registroMovimientosSeqs/${id}`,
@@ -32,7 +32,7 @@ export const getMovimientoSeqById = (id) => {
    return axios(config);
 }
 
-export const searchMovimientosSeq = (size, page, params) => {
+export const searchRegistroMovimientosSeq = (size, page, params) => {
    const pParams = processParams(params);
 
 	const config = {
@@ -69,7 +69,7 @@ export const getMovimientosResumen = (fInit, fFinal) => {
 }
 
 
-export const getRegistrosMovimiento = ()=> {
+export const getRegistroMovimientos = ()=> {
 	const config = {
 		method: "get",
 		url: `${API_URL}/api/registroMovimientos`,
@@ -87,6 +87,21 @@ export const saveRegistroMovimiento = (rMovement)=> {
 	const config = {
 		method: "post",
 		url: `${API_URL}/api/registroMovimientos`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		data: rMovement,
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);   
+}
+
+export const saveRegistroMovimientoSeq = (rMovement)=> {
+	const config = {
+		method: "post",
+		url: `${API_URL}/api/registroMovimientosSeqs`,
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "*/*",

@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import { INPUT_TYPE } from "../../config/config";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { useNavigate } from "react-router-dom";
-import { Button, FormHelperText, Grid, TextField } from "@mui/material";
+import { Button, FormHelperText, Grid, InputAdornment, TextField } from "@mui/material";
 import { FieldsComboBox } from "../fields/FieldsComboBox";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
@@ -14,11 +14,16 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PagedProcessesDataTable } from "./PagedProcessesDataTable";
 import { useSelector } from "react-redux";
 import { Spinner } from "../general/Spinner";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 const validationSchema = yup.object({
 	fechaDesde: yup
 		.date()
-		.nullable(),
+		.nullable()
+		.max(
+			yup.ref("fechaHasta"),
+			"La fecha inicial debe ser menor a la fecha inicial"
+		),      
 	fechaHasta: yup
 		.date()
 		.nullable()
@@ -32,8 +37,11 @@ const validationSchema = yup.object({
 	nombreProceso: yup.string(),
 	usuario: yup.string()
    .when(["fechaDesde", "fechaHasta", "estadoProceso", "tipoProceso", "idProceso", "nombreProceso"], {
-      is: (fechaDesde,fechaHasta, estadoProceso, tipoProceso, idProceso, nombreProceso) => fechaDesde === null && fechaHasta ===null && estadoProceso ==="" && tipoProceso ==="" && idProceso ==="" && nombreProceso === "",
-      then: yup.string().nullable().required("Se requere al menos del nombre de usuario para realizar la búsqueda")
+      is: (fechaDesde,fechaHasta, estadoProceso, tipoProceso, idProceso, nombreProceso) => {
+         const val = (fechaDesde === null && fechaHasta ===null && estadoProceso ===undefined && tipoProceso ===undefined && idProceso ===undefined && nombreProceso ===undefined);
+         return val;
+      } ,
+      then: yup.string().required("Se requiere al menos del nombre de usuario para realizar la búsqueda")
    }),
 });
 
@@ -59,7 +67,7 @@ export const ProcessMonitor = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			handleSearch();
 		},
 		enableReinitialize: true,
@@ -69,9 +77,9 @@ export const ProcessMonitor = () => {
 		setLoading(true);
 		setShow(false);
 		Object.entries(formik.values).forEach((fv) => {
+         //console.log(fv);
 			if (fv[1]) {
 				setParams((_params) => {
-					//console.log("fv:", fv);
 					return {
 						..._params,
 						[fv[0]]: fv[1],
@@ -79,6 +87,7 @@ export const ProcessMonitor = () => {
 				});
 			}
 		});
+      
 		setLoading(false);
 		setShow(true);
 	};
@@ -93,13 +102,15 @@ export const ProcessMonitor = () => {
 		formik.setFieldValue(name, val);
 	};
 
-	const handleClick = (params) => {
-		const { field, row } = params;
-		console.log(field, row);
-		if (field === "numeroFactura") {
-			//navigate(`/bill?id=${row.id}`);
-		}
-	};
+   const handleIdProcessChange = (val) => {
+      formik.setFieldValue("idProceso", val);
+      formik.setFieldValue("fechaDesde", null);
+      formik.setFieldValue("fechaHasta", null);
+      formik.setFieldValue("estadoProceso", "");
+      formik.setFieldValue("tipoProceso", "");
+      formik.setFieldValue("nombreProceso", "");
+      formik.setFieldValue("usuario", "");
+   }
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -107,7 +118,7 @@ export const ProcessMonitor = () => {
 	});
 
    if (loading) {
-      return (<Spinner/>);
+      return (<Spinner  css="text-center spinner-top-margin"/>);
    }
 
 	return (
@@ -147,6 +158,7 @@ export const ProcessMonitor = () => {
 										formik.touched.estadoProceso &&
 										Boolean(formik.errors.estadoProceso)
 									}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -171,6 +183,7 @@ export const ProcessMonitor = () => {
 										formik.touched.tipoProceso &&
 										Boolean(formik.errors.tipoProceso)
 									}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -188,11 +201,12 @@ export const ProcessMonitor = () => {
 									onChange={(val) => {
 										handleCustomChange("fechaDesde", val);
 									}}
-									maxDate={new Date()}
+									disableFuture={true}
 									error={
 										formik.touched.fechaDesde &&
 										Boolean(formik.errors.fechaDesde)
 									}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -209,11 +223,12 @@ export const ProcessMonitor = () => {
 									onChange={(val) => {
 										handleCustomChange("fechaHasta", val);
 									}}
-									maxDate={new Date()}
+									disableFuture={true}
 									error={
 										formik.touched.fechaHasta &&
 										Boolean(formik.errors.fechaHasta)
 									}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -226,18 +241,29 @@ export const ProcessMonitor = () => {
 								<TextField
 									label="Id de proceso"
 									id="idProceso"
-									type="text"
+									type="number"
 									name="idProceso"
 									autoComplete="off"
 									size="small"
 									value={formik.values.idProceso}
-									onChange={formik.handleChange}
+									onChange={(e)=> {handleIdProcessChange(e.target.value)}}
 									className="form-control"
 									error={
 										formik.touched.idProceso &&
 										Boolean(formik.errors.idProceso)
 									}
 									variant={INPUT_TYPE}
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<LightbulbIcon/>
+											</InputAdornment>
+										),
+									}}
+                           inputProps={{
+                              inputMode: "numeric",
+                              pattern: "[0-9]*",
+                           }}                           
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -262,6 +288,7 @@ export const ProcessMonitor = () => {
 										Boolean(formik.errors.nombreProceso)
 									}
 									variant={INPUT_TYPE}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -287,6 +314,7 @@ export const ProcessMonitor = () => {
 										Boolean(formik.errors.usuario)
 									}
 									variant={INPUT_TYPE}
+                           disabled={formik.values.idProceso.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -329,7 +357,7 @@ export const ProcessMonitor = () => {
 			</div>
 
 			<PagedProcessesDataTable
-				handleClick={handleClick}
+				handleClick={()=>{}}
 				params={params}
 				show={show}
 				estadosProceso={estadosProceso}

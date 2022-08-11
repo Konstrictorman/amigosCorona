@@ -82,3 +82,18 @@ export const ejecutarProceso = (id) => {
    };
    return axios(config);
 }
+
+export const saveParametroProceso = (param) => {
+   const config = {
+		method: "post",
+		url: `${API_URL}/api/parametrosReporte`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		data: param,
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);
+}

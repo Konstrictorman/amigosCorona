@@ -1,7 +1,7 @@
 import {  dateFormatter3 } from "../../../helpers/dateFormatter"
-import { ejecutarProceso, lanzarProceso } from "../api/processApi";
+import { ejecutarProceso, lanzarProceso, saveParametroProceso } from "../api/processApi";
 
-export const launchProcess = async (user, processType, idDefinition) => {
+export const launchProcess = async (user, processType, idDefinition, tipoArchivoSalida) => {
    if (user && processType && idDefinition) {
       const data = {
          id:0,
@@ -9,7 +9,7 @@ export const launchProcess = async (user, processType, idDefinition) => {
          fechaActualizacion: dateFormatter3(new Date()),
          fechaEjecucion: dateFormatter3(new Date()),
          idDefinicionReporte: idDefinition,
-         tipoArchivoSalida: "",
+         tipoArchivoSalida: tipoArchivoSalida?tipoArchivoSalida:"",
          tipoProceso: processType,
          usuarioActualizacion: user,
          usuarioCreacion: user
@@ -30,5 +30,15 @@ export const executeProcess = async (id) => {
       return data;
    } else {
       throw new Error("No se puede ejecutar proceso sin idProceso");
+   }
+}
+
+export const saveProcessParam = async (param) => {
+   if (param) {
+      //console.log(JSON.stringify(param,null,2));
+      const data = await saveParametroProceso(param);
+      return data;
+   } else {
+      throw new Error("No se puede salvar proceso de parámetro vacío");
    }
 }

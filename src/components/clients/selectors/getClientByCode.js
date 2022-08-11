@@ -4,7 +4,9 @@ export const getClientByCode = async (code) => {
 	if (code) {
 		const client = await getClienteByCodigo(code);
 		//console.log(sps:, sp.data);
-		return client.data._embedded.clientes[0];
+      const res = client.data._embedded.clientes[0];
+      delete res._links;
+		return res;
 	} else {
 		return {
 			id: 0,

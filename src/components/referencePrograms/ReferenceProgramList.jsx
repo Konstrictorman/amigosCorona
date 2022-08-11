@@ -109,7 +109,7 @@ export const ReferenceProgramList = () => {
 	});
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (

@@ -234,7 +234,7 @@ export const MovementsList = () => {
 			</div>
 
          {(loading &&
-               (<Spinner/>)
+               (<Spinner  css="text-center spinner-top-margin"/>)
          )}         
 
 			<PagedMovementDataTable

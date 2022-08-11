@@ -81,6 +81,8 @@ export const SalesPointsCombo = (props) => {
 			options={sortedSalesPoints}                  
 			value={selected}
          onChange={handleChange}  
+         
+         isOptionEqualToValue={(option, value) => option.id === value.id}
          filterSelectedOptions
 			renderInput={(params) => (
 				<TextField
@@ -89,7 +91,8 @@ export const SalesPointsCombo = (props) => {
 					className="form-control"
 					size="small"
                label={label}
-               variant={INPUT_TYPE}               
+               variant={INPUT_TYPE}         
+                   
 				/>
 			)}
 		/>

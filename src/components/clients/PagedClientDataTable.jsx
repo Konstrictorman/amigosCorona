@@ -71,7 +71,7 @@ export const PagedClientDataTable = (attrs) => {
 	}, [rowCount, setRowCountState]);
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center"/>;
 	}
 
 	return (
@@ -95,7 +95,8 @@ export const PagedClientDataTable = (attrs) => {
 							autoHeight={true}
 							autoPageSize={false}
 							disableExtendRowFullWidth={true}
-							rowsPerPageOptions={[5]}
+							rowsPerPageOptions={[5,10,25]}
+                     
 							rows={rows}
 							columns={columns}
 							pageSize={pageSize}

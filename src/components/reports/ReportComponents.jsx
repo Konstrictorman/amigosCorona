@@ -1,4 +1,9 @@
-import { Button, FormHelperText, Grid, TextField } from "@mui/material";
+import {
+	Button,
+	FormHelperText,
+	Grid,
+	TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -11,29 +16,34 @@ import { getReportDefinitionsParamsById } from "./selectors/getReportDefinitions
 import ReplayCircleFilledIcon from "@mui/icons-material/ReplayCircleFilled";
 import { VistaCombo } from "./VistaCombo";
 import { CustomDatePicker } from "../general/CustomDatePicker";
+import { FieldsComboBox } from "../fields/FieldsComboBox";
+import { executeProcess, launchProcess, saveProcessParam } from "./actions/reportsActions";
 
-
-export const ReportComponents = ({ idReporte, show }) => {
+export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 	const [loading, setLoading] = useState(false);
 	const [params, setParams] = useState([]);
 	//const [validationSchema, setValidationSchema] = useState({});
 	const dispatch = useDispatch();
 	//const initialValues = {};
-   const [formState, setFormState] = useState({});
+	const [formState, setFormState] = useState({});
 
 	useEffect(() => {
-		if (show) {
+		if (show && idReporte) {
 			setLoading(true);
-         const initialValues = {};
+			const initialValues = {};
 			getReportDefinitionsParamsById(idReporte)
 				.then((response) => {
 					setParams(response);
-               
-					response.forEach((p) => {
+
+					response?.forEach((p) => {
 						initialValues[`${p.codParametro}`] = null;
 					});
+					if (type === "REPOR") {
+						initialValues.tipoArchivoSalida = null;
+					}
+               initialValues.idReporte = idReporte;
 					setLoading(false);
-               setFormState(initialValues);
+					setFormState(initialValues);
 				})
 				.catch((e) => {
 					setLoading(false);
@@ -44,31 +54,81 @@ export const ReportComponents = ({ idReporte, show }) => {
 			setParams([]);
 			setLoading(false);
 		}
-	}, [show, dispatch, idReporte]);
-
-	
+	}, [show, dispatch, idReporte, type]);
 
 	const formik = useFormik({
 		initialValues: formState,
 		//validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
+         //console.log(JSON.stringify(params, null, 2));
+         //const p = params[0];
+         //const q = values[p.codParametro];
+         //console.log(p,q);
+         execute(values);
 		},
 		enableReinitialize: true,
 	});
 
+   const execute = (values) => {
+      setLoading(true);
+      launchProcess("PRUEBA", "PROCE", idReporte, values.tipoArchivoSalida)
+         .then(async(response) => {
+            //console.log(response);
+            const idx = response.data.id;
+            try {
+               params.forEach(async (param) => {
+                  const obj = {
+                     id: 0,
+                     idDefinicionPrametroReporte : param.id,
+                     idProceso: idx,
+                     valorCaracter: null,
+                     valorFecha: null,
+                     valorNumero: null,                  
+                  };         
+                  const val = values[param.codParametro];
+                  if (param.tipoDato === "DATE") {
+                     obj.valorFecha = val;
+                  } else if (param.tipoDato === "NUMBER") {
+                     obj.Numero = val;
+                  } else {
+                     obj.valorCaracter = val;
+                  }
+
+                  await saveProcessParam(obj);
+               });
+               const res = await executeProcess(idx);
+               console.log(res);
+            } catch(e) {
+               Swal.fire("Error", e.message, "error");
+               setLoading(false);
+            }
+            Swal.fire(
+               "Registro exitoso",
+               `Se ejecutó el proceso exitósamente con id ${idx}`,
+               "success"
+            );            
+            setFormState({});
+            
+            handleReset()
+            setLoading(false);
+         })
+         .catch((err)=> {
+				setLoading(false);
+				Swal.fire("Error", err.message, "error");
+         });
+   }
 
 	const handleDateChange = (name, val) => {
 		formik.setFieldValue(name, val);
 	};
 
-
 	if (loading) {
-		return <Spinner />;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (
-		<>
+		<div className="d-flex flex-column">
 			{show && (
 				<div>
 					<form
@@ -78,11 +138,11 @@ export const ReportComponents = ({ idReporte, show }) => {
 					>
 						<Grid container spacing={2}>
 							{params.map((p, index) => {
-                        console.log(p);
+								
 								let css = "half-width";
 								let width = 6;
 								if (params.length === 1 && index === 0) {
-									css += " center";
+									css = "quarter-width center";
 									width = 12;
 								} else if (index % 2 === 0) {
 									css += " right";
@@ -107,7 +167,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={p.requerido}
+													required={p.requerido}
 												/>
 											</Item>
 											<FormHelperText className="helperText">
@@ -137,7 +197,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={p.requerido}
+													required={p.requerido}
 												/>
 											</Item>
 											<FormHelperText className="helperText">
@@ -161,6 +221,7 @@ export const ReportComponents = ({ idReporte, show }) => {
 														formik.values[`${p.codParametro}`]
 													}
 													onChange={formik.handleChange}
+                                       className="form-control"
 													variant={INPUT_TYPE}
 													error={
 														formik.touched[`${p.codParametro}`] &&
@@ -168,17 +229,33 @@ export const ReportComponents = ({ idReporte, show }) => {
 															formik.errors[`${p.codParametro}`]
 														)
 													}
-                                       required={p.requerido}
+													required={p.requerido}
 												/>
 											</Item>
-											<FormHelperText className="helperText">
-												{formik.touched[`${p.codParametro}`] &&
-													formik.errors[`${p.codParametro}`]}
-											</FormHelperText>
 										</Grid>
 									);
 								}
 							})}
+                     {type === "REPOR" &&
+							(<Grid item xs={12} >
+								<Item className="quarter-width center">
+									<FieldsComboBox
+										id="tipoArchivoSalida"
+										label="Formato de salida"
+										value={formik.values.tipoArchivoSalida}
+										type="tiposArchivoSalida"
+										handleChange={(e) => {
+											formik.handleChange(e);
+										}}
+										valueType="valor"
+										labelType="descripcion"
+                              className="form-control"
+                              required
+                              //css="half-width center"
+									/>
+								</Item>
+							</Grid>)
+}
 						</Grid>
 					</form>
 					<div>
@@ -195,6 +272,6 @@ export const ReportComponents = ({ idReporte, show }) => {
 					</div>
 				</div>
 			)}
-		</>
+		</div>
 	);
 };

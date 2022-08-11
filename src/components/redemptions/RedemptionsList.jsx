@@ -168,7 +168,7 @@ export const RedemptionsList = () => {
 	});
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (
@@ -324,7 +324,7 @@ export const RedemptionsList = () => {
 					</Grid>
 				</form>
 
-				{loading && <Spinner />}
+				{loading && <Spinner  css="text-center spinner-top-margin"/>}
 
 				{show && rows.length > 0 && (
 					<div className="topMargin">

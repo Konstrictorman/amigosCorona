@@ -236,10 +236,10 @@ export const getNivelesReferenciadorByIdRef = (id) => {
 	return axios(config);
 };
 
-export const getSaldoReferenciadoByCodigo = (code) => {
+export const getSaldoReferenciadorByDocumento = (doc) => {
 	const config = {
 		method: "get",
-		url: `${API_URL}/api/saldoReferenciador/search/ObtenerSaldo?codCliente=${code}`,
+		url: `${API_URL}/api/saldoReferenciador/search/ObtenerSaldo?documento=${doc}`,
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "*/*",

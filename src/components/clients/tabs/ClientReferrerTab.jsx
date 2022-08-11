@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TabPanel } from "@mui/lab";
-import { Button, FormHelperText, Grid, TextField } from "@mui/material";
+import { Button, FormHelperText, Grid, InputAdornment, TextField } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { FieldsComboBox } from "../../fields/FieldsComboBox";
@@ -14,6 +14,9 @@ import moment from "moment";
 import { createReferrer, updateReferrer } from "../actions/clientActions";
 import { Item } from "../../general/Item";
 import { CustomDatePicker } from "../../general/CustomDatePicker";
+import ChildCareIcon from '@mui/icons-material/ChildCare';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 
 const validationSchema = yup.object({
 	fechaMat: yup.date().required("La fecha de matrícula es requerida"),
@@ -171,7 +174,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
 	};
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 	return (
 		<div>
@@ -297,6 +300,13 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
 										inputMode: "numeric",
 										pattern: "[0-9]*",
 									}}
+                           InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <PhoneAndroidIcon />
+                                </InputAdornment>
+                              ),              
+                              }}                            
 									variant={INPUT_TYPE}
 								/>
 							</Item>
@@ -325,6 +335,13 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
 										inputMode: "numeric",
 										pattern: "[0-9]*",
 									}}
+                           InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <ChildCareIcon />
+                                </InputAdornment>
+                              ),              
+                              }}             
 									variant={INPUT_TYPE}
 								/>
 							</Item>
@@ -350,6 +367,13 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
+                           InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <AirplanemodeActiveIcon />
+                                </InputAdornment>
+                              ),              
+                              }}                             
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -385,7 +409,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut }) => {
 									id="genero"
 									label="Genero *"
 									value={formik.values.genero}
-									type="genders"
+									type="generos"
 									handleChange={(e) => {
 										console.log(e.target.name, e.target.value);
 										formik.handleChange(e);

@@ -43,7 +43,7 @@ export const Reports = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			setShow(true);
 		},
 		enableReinitialize: true,
@@ -53,6 +53,11 @@ export const Reports = () => {
 		formik.resetForm();		
 		setShow(false);
 	};   
+
+   const handleCustomChange = (name, value) => {
+      formik.setFieldValue(name, value);
+      setShow(false);
+   }
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
@@ -77,14 +82,14 @@ export const Reports = () => {
 				>
 					<Grid container spacing={2} rowSpacing={1}>
 						<Grid item xs={6}>
-							<Item className="half-quarter-width right">
+							<Item className="half-width right">
 								<FieldsComboBox
 									id="tipoProceso"
 									label="Tipo de proceso *"
 									value={formik.values.tipoProceso}
 									type="tiposProceso"
 									handleChange={(e) => {
-										formik.handleChange(e);
+										handleCustomChange("tipoProceso",e.target.value);
 									}}
 									valueType="valor"
 									labelType="descripcion"
@@ -101,13 +106,15 @@ export const Reports = () => {
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item className="half-quarter-width">
+							<Item className="half-width">
 								<ReportDefinitionsCombo
 									label="Nombre proceso *"
 									id="idDefinicionReporte"
 									name="idDefinicionReporte"
 									value={formik.values.idDefinicionReporte}
-									handleChange={formik.handleChange}
+									handleChange={(e) => {
+										handleCustomChange("idDefinicionReporte",e.target.value);
+									}}
 									error={
 										formik.touched.idDefinicionReporte &&
 										Boolean(formik.errors.idDefinicionReporte)
@@ -157,6 +164,8 @@ export const Reports = () => {
 				<ReportComponents
 					show={show}
 					idReporte={formik.values.idDefinicionReporte}
+               type={formik.values.tipoProceso}
+               handleReset={handleReset}
 				/>
 			</div>
 		</div>

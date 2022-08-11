@@ -3,7 +3,6 @@ import { IconButton, Modal, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import CloseIcon from "@mui/icons-material/Close";
 import { PagedClientDataTable } from '../clients/PagedClientDataTable';
-import { getClientColumns } from '../clients/selectors/getClientColumns';
 
 const style = {
 	position: "absolute",
@@ -22,10 +21,11 @@ export const SearchTableModal = ({
 	handleAction,
 	handleClose,
 	pageSize,
+   criteria,
    filter,
+   columns
 }) => {
 
-   const columns = getClientColumns();
 
   return (
     <div>
@@ -55,7 +55,7 @@ export const SearchTableModal = ({
                <PagedClientDataTable
 					   columns={columns}
 					   handleClick={handleAction}
-					   params={{codigoCliente: filter}}
+					   params={{[criteria]:filter}}
 					   show={open}
                   pageSize={pageSize}
 				   />

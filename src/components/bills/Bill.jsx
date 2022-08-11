@@ -111,7 +111,7 @@ export const Bill = () => {
 	});
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (
@@ -158,30 +158,7 @@ export const Bill = () => {
 									value={fechaFactura}									
                            disabled={true}
 								/>
-                        {/**
-								<LocalizationProvider
-									dateAdapter={AdapterDateFns}
-									locale={esLocale}
-								>
-									<DesktopDatePicker
-										label="Fecha factura"
-										id="fechaFactura"
-										value={fechaFactura}
-										minDate={new Date()}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												size="small"
-												required
-												className="form-control"
-												error={false}
-												variant={INPUT_TYPE}
-											/>
-										)}
-										disabled={true}
-									/>
-								</LocalizationProvider>
-                         */}                        
+                    
 							</Item>
 						</Grid>
 

@@ -177,7 +177,7 @@ export const Promotion = () => {
 	});
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (
@@ -195,7 +195,7 @@ export const Promotion = () => {
 			<div
 				className="align-self-center"
 				style={{
-					height: 460,
+					
 					width: "80%",
 				}}
 			>
@@ -206,7 +206,7 @@ export const Promotion = () => {
 				>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
-							<Item>
+							<Item className="half-quarter-width right">
 								<TextField
 									label="Nombre de la promoción/exclusión *"
 									id="tipoPromo"
@@ -254,7 +254,7 @@ export const Promotion = () => {
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item>
+							<Item className="half-quarter-width right">
 								<TextField
 									label="Artículo *"
 									id="idArticulo"
@@ -299,7 +299,7 @@ export const Promotion = () => {
 						</Grid>
 
 						<Grid item xs={6}>
-							<Item className=" right">
+							<Item className="half-quarter-width right">
 								<SalesPointsCombo
 									label="Punto de venta *"
 									id={"salesPoint" + resetFlag}

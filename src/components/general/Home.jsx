@@ -30,12 +30,12 @@ export const Home = () => {
 		<>
 			<div>
 				<Grid container spacing={2} className="home">
-					<div item xs={12} className="home__banner">
+					<div item={true} xs={12} className="home__banner">
 						<img src={ClubMaestros} alt="Club Maestros" width="35%" className="home__banner__maestros"/>
 						<img src={Profesionales} alt="Club Maestros" width="25%" className="home__banner__profesionales"/>
 					</div>
 
-					<Grid item xs={12}>
+					<Grid item={true} xs={12}>
 						<p className="home__title">
 							PROGRAMAS DE FIDELIZACIÓN CENTRO CORONA
 						</p>

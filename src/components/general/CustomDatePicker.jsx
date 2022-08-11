@@ -10,7 +10,7 @@ export const CustomDatePicker = (props) => {
    const {required} = props;
 	return (
 		<>
-			<LocalizationProvider dateAdapter={AdapterDateFns} locale={esLocale}>
+			<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={esLocale}>
 				<DesktopDatePicker
 					{...props}
 					renderInput={(params) => (

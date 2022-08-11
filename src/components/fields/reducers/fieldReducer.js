@@ -29,8 +29,9 @@ const initialState = {
 	generos: [],
 	periodos: [],
 	programas: [],
+	tiposArchivoSalida: [],
 	tiposCarga: [],
-   tiposDocumento: [],
+	tiposDocumento: [],
 	tiposProceso: [],
 	tiposRedencion: [],
 };
@@ -49,11 +50,13 @@ export const fieldReducer = (state = { initialState }, action) => {
 				estados: action.payload,
 			};
 
+
 		case types.fieldsSetPeriods:
 			return {
 				...state,
 				periodos: action.payload,
 			};
+
 
 		case types.fieldsSetReferredStatus:
 			return {
@@ -61,11 +64,13 @@ export const fieldReducer = (state = { initialState }, action) => {
 				estadosReferido: action.payload,
 			};
 
+
 		case types.fieldsSetPrograms:
 			return {
 				...state,
 				programas: action.payload,
 			};
+
 
 		case types.fieldsSetSpecialties:
 			return {
@@ -73,11 +78,13 @@ export const fieldReducer = (state = { initialState }, action) => {
 				especialidades: action.payload,
 			};
 
+
 		case types.fieldsSetRedemptionTypes:
 			return {
 				...state,
 				tiposRedencion: action.payload,
 			};
+
 
 		case types.fieldsSetProcessTypes:
 			return {
@@ -85,11 +92,13 @@ export const fieldReducer = (state = { initialState }, action) => {
 				tiposProceso: action.payload,
 			};
 
+
 		case types.fieldsSetLoadTypes:
 			return {
 				...state,
 				tiposCarga: action.payload,
 			};
+
 
 		case types.fieldsSetProcessStates:
 			return {
@@ -97,18 +106,24 @@ export const fieldReducer = (state = { initialState }, action) => {
 				estadosProceso: action.payload,
 			};
 
+
 		case types.fieldValuesSetFieldValues:
 			return {
 				...state,
 				valoresCampo: action.payload,
 			};
 
+		case types.fieldsSetDocumentTypes:
+			return {
+				...state,
+				tiposDocumento: action.payload,
+			};
 
-         case types.fieldsSetDocumentTypes:
-            return {
-               ...state,
-               tiposDocumento: action.payload,
-            };         
+		case types.fieldsSetOutputFiletypes:
+			return {
+				...state,
+				tiposArchivoSalida: action.payload,
+			};
 
 		default:
 			return state;

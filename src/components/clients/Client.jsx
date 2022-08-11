@@ -7,7 +7,7 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
-
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
@@ -28,6 +28,7 @@ import { Spinner } from "../general/Spinner";
 import { ERROR_MSG } from "../../config/config";
 import { setError } from "../general/actions/uiActions";
 import { useDispatch } from "react-redux";
+import { ClientAuditTab } from "./tabs/ClientAuditTab";
 
 
 const StyledTabs = withStyles({
@@ -102,7 +103,7 @@ export const Client = () => {
 	};
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (
@@ -197,7 +198,7 @@ export const Client = () => {
 									icon={<EmojiEventsIcon fontSize="large" />}
 									wrapped
 								/>
-								{/*
+								
 								<Tab
 									value="6"
 									label="Auditoría"
@@ -205,7 +206,7 @@ export const Client = () => {
 									icon={<LocationSearchingIcon fontSize="large"/>}
 									wrapped
 								/>
-         */}
+         
 							</StyledTabs>
 
 							<ClientReferrerTab
@@ -218,9 +219,8 @@ export const Client = () => {
 							<ClientMailsTab client={client} index="3" handleClickOut={handleClickOut}/>
 							<ClientStateHistoryTab client={client} index="4" handleClickOut={handleClickOut}/>
 							<ClientBenefitsTab client={client} index="5" handleClickOut={handleClickOut}/>
-							{/*
-                     <ClientAuditTab client={client} index="6" />
-      */}
+                     <ClientAuditTab client={referenciador} index="6" handleClickOut={handleClickOut}/>
+
 						</TabContext>
 					</Box>
 				</div>

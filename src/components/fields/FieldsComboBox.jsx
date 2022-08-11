@@ -9,10 +9,12 @@ export const FieldsComboBox = (params) => {
 	const { id, label, value, type, handleChange, valueType, error, labelType } = params;
    const items = useSelector((state) => state.lists[`${type}`]);
 
+   
 
 	return (
-		<div>
+
 			<TextField
+            {...params}
             select
 				label={label}
 				id={id}
@@ -36,7 +38,7 @@ export const FieldsComboBox = (params) => {
             
 				)})}
 			</TextField>
-		</div>
+
 	);
 };
 

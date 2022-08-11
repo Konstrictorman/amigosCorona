@@ -9,7 +9,12 @@ export const getProcessColumns = (handleViewMessages, handleDownload, estadosPro
    const getDescEstado = (val) => {
       if (estadosProceso) {
          const desc = estadosProceso.filter(e=> e.valor === val);
-         return desc[0].descripcion;
+         if (desc[0]) {
+            return desc[0].descripcion;
+         } else {
+            return val;
+         }
+         
       } else {
          return val;
       }
@@ -85,9 +90,9 @@ export const getProcessColumns = (handleViewMessages, handleDownload, estadosPro
 			headerClassName: "headerCol",
          getActions: (params) => [
             <GridActionsCellItem icon={<DownloadIcon/>} label="Descargar" 
-            //disabled={params.row.actionDisabled}
+            disabled={!(params.row.estadoProceso ==="FINA" && params.row.tipoProceso ==="REPOR")}
             onClick={() => {               
-               handleDownload(params.id);
+               handleDownload(params.row);
             }}/>
          ]
 		},

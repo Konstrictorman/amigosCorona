@@ -320,7 +320,7 @@ export const BillsList = () => {
 				</div>
 			</div>
 
-			{loading && <Spinner />}
+			{loading && <Spinner  css="text-center spinner-top-margin"/>}
 
 			<PagedBillDataTable
 				handleClick={handleClick}

@@ -16,7 +16,7 @@ import {
 import PercentIcon from "@mui/icons-material/Percent";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
-import { useDispatch, } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getBenefitById } from "./selectors/getBenefitById";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { ERROR_MSG, INPUT_TYPE } from "../../config/config";
@@ -28,7 +28,6 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Item } from "../general/Item";
 import { FieldsComboBox } from "../fields/FieldsComboBox";
-
 
 const validationSchema = yup.object({
 	nivelBeneficio: yup
@@ -155,8 +154,6 @@ export const Benefit = () => {
 		enableReinitialize: true,
 	});
 
-
-
 	const handleChange = (e) => {
 		setFlagEstado(e.target.checked);
 		formik.setFieldValue("estado", e.target.checked ? "A" : "I");
@@ -199,25 +196,23 @@ export const Benefit = () => {
 				);
 			})
 			.catch((err) => {
-				setLoading(false);				
+				setLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
 				dispatch(setError(err));
-			}); 
+			});
 	};
 
-
-   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/benefitsList",
 	});
 
-
 	if (loading) {
-		return <Spinner />;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (
@@ -269,8 +264,7 @@ export const Benefit = () => {
 
 						<Grid item xs={3}>
 							<Item>
-                        
-                     <FieldsComboBox
+								<FieldsComboBox
 									id="idProgramaReferenciacion"
 									label="Programa *"
 									value={formik.values.idProgramaReferenciacion}
@@ -279,12 +273,12 @@ export const Benefit = () => {
 										formik.handleChange(e);
 									}}
 									valueType="idProgramaReferenciacion"
-                           labelType="valor"
+									labelType="valor"
 									error={
 										formik.touched.idProgramaReferenciacion &&
 										Boolean(formik.errors.idProgramaReferenciacion)
 									}
-								/>                                              
+								/>
 							</Item>
 							<FormHelperText className="helperText">
 								{formik.touched.idProgramaReferenciacion &&
@@ -338,19 +332,11 @@ export const Benefit = () => {
 									formik.errors.descripcion}
 							</FormHelperText>
 						</Grid>
-{/*
-						<Grid item xs={12}>
-							<Separator
-								title="Porcentajes asignados por ventas"
-								icon={<PercentIcon color="white" />}
-							/>
-						</Grid>
-                        */}
-                  
+
 						<Grid item xs={12}>
 							<PercentIcon color="primary" />
 							<Typography variant="caption" className="left-align">
-                     Porcentajes asignados por ventas
+								Porcentajes asignados por ventas
 							</Typography>
 						</Grid>
 

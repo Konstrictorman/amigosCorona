@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 export const useCustomForm = (initialState={}) => {
@@ -42,12 +42,6 @@ export const useCustomForm = (initialState={}) => {
    const reset = (newFormState = initialState) => {
       setFormState(initialState);
    }
-
-   
-   useEffect(() => {
-      console.log(formState)
-   }, [formState])
-
 
    return [formState, handleInputChange, handleValueChange, handleCheckChange, handleComplexInputChange, reset];
 }

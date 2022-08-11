@@ -9,6 +9,7 @@ import {
    loadDocumentTypes,
    loadGenders,
 	loadLoadTypes,
+	loadOutputFileTypes,
 	loadPeriods,
 	loadProcessStates,
 	loadProcessTypes,
@@ -44,6 +45,7 @@ export const AppRouter = () => {
          dispatch(loadGenders());
 			dispatch(loadPeriods());
          dispatch(loadPrograms());
+         dispatch(loadOutputFileTypes());
          dispatch(loadLoadTypes());      
          dispatch(loadDocumentTypes());
          dispatch(loadProcessTypes());
@@ -58,7 +60,7 @@ export const AppRouter = () => {
 	}, [dispatch]);
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (

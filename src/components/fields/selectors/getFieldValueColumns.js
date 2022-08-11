@@ -10,7 +10,11 @@ export const getFieldValueColumns = (handleDelete, valoresCampo) => {
       
       if (valoresCampo) {
          const desc = valoresCampo.filter(vc => vc.id===val);
-         return desc[0].descripcion;
+         if (desc[0]) {
+            return desc[0].descripcion;
+         } else {
+            return val;
+         }
       } else {
          return val;
       }

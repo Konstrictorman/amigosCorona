@@ -1,9 +1,28 @@
 import React, { useState } from "react";
-import { Separator } from "../general/Separator";
-import { Button, FormHelperText, Grid, TextField } from "@mui/material";
+import {
+	Button,
+	FormHelperText,
+	Grid,
+	TextField,
+	Typography,
+} from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { INPUT_TYPE } from "../../config/config";
+import {
+	ID_DOCUMENT_TYPES,
+	ID_GENDERS,
+	ID_LOAD_TYPES,
+	ID_OUTPUT_FILE_TYPES,
+	ID_PERIODS,
+	ID_PROCESS_STATES,
+	ID_PROCESS_TYPES,
+	ID_PROGRAMS,
+	ID_REDEMPTION_TYPES,
+	ID_REFERRED_STATUS,
+	ID_SPECIALTIES,
+	ID_STATES,
+	INPUT_TYPE,
+} from "../../config/config";
 import { getFieldValueColumns } from "./selectors/getFieldValueColumns";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -11,6 +30,7 @@ import { DeleteConfirmationModal } from "../general/DeleteConfirmationModal";
 import {
 	addFieldValue,
 	deleteFieldValue,
+	loadFieldValues,
 	updateFieldValue,
 } from "./actions/fieldValuesActions";
 import Swal from "sweetalert2";
@@ -19,15 +39,29 @@ import { setError, setMessage } from "../general/actions/uiActions";
 import { DataTable } from "../general/DataTable";
 import { aFilter } from "../../helpers/aFilter";
 import { Item } from "../general/Item";
+import {
+	loadDocumentTypes,
+	loadGenders,
+	loadLoadTypes,
+	loadOutputFileTypes,
+	loadPeriods,
+	loadProcessStates,
+	loadProcessTypes,
+	loadPrograms,
+	loadRedemptionTypes,
+	loadReferredStatus,
+	loadSpecialties,
+	loadStates,
+} from "./actions/fieldActions";
 
 const validationSchema = yup.object({
 	descripcion: yup
 		.string("descripcion")
-		.min(4, "El nombre del ítem debe tener al menos 4 caracteres")
+		.min(3, "El nombre del ítem debe tener al menos 3 caracteres")
 		.required("El nombre del ítem es requerido"),
 	valor: yup
 		.string("valor")
-		.min(4, "El valor del ítem debe tener al menos 4 caracteres")
+		.min(3, "El valor del ítem debe tener al menos 3 caracteres")
 		.required("El valor del ítem es requerido"),
 });
 
@@ -56,7 +90,7 @@ export const FieldValues = (attrs) => {
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
-   const {valoresCampo} = useSelector((state) => state.lists);
+	const { valoresCampo } = useSelector((state) => state.lists);
 	const dispatch = useDispatch();
 
 	const func = (id) => {
@@ -105,6 +139,7 @@ export const FieldValues = (attrs) => {
 		addFieldValue(param)
 			.then((response) => {
 				const data = response.data;
+				console.log(response);
 				const newFieldValue = {
 					...param,
 					id: data.id,
@@ -113,6 +148,7 @@ export const FieldValues = (attrs) => {
 				};
 
 				setRows([...rows, newFieldValue]);
+				reloadLists();
 				setLoading(false);
 				//setDisableValueFields(false);
 				reset();
@@ -124,14 +160,15 @@ export const FieldValues = (attrs) => {
 				);
 			})
 			.catch((err) => {
-				setLoading(false);				
+				console.log(err);
+				setLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
 				dispatch(setError(err));
-			}); 
+			});
 	};
 
 	const updateItem = (values) => {
@@ -166,14 +203,14 @@ export const FieldValues = (attrs) => {
 				);
 			})
 			.catch((err) => {
-				setLoading(false);				
+				setLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
 				dispatch(setError(err));
-			}); 
+			});
 	};
 
 	const handleRowChange = (ids) => {
@@ -194,7 +231,8 @@ export const FieldValues = (attrs) => {
 				valor: row.valor,
 				idValorPadre: row.idValorPadre,
 			});
-			if (!disableActionBtn) {//Si se trata de programas de referenciación, inhabilitar siempre el btn de acción
+			if (!disableActionBtn) {
+				//Si se trata de programas de referenciación, inhabilitar siempre el btn de acción
 				rows.forEach((item) => {
 					if (item.id === row.id) {
 						item["actionDisabled"] = false;
@@ -219,9 +257,10 @@ export const FieldValues = (attrs) => {
 		console.log("SelectedIds:", selectedIds);
 		try {
 			selectedIds.forEach(async (element) => {
-				await deleteFieldValue(element);
+				await deleteFieldValue(idCampo, element);
 			});
 			handleRemoveRows(selectedIds);
+			reloadLists();
 			Swal.fire(
 				"Eliminación exitosa",
 				"Registro(s) exitosamente eliminado(s)",
@@ -240,15 +279,60 @@ export const FieldValues = (attrs) => {
 		setLoading(false);
 	};
 
+	const reloadLists = () => {
+		dispatch(loadFieldValues());
+		switch (idCampo) {
+			case ID_DOCUMENT_TYPES:
+				dispatch(loadDocumentTypes());
+				break;
+			case ID_GENDERS:
+				dispatch(loadGenders());
+				break;
+			case ID_LOAD_TYPES:
+				dispatch(loadLoadTypes());
+				break;
+			case ID_OUTPUT_FILE_TYPES:
+				dispatch(loadOutputFileTypes());
+				break;
+			case ID_PERIODS:
+				dispatch(loadPeriods());
+				break;
+			case ID_PROCESS_STATES:
+				dispatch(loadProcessStates());
+				break;
+			case ID_PROCESS_TYPES:
+				dispatch(loadProcessTypes());
+				break;
+			case ID_PROGRAMS:
+				dispatch(loadPrograms());
+				break;
+			case ID_REDEMPTION_TYPES:
+				dispatch(loadRedemptionTypes());
+				break;
+			case ID_REFERRED_STATUS:
+				dispatch(loadReferredStatus());
+				break;
+			case ID_SPECIALTIES:
+				dispatch(loadSpecialties());
+				break;
+			case ID_STATES:
+				dispatch(loadStates());
+				break;
+
+			default:
+				break;
+		}
+	};
+
 	return (
 		<div>
 			<form className="container__form" onSubmit={formik.handleSubmit}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
-						<Separator
-							title="Valores campo"
-							icon={<SettingsIcon color="white" />}
-						/>
+						<SettingsIcon color="primary" />
+						<Typography variant="caption" className="left-align">
+							Valores campo
+						</Typography>
 					</Grid>
 
 					<Grid item xs={3} className="">

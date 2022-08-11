@@ -1,15 +1,9 @@
 import { addValorCampo, deleteValorCampoById, getValoresCampos, updateValorCampo } from "../api/fieldValuesApi"
 import { types } from "../../../types/types";
 
-export const addFieldValue = async (fieldValue)=> {
-   const res = await addValorCampo(fieldValue);
-   //await delay(TIME_OUT);
-   return res;
-}
 
-export const deleteFieldValue = async(id) => {
-   const res = await deleteValorCampoById(id);
-   //await delay(TIME_OUT);   
+export const addFieldValue = async(fieldValue) => {
+   const res = await addValorCampo(fieldValue);
    return res;
 }
 
@@ -34,7 +28,12 @@ export const setFieldValues = (fv) => ({
 
 export const loadFieldValues = () => {
    return async(dispatch) => {
-      const genders = await getFieldValues();
-      dispatch(setFieldValues(genders));
+      const fieldValues = await getFieldValues();
+      dispatch(setFieldValues(fieldValues));
    }
+}
+
+export const deleteFieldValue = async(idCampo, idValorCampo) => {
+   const res = await deleteValorCampoById(idValorCampo);
+   return res;
 }

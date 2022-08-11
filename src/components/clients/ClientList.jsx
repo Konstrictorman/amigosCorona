@@ -2,23 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import { getClientColumns } from "./selectors/getClientColumns";
-import { Button, Grid, Paper, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { styled } from "@mui/material/styles";
 import { INPUT_TYPE, PAGE_SIZE } from "../../config/config";
 import { useCustomForm } from "../customHooks/useCustomForm";
 import SearchIcon from "@mui/icons-material/Search";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { PagedClientDataTable } from "./PagedClientDataTable";
 import { useSelector } from "react-redux";
-
-const Item = styled(Paper)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: 0,
-	paddingTop: theme.spacing(0.7),
-	textAlign: "left",
-	color: theme.palette.text.secondary,
-}));
+import { Item } from "../general/Item";
 
 export const ClientList = () => {
 	const navigate = useNavigate();

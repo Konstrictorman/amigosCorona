@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import UploadIcon from "@mui/icons-material/Upload";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import SellIcon from "@mui/icons-material/Sell";
-import ClearIcon from "@mui/icons-material/Clear";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { useState } from "react";
 import { Item } from "../general/Item";
@@ -29,19 +29,18 @@ import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
 import SearchIcon from "@mui/icons-material/Search";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { FieldsComboBox } from "../fields/FieldsComboBox";
-import { getReferrerByCode } from "../clients/selectors/getReferrerByCode";
-import { useDispatch } from "react-redux";
+import { getReferrerBalanceByDocument } from "../clients/selectors/getReferrerBalanceByDocument";
+import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../general/actions/uiActions";
+import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
+import { CustomNumberFormat } from "../general/CustomNumberFormat";
 
 const validationSchema = yup.object({
-	codReferrer: yup
+	documento: yup
 		.string()
 		.min(6, "El código del referenciador debe tener al menos 6 caracteres")
 		.required("El código del referenciador es requerido"),
-});
-
-const validationSchema2 = yup.object({
-	redemptionType: yup.string().required("El tipo de redención es requerido"),
+	redemptionType: yup.string().nullable().required("El tipo de redención es requerido"),
 	monto: yup
 		.number()
 		.min(0, "El monto de la redención no puede tener valores negativos")
@@ -59,25 +58,22 @@ export const Redemption = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
+   const [show, setShow] = useState(false);
    const dispatch = useDispatch();
+   const {tiposDocumento} = useSelector((state) => state.lists);
+	const columns = getClientColumns2(tiposDocumento);
 
 	const initialValues = {
 		id: 0,
-		codReferrer: "",
-	};
-
-	const [formState, setFormState] = useState(initialValues);
-
-	const initialValues2 = {
-		id: 0,
+		documento: "",
 		redemptionType: null,
 		monto: "",
 		idPuntoVenta: "",
 		referencia: "",
-		newBalance: "",
+		saldo: 0,      
 	};
 
-	const [formState2, setFormState2] = useState(initialValues2);
+	const [formState, setFormState] = useState(initialValues);
 
 	useEffect(() => {
 		const getRedemption = async (id) => {
@@ -86,72 +82,73 @@ export const Redemption = () => {
 				if (id) {
 					const data = await getRedemptionById(id);
 					setFormState({ ...data });
-					setFormState2({ ...data });
+               setShow(true);
 				}
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
 			}
-
-			setLoading(false);
 		};
+      
 		getRedemption(id);
+      setLoading(false);
 	}, [id]);
 
 	const formik = useFormik({
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			//console.log(JSON.stringify(values, null, 2));
-			loadReferrerInfo(values.codReferrer);
+			console.log(JSON.stringify(values, null, 2));			
 		},
 		enableReinitialize: true,
 	});
 
-	const formik2 = useFormik({
-		initialValues: formState2,
-		validationSchema: validationSchema2,
-		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
-			//loadReferrerInfo(values);
-		},
-		enableReinitialize: true,
-	});
 
-	const loadReferrerInfo = (values) => {
-		//console.log("loading info");
-		getReferrerByCode(values)
-         .then((response) => {
-            setReferrer(response);
-         })
-         .catch((err)=> {
-				Swal.fire(
-					"Error",
-					`No es posible realizar la redención para el código ${values}`,
-					"error"
-				);
-				dispatch(setError(err));
-         });
-      console.log(JSON.stringify(referrer,null,2));
-		
-	};
-
-
+   const handleReset = () => {
+      formik.resetForm();
+      setShow(false);
+   }
 
 	const handleCustomChange = (name, val) => {
 		//console.log("Cambiando valores:", name, val);
-		formik2.setFieldValue(name, val);
+		formik.setFieldValue(name, val);
 	};
 
 
 
 	const handleClick = (params) => {
+      setLoading(true);
 		const { field, row } = params;
 		console.log("click on ", row);
-		if (field === "codigoCliente") {
-			formik.setFieldValue("codReferrer", row.codigoCliente);
+		if (field === "documento") {
+			formik.setFieldValue("documento", row.documento);
 		}
+      loadReferrerBalance(row.documento);
 		handleCloseModal();
+      setLoading(false);
+	};
+
+   const loadReferrerBalance = (documento) => {
+		getReferrerBalanceByDocument(documento)
+         .then((response) => {
+            //console.log(JSON.stringify(response,null,2));   
+            if (response) {              
+               setReferrer(response);               
+               setShow(true);
+            } else {
+               setShow(false);
+            }
+         })
+         .catch((err)=> {
+				Swal.fire(
+					"Error",
+					`El documento ${documento} no es válido para hacer redenciones`,
+					"error"
+				);
+				dispatch(setError(new Error(`Documento ${documento} inválido`)));
+         });
+      
+		
 	};
 
 	const [animatedStyle, handleClickOut] = useAnimatedStyle({
@@ -160,7 +157,7 @@ export const Redemption = () => {
 	});
 
 	if (loading) {
-		return <Spinner />;
+		return <Spinner  css="text-center spinner-top-margin"/>;
 	}
 
 	return (
@@ -183,20 +180,20 @@ export const Redemption = () => {
 					onSubmit={formik.handleSubmit}
 				>
 					<Grid container spacing={2}>
-						<Grid item xs={6}>
-							<Item className="half-quarter-width right">
+						<Grid item xs={12}>
+							<Item className="half-width center">
 								<TextField
-									label="Código referenciador *"
-									id="codReferrer"
+									label="Número documento referenciador *"
+									id="documento"
 									type="text"
-									name="codReferrer"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codReferrer}
+									value={formik.values.documento}
 									onChange={formik.handleChange}
 									error={
-										formik.touched.codReferrer &&
-										Boolean(formik.errors.codReferrer)
+										formik.touched.documento &&
+										Boolean(formik.errors.documento)
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
@@ -206,7 +203,7 @@ export const Redemption = () => {
 												<IconButton
 													onClick={handleOpenModal}
 													disabled={
-														formik.values.codReferrer.length < 4
+														formik.values.documento?.length < 4
 													}
 												>
 													<SearchIcon />
@@ -217,30 +214,17 @@ export const Redemption = () => {
 								/>
 							</Item>
 							<FormHelperText className="helperText right">
-								{formik.touched.codReferrer &&
-									formik.errors.codReferrer}
+								{formik.touched.documento &&
+									formik.errors.documento}
 							</FormHelperText>
-						</Grid>
-
-						<Grid item xs={6} className="left-align">
-							<Button
-								color="primary"
-								variant="contained"
-								className="mt-2"
-								startIcon={<UploadIcon />}
-								style={{ textTransform: "none" }}
-								type="submit"
-							>
-								Cargar información
-							</Button>
 						</Grid>
 					</Grid>
 				</form>
-				{referrer && (
+				{show && (
 					<form
 						id="redemption-form"
 						className="container__form"
-						onSubmit={formik2.handleSubmit}
+						onSubmit={formik.handleSubmit}
 					>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
@@ -259,7 +243,7 @@ export const Redemption = () => {
 										name="name"
 										autoComplete="off"
 										size="small"
-										value={referrer.nombre}
+										value={referrer?.nombre}
 										//onChange={handleInputChange}
 										error={false}
 										className="form-control"
@@ -278,7 +262,7 @@ export const Redemption = () => {
 										name="nequi"
 										autoComplete="off"
 										size="small"
-										value={referrer.celNequi}
+										value={referrer?.celNequi}
 										//onChange={handleInputChange}
 										error={false}
 										className="form-control"
@@ -297,13 +281,14 @@ export const Redemption = () => {
 										name="newBalance"
 										autoComplete="off"
 										size="small"
-										value={referrer.saldo}
+										value={referrer?.saldo}
 										//onChange={handleInputChange}
 										error={false}
 										className="form-control"
 										variant={INPUT_TYPE}
 										disabled={true}
 										InputProps={{
+                                 inputComponent: CustomNumberFormat,                                 
 											startAdornment: (
 												<InputAdornment position="start">
 													$
@@ -328,7 +313,7 @@ export const Redemption = () => {
 									value={formik.values.redemptionType}
 									type="tiposRedencion"
 									handleChange={(e) => {
-										formik.handleChange(e);
+										handleCustomChange("tipoProceso",e.target.value);
 									}}
 									valueType="valor"
                            labelType="valor"
@@ -339,8 +324,8 @@ export const Redemption = () => {
 								/>             
 								</Item>
 								<FormHelperText className="helperText">
-									{formik2.touched.redemptionType &&
-										formik2.errors.redemptionType}
+									{formik.touched.redemptionType &&
+										formik.errors.redemptionType}
 								</FormHelperText>
 							</Grid>
 
@@ -349,19 +334,20 @@ export const Redemption = () => {
 									<TextField
 										label="Monto redención *"
 										id="monto"
-										type="number"
+										type="text"
 										name="monto"
 										autoComplete="off"
 										size="small"
-										value={formik2.values.monto}
-										onChange={formik2.handleChange}
+										value={formik.values.monto}
+										onChange={formik.handleChange}
 										error={
-											formik2.touched.monto &&
-											Boolean(formik2.errors.monto)
+											formik.touched.monto &&
+											Boolean(formik.errors.monto)
 										}
 										className="form-control"
 										variant={INPUT_TYPE}
 										InputProps={{
+                                 inputComponent: CustomNumberFormat,
 											startAdornment: (
 												<InputAdornment position="start">
 													$
@@ -371,7 +357,7 @@ export const Redemption = () => {
 									/>
 								</Item>
 								<FormHelperText className="helperText">
-									{formik2.touched.monto && formik2.errors.monto}
+									{formik.touched.monto && formik.errors.monto}
 								</FormHelperText>
 							</Grid>
 
@@ -380,19 +366,19 @@ export const Redemption = () => {
 									<SalesPointsCombo
 										label="Punto de venta *"
 										id={"idPuntoVenta"}
-										value={formik2.values.idPuntoVenta}
+										value={formik.values.idPuntoVenta}
 										handleValueChange={(val) => {
 											handleCustomChange("idPuntoVenta", val);
 										}}
 										error={
-											formik2.touched.idPuntoVenta &&
-											Boolean(formik2.errors.idPuntoVenta)
+											formik.touched.idPuntoVenta &&
+											Boolean(formik.errors.idPuntoVenta)
 										}
 									/>
 								</Item>
 								<FormHelperText className="helperText">
-									{formik2.touched.idPuntoVenta &&
-										formik2.errors.idPuntoVenta}
+									{formik.touched.idPuntoVenta &&
+										formik.errors.idPuntoVenta}
 								</FormHelperText>
 							</Grid>
 
@@ -405,8 +391,8 @@ export const Redemption = () => {
 										name="referencia"
 										autoComplete="off"
 										size="small"
-										value={formik2.values.referencia}
-										onChange={formik2.handleChange}
+										value={formik.values.referencia}
+										onChange={formik.handleChange}
 										error={
 											formik.touched.referencia &&
 											Boolean(formik.errors.referencia)
@@ -426,17 +412,18 @@ export const Redemption = () => {
 									<TextField
 										label="Nuevo saldo"
 										id="newBalance"
-										type="number"
+										type="text"
 										name="newBalance"
 										autoComplete="off"
 										size="small"
-										value={formik2.values.newBalance}
-										onChange={formik2.handleChange}
+										value={referrer?.saldo - parseInt(formik.values.monto)}
+										onChange={formik.handleChange}
 										error={false}
 										className="form-control"
                               disabled={true}
 										variant={INPUT_TYPE}
 										InputProps={{
+                                 inputComponent: CustomNumberFormat,
 											startAdornment: (
 												<InputAdornment position="start">
 													$
@@ -446,23 +433,32 @@ export const Redemption = () => {
 									/>
 								</Item>
 								<FormHelperText className="helperText">
-									{formik2.touched.newBalance &&
-										formik2.errors.newBalance}
+									{formik.touched.newBalance &&
+										formik.errors.newBalance}
 								</FormHelperText>
 							</Grid>
 						</Grid>
 					</form>
 				)}
 				<div>
-					<Button
-						color="error"
+            <Button
+						className="mt-3 mx-2 btn-warning"
 						variant="contained"
-						className="mt-3 mx-2"
-						startIcon={<ClearIcon />}
 						style={{ textTransform: "none" }}
+						startIcon={<ArrowBackIcon />}
 						onClick={handleClickOut}
 					>
-						Cancelar
+						Volver
+					</Button>
+
+					<Button
+						variant="contained"
+						className="mt-3 mx-2 btn-error"
+						startIcon={<CleaningServicesIcon />}
+						style={{ textTransform: "none" }}
+						onClick={handleReset}
+					>
+						Limpiar
 					</Button>
 					<Button
 						form="redemption-form"
@@ -482,8 +478,10 @@ export const Redemption = () => {
 					handleClose={handleCloseModal}
 					handleAction={handleClick}
 					open={openModal}
-					filter={formik.values.codReferrer}
+               criteria="documento"
+					filter={formik.values.documento}
 					pageSize={10}
+               columns={columns}
 					//items={selectedIds}
 				></SearchTableModal>
 			</div>

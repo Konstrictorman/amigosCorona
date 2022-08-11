@@ -20,3 +20,38 @@ export const buscarProcesos = (size, page, params) => {
    
 	return axios(config);
 };
+
+export const getMensajesByProcesoId = (id) => {
+   
+	const config = {
+		method: "get",
+		url:
+			`${API_URL}/api/procesos/${id}/mensajesProceso`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+   
+	return axios(config);
+};
+
+export const descargarArchivoByIdProceso = (id) => {
+   
+	const config = {
+		method: "get",
+		url:
+			`${API_URL}/obtenerArchivoReporte/${id}`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+      responseType: 'blob',
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+   
+	return axios(config);
+};
