@@ -76,6 +76,7 @@ export const FieldValues = (attrs) => {
 	} = attrs;
 
 	//console.log("rowItems:",rowItems);
+   console.log("hijos:", JSON.stringify(rowItems,null,2));
 	const initialValues = {
 		id: 0,
 		descripcion: "",
@@ -83,6 +84,8 @@ export const FieldValues = (attrs) => {
 		idValorPadre: "",
 		idCampo: idCampo,
 	};
+
+
 	const [loading, setLoading] = useState(tLoading);
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [formState, setFormState] = useState(initialValues);
