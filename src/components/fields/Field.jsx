@@ -22,7 +22,6 @@ import {
 	ERROR_MSG,
 	ID_PROGRAMS,
 	INPUT_TYPE,
-	TIME_OUT,
 } from "../../config/config";
 import { getFields } from "./selectors/getFields";
 import { getFieldValuesByFieldId } from "./selectors/getFieldValuesByFieldId";
@@ -31,7 +30,6 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { FieldValues } from "./FieldValues";
-import { delay } from "../../helpers/delay";
 import { Item } from "../general/Item";
 
 const validationSchema = yup.object({
@@ -85,10 +83,12 @@ export const Field = () => {
 		const field = async (id) => {
 			setLoading(true);
 			try {
-				const itemRows = await getFieldValuesByFieldId(id);
-				setRows(itemRows);
-				delay(TIME_OUT);
+				//const itemRows = await getFieldValuesByFieldId(id);
+				
+				//delay(TIME_OUT);
 				const data = await getFieldByIdWithItems(id);
+            setRows(data.items);
+            
 				setFormState(data);
 				const fields = await getFields();
 				const padres = fields.filter((f) => f.id?.toString() !== id);

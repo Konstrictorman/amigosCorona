@@ -24,8 +24,8 @@ const validationSchema = yup.object({
 	grupoParametros: yup
 		.string()
 		.min(
-			6,
-			"El nombre del grupo de parámetros debe tener al menos 6 caracteres"
+			5,
+			"El nombre del grupo de parámetros debe tener al menos 5 caracteres"
 		)
 		.required("El nombre del nivel de beneficios es requerido"),
 	descripcion: yup

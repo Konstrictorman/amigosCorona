@@ -56,6 +56,7 @@ export const Bill = () => {
 		estado,
 		nomReferenciador,
 		codeReferenciador,
+      valor_premium,
 	} = formState;
 
 	useEffect(() => {
@@ -310,7 +311,7 @@ export const Bill = () => {
 							</Typography>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
 								<TextField
 									label="Valor antes de impuesto"
@@ -336,7 +337,7 @@ export const Bill = () => {
 							</Item>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
 								<TextField
 									label="Impuesto"
@@ -362,7 +363,7 @@ export const Bill = () => {
 							</Item>
 						</Grid>
 
-						<Grid item xs={4}>
+						<Grid item xs={3}>
 							<Item>
 								<TextField
 									label="Valor total"
@@ -387,6 +388,33 @@ export const Bill = () => {
 								/>
 							</Item>
 						</Grid>
+
+						<Grid item xs={3}>
+							<Item>
+								<TextField
+									label="Valor Premium"
+									error={false}
+									id="valor"
+									type="text"
+									name="valor"
+									autoComplete="off"
+									size="small"
+									value={valor_premium}
+									className="form-control"
+									disabled={true}
+									InputProps={{
+										inputComponent: CustomNumberFormat,
+										startAdornment: (
+											<InputAdornment position="start">
+												$
+											</InputAdornment>
+										),
+									}}
+									variant={INPUT_TYPE}
+								/>
+							</Item>
+						</Grid>
+
 						<Grid item xs={12}>
 							<div className="center">
 								<DataGrid

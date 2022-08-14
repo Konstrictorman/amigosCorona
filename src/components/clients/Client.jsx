@@ -27,7 +27,7 @@ import { loadClientById } from "./actions/clientActions";
 import { Spinner } from "../general/Spinner";
 import { ERROR_MSG } from "../../config/config";
 import { setError } from "../general/actions/uiActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ClientAuditTab } from "./tabs/ClientAuditTab";
 
 
@@ -42,7 +42,6 @@ export const Client = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	const componentMounted = useRef(true);
 	const [loading, setLoading] = useState(false);
    const dispatch = useDispatch();
 	const [client, setClient] = useState({
@@ -59,18 +58,21 @@ export const Client = () => {
 	});
 
 	const { nombreCompleto, tipoDocumento, documento, referenciador } = client;
-
-
-
+   const {tiposDocumento} = useSelector((state) => state.lists);
+   
+   
 	useEffect(() => {
 		const cliente = async (id) => {
 			setLoading(true);
 			try {
 				const data = await loadClientById(id);
-
-				if (componentMounted.current) {
-					setClient(data);
-				}
+            
+            const td = tiposDocumento.filter((t)=> t.valor ===data.tipoDocumento);
+            const tipoDoc = td[0].descripcion
+            data.tipoDocumento=tipoDoc;
+				setClient(
+               data,
+            );
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
@@ -80,15 +82,10 @@ export const Client = () => {
 		};
 
 		cliente(id);
-
-		return () => {
-			componentMounted.current = false;
-			setLoading(null);
-		};
-	}, [id, dispatch]);
+	}, [id, dispatch, tiposDocumento]);
 
 
-
+   
 	const [tabIndex, setTabIndex] = useState("0");
 	//const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
 

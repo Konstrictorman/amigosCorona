@@ -6,9 +6,8 @@ export const getFieldValuesByFieldId = async (campoId) => {
       const valores = await getValoresCampoByCampoId(campoId);
       const values = valores.data._embedded.valorCampoes;
   
-      values?.forEach(async (p) => {
+      values?.forEach((p) => {
          delete p._links;
-         p.actionDisabled = true;
       });      
       return values;
    } else {

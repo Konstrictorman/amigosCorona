@@ -1,18 +1,6 @@
 import { getFieldById } from "./getFieldById";
 import { getFieldValuesByFieldId } from "./getFieldValuesByFieldId";
-import { getFieldValueById} from "./getFieldValueById";
 
-const setPadres = async(hijos) => {
-
-   hijos.forEach(async (h) => {
-     const fv = await getFieldValueById(h.idValorPadre);
-     //console.log("fv:",fv);
-      h['valorPadre'] = fv?.valor;
-      h['actionDisabled'] = true;
-   });
-
-   return hijos;
-}
 
 const initialValues = {
    id: 0,
@@ -28,14 +16,20 @@ export const getFieldByIdWithItems = async (id) => {
 	if (id) {
 		const field = await getFieldById(id);
 		const hijos = await getFieldValuesByFieldId(id);
-      //hijos.forEach((h)=> h.valorPadre = 'sin papá');
-      const hijosConPadre = await setPadres(hijos);
 
-      //console.log("hijos:", hijosConPadre);
+      
+      //hijos.forEach((h)=> h.valorPadre = 'sin papá');
+      //const array = await setPadres(hijos);
+
+      const hijosConPadre = hijos.slice().sort((a,b) => a.descripcion.localeCompare(b.descripcion));
+      hijosConPadre.forEach((i)=>{i.actionDisabled=true});
+      
 		const campo = {
 			...field,
 			items: hijosConPadre,
 		};
+
+      
 		return campo;
 	} else {
 		return initialValues;
