@@ -7,7 +7,7 @@ import { getSalesPointsForCombo } from "./selectors/getSalesPointsForCombo";
 import {setError} from "../general/actions/uiActions";
 
 export const SalesPointsCombo = (props) => {
-	const { value, handleValueChange, error, label} = props;
+	const { value, handleValueChange, error, label, disabled} = props;
 
    const [selected, setSelected] = useState({});
    const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
@@ -71,8 +71,8 @@ export const SalesPointsCombo = (props) => {
 
    const handleChange = (event, newValue) => {
 		setSelected(newValue);
-      handleValueChange( newValue?.id);    
-      
+      handleValueChange(newValue?newValue.id:undefined);    
+      console.log(event,newValue);
    }
 
 	return (
@@ -81,8 +81,8 @@ export const SalesPointsCombo = (props) => {
 			options={sortedSalesPoints}                  
 			value={selected}
          onChange={handleChange}  
-         
-         isOptionEqualToValue={(option, value) => option.id === value.id}
+         disabled={disabled}
+         //isOptionEqualToValue={(option, value) => value === undefined || value === "" || option.id === value.id}
          filterSelectedOptions
 			renderInput={(params) => (
 				<TextField
@@ -95,6 +95,7 @@ export const SalesPointsCombo = (props) => {
                    
 				/>
 			)}
+         defaultValue={""}
 		/>
 	);
 };

@@ -6,7 +6,7 @@ import {
 import { types } from "../../../types/types";
 import { delay } from "../../../helpers/delay";
 import { getFieldValuesByFieldId } from "../selectors/getFieldValuesByFieldId";
-import { ID_DOCUMENT_TYPES, ID_GENDERS, ID_LOAD_TYPES, ID_OUTPUT_FILE_TYPES, ID_PERIODS, ID_PROCESS_STATES, ID_PROCESS_TYPES, ID_PROGRAMS, ID_REDEMPTION_TYPES, ID_REFERRED_STATUS, ID_SPECIALTIES, ID_STATES, TIME_OUT } from "../../../config/config";
+import { ID_DOCUMENT_TYPES, ID_GENDERS, ID_LOAD_TYPES, ID_MOTIVES, ID_OUTPUT_FILE_TYPES, ID_PERIODS, ID_PROCESS_STATES, ID_PROCESS_TYPES, ID_PROGRAMS, ID_REDEMPTION_TYPES, ID_REFERRED_STATUS, ID_SPECIALTIES, ID_STATES, TIME_OUT } from "../../../config/config";
 import { getReferencePrograms } from "../../referencePrograms/selectors/getReferencePrograms";
 
 
@@ -161,6 +161,18 @@ export const loadOutputFileTypes = ()=> {
 export const setOutputFiletypes = (dt) => ({
    type: types.fieldsSetOutputFiletypes,
    payload: dt
+});
+
+export const loadMotives = ()=> {
+   return async(dispatch) => {
+      const m = await getFieldValuesByFieldId(ID_MOTIVES);
+      dispatch(setMotives(m));
+   }   
+}
+
+export const setMotives = (m) => ({
+   type: types.fieldsSetMotives,
+   payload: m
 });
 
 export const saveField = async (field) => {

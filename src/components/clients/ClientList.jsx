@@ -46,6 +46,7 @@ export const ClientList = () => {
 
 	//De esta forma se construyen las parejas de queryParams
 	const handleSearch = () => {
+      setParams({});
 		Object.entries(formValues).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {

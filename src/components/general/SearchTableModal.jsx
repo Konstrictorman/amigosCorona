@@ -23,7 +23,8 @@ export const SearchTableModal = ({
 	pageSize,
    criteria,
    filter,
-   columns
+   columns,
+   title
 }) => {
 
 
@@ -45,7 +46,7 @@ export const SearchTableModal = ({
                      style={{alignSelf:"center", justifyContent:"center", marginLeft:"25px"}}
                      align="center"
 						>
-							Referenciadores
+							{title}
 
 						</Typography>
 						<IconButton aria-label="delete" className="right" onClick={handleClose}>

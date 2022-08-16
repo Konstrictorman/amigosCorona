@@ -8,6 +8,8 @@ import { getAddressesByClientId } from "../selectors/getAddressesByClientId";
 import { getEmailsByClientId } from "../selectors/getEmailsByClientId";
 import { getStatusHistoryByReferrerId } from "../selectors/getStatusHistoryByReferrerId";
 import { getReferrerLevelsByReferrerId } from "../selectors/getReferrerLevelsByReferrerId";
+import moment from "moment";
+import { dateFormatter3 } from "../../../helpers/dateFormatter";
 
 export const updateClient = async (id, client) => {
    await updateCliente(id, client);
@@ -72,11 +74,21 @@ export const loadClientById = async (id) => {
 
 
 export const updateReferrer = async (id, referrer) => {
+   const today = moment.now();
+   const date =dateFormatter3(today);   
+   referrer.fechaModificacion = date;
+   referrer.usuarioModificacion="PRUEBA";
    await updateReferenciador(id, referrer);
    await delay(TIME_OUT);
 }
 
 export const createReferrer = async (referrer) => {
+   const today = moment.now();
+   const date =dateFormatter3(today);
+   referrer.fechaCreacion = date;
+   referrer.fechaModificacion = date;
+   referrer.usuarioCreacion = "PRUEBA";
+   referrer.usuarioModificacion="PRUEBA";
    await createReferenciador(referrer);
    await delay(TIME_OUT);
 }

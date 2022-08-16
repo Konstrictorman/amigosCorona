@@ -4,12 +4,12 @@ import { searchRegistroMovimientosSeq } from "../api/movementApi"
 
 export const getMovementsByParams = async (size, page, params) => {
 
-   if (params['fechaInicial']) {
-      params['fechaInicial'] = dateFormatter2(params['fechaInicial']);
+   if (params['fechaDesde']) {
+      params['fechaDesde'] = dateFormatter2(params['fechaDesde']);
    }
 
-   if (params['fechaFinal']) {
-      params['fechaFinal'] = dateFormatter2(params['fechaFinal']);
+   if (params['fechaHasta']) {
+      params['fechaHasta'] = dateFormatter2(params['fechaHasta']);
    }
       
    const movements = await searchRegistroMovimientosSeq(size, page, params);

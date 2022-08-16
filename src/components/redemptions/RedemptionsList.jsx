@@ -91,6 +91,7 @@ export const RedemptionsList = () => {
 	const handleSearch = async () => {
 		setLoading(true);
 		setShow(false);
+            setParams({});
 		Object.entries(formik.values).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {

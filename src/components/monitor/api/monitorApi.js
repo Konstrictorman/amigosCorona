@@ -2,6 +2,23 @@ import axios from 'axios';
 import { API_URL } from '../../../config/config';
 import { processParams } from '../../../helpers/processParams';
 
+
+export const getProcesoById = (id) => {
+	const config = {
+		method: "get",
+		url:
+			`${API_URL}/api/procesos/${id}`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+   
+	return axios(config);
+};  
+
 export const buscarProcesos = (size, page, params) => {
    const pParams = processParams(params);
 

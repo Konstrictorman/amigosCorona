@@ -15,18 +15,36 @@ import { useFormik } from "formik";
 import { Spinner } from "../general/Spinner";
 
 const validationSchema = yup.object({
-	fechaDesde: yup.date().nullable().required("Se requiere la fecha inicial"),
+	numeroFactura: yup.string(),   
+	fechaDesde: yup
+		.date()
+		.nullable()
+      .required("La fecha inicial es requerida")
+		.max(
+			yup.ref("fechaHasta"),
+			"La fecha inicial debe ser menor a la fecha inicial"
+		)
+      .when("numeroFactura", (numeroFactura) => {
+         if(numeroFactura) {
+            return yup.date().nullable()
+         }
+      }),      
 	fechaHasta: yup
 		.date()
 		.nullable()
-		.required("Se requiere la fecha final")
+      .required("La fecha final es requerida")
 		.min(
 			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
-		),
-	idPuntoVenta: yup.string().required("Se requiere el punto de venta"),
+		)
+      .when("numeroFactura", (numeroFactura) => {
+         if(numeroFactura) {
+            return yup.date().nullable()
+         }
+      }),
+	idPuntoVenta: yup.string().nullable(),
 	clienteVta: yup.string(),
-	numeroFactura: yup.string(),
+
 	pedido: yup.string(),
 	idClienteRef: yup.string(),
 });
@@ -53,14 +71,15 @@ export const BillsList = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			//console.log(JSON.stringify(values, null, 2));
-			handleSearch();
+			console.log(JSON.stringify(values, null, 2));
+			handleSearch(values);
 		},
 
 		enableReinitialize: true,
 	});
 
 	const handleCustomChange = (name, val) => {
+      console.log("Setting ",name,val);
 		formik.setFieldValue(name, val);
 	};
 
@@ -71,10 +90,11 @@ export const BillsList = () => {
 		}
 	};
 
-	const handleSearch = () => {
+	const handleSearch = (values) => {
 		setLoading(true);
 		setShow(false);
-		Object.entries(formik.values).forEach((fv) => {
+      setParams({});
+		Object.entries(values).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {
 					//console.log("fv:", fv);
@@ -88,6 +108,16 @@ export const BillsList = () => {
 		setLoading(false);
 		setShow(true);
 	};
+
+   const handleBillChange = (val) => {
+      formik.setFieldValue("idPuntoVenta", null);
+      formik.setFieldValue("fechaDesde", null);
+      formik.setFieldValue("fechaHasta", null);
+      formik.setFieldValue("numeroFactura", val);
+      formik.setFieldValue("pedido", "");
+      formik.setFieldValue("clienteVta", "");
+      formik.setFieldValue("idClienteRef", "");      
+   }
 
 	const handleReset = () => {
 		formik.resetForm();
@@ -136,6 +166,7 @@ export const BillsList = () => {
 										formik.touched.fechaDesde &&
 										Boolean(formik.errors.fechaDesde)
 									}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -157,6 +188,7 @@ export const BillsList = () => {
 										formik.touched.fechaHasta &&
 										Boolean(formik.errors.fechaHasta)
 									}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -167,7 +199,7 @@ export const BillsList = () => {
 						<Grid item xs={6}>
 							<Item className="">
 								<SalesPointsCombo
-									label="Punto de venta *"
+									label="Punto de venta"
 									id="salesPoint"
                            value={formik.values.idPuntoVenta}
 									handleValueChange={(val) => {
@@ -177,6 +209,7 @@ export const BillsList = () => {
 										formik.touched.idPuntoVenta &&
 										Boolean(formik.errors.idPuntoVenta)
 									}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -202,6 +235,7 @@ export const BillsList = () => {
 										Boolean(formik.errors.clienteVta)
 									}
 									variant={INPUT_TYPE}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -212,20 +246,21 @@ export const BillsList = () => {
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
-									label="Número de factura"
+									label="Número de factura °"
 									id="numeroFactura"
 									type="text"
 									name="numeroFactura"
 									autoComplete="off"
 									size="small"
 									value={formik.values.numeroFactura}
-									onChange={formik.handleChange}
+									onChange={(e) => {handleBillChange(e.target.value)}}
 									className="form-control"
 									error={
 										formik.touched.numeroFactura &&
 										Boolean(formik.errors.numeroFactura)
 									}
 									variant={INPUT_TYPE}
+                           
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -251,6 +286,7 @@ export const BillsList = () => {
 										Boolean(formik.errors.pedido)
 									}
 									variant={INPUT_TYPE}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -275,6 +311,7 @@ export const BillsList = () => {
 										Boolean(formik.errors.idClienteRef)
 									}
 									variant={INPUT_TYPE}
+                           disabled={formik.values.numeroFactura.length>0}
 								/>
 							</Item>
 							<FormHelperText className="helperText">

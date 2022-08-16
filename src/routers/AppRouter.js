@@ -9,6 +9,7 @@ import {
    loadDocumentTypes,
    loadGenders,
 	loadLoadTypes,
+	loadMotives,
 	loadOutputFileTypes,
 	loadPeriods,
 	loadProcessStates,
@@ -43,6 +44,7 @@ export const AppRouter = () => {
          dispatch(loadReferredStatus());
          dispatch(loadFieldValues());
          dispatch(loadGenders());
+         dispatch(loadMotives());
 			dispatch(loadPeriods());
          dispatch(loadPrograms());
          dispatch(loadOutputFileTypes());

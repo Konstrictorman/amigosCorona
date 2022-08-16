@@ -14,6 +14,7 @@ export const types = {
    fieldsSetDocumentTypes:'[Field] Setting document types list',
    fieldsSetGenders: '[Field] Setting genders list',
    fieldsSetLoadTypes: '[Field] Setting load types list',
+   fieldsSetMotives: '[Field] Setting motives',
    fieldsSetOutputFiletypes: '[Field] Setting output file types list',
    fieldsSetPeriods: '[Field] Setting periods list',   
    fieldsSetProcessStates: '[Field] Setting process states list',

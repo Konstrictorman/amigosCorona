@@ -218,6 +218,7 @@ export const Redemption = () => {
 									formik.errors.documento}
 							</FormHelperText>
 						</Grid>
+
 					</Grid>
 				</form>
 				{show && (
@@ -475,6 +476,7 @@ export const Redemption = () => {
 				</div>
 
 				<SearchTableModal
+               title="Referenciadores"
 					handleClose={handleCloseModal}
 					handleAction={handleClick}
 					open={openModal}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 
@@ -7,7 +7,7 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
 import Box from "@mui/material/Box";
@@ -30,11 +30,10 @@ import { setError } from "../general/actions/uiActions";
 import { useDispatch, useSelector } from "react-redux";
 import { ClientAuditTab } from "./tabs/ClientAuditTab";
 
-
 const StyledTabs = withStyles({
 	indicator: {
 		backgroundColor: "pantone300C",
-      height: "3px",
+		height: "3px",
 	},
 })(TabList);
 
@@ -43,7 +42,7 @@ export const Client = () => {
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
 	const [loading, setLoading] = useState(false);
-   const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [client, setClient] = useState({
 		id: 0,
 		codigoCliente: "",
@@ -58,21 +57,22 @@ export const Client = () => {
 	});
 
 	const { nombreCompleto, tipoDocumento, documento, referenciador } = client;
-   const {tiposDocumento} = useSelector((state) => state.lists);
-   
-   
+	const { tiposDocumento } = useSelector((state) => state.lists);
+
 	useEffect(() => {
 		const cliente = async (id) => {
 			setLoading(true);
 			try {
-				const data = await loadClientById(id);
-            
-            const td = tiposDocumento.filter((t)=> t.valor ===data.tipoDocumento);
-            const tipoDoc = td[0].descripcion
-            data.tipoDocumento=tipoDoc;
-				setClient(
-               data,
-            );
+				if (tiposDocumento) {
+               const data = await loadClientById(id);               
+					const td = tiposDocumento?.filter(
+						(t) => t.valor === data.tipoDocumento
+					);
+					const tipoDoc = td[0].descripcion;
+					data.tipoDocumento = tipoDoc;
+
+					setClient(data);
+				}
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
@@ -84,8 +84,6 @@ export const Client = () => {
 		cliente(id);
 	}, [id, dispatch, tiposDocumento]);
 
-
-   
 	const [tabIndex, setTabIndex] = useState("0");
 	//const [saveBtnEnabled, setsaveBtnEnabled] = useState(false);
 
@@ -100,7 +98,7 @@ export const Client = () => {
 	};
 
 	if (loading) {
-		return <Spinner  css="text-center spinner-top-margin"/>;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (
@@ -119,8 +117,6 @@ export const Client = () => {
 					width: "100%",
 				}}
 			>
-
-
 				<div className="align-self-center container__basic">
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
@@ -195,29 +191,52 @@ export const Client = () => {
 									icon={<EmojiEventsIcon fontSize="large" />}
 									wrapped
 								/>
-								
+
 								<Tab
 									value="6"
 									label="Auditoría"
 									style={{ textTransform: "none" }}
-									icon={<LocationSearchingIcon fontSize="large"/>}
+									icon={<LocationSearchingIcon fontSize="large" />}
 									wrapped
 								/>
-         
 							</StyledTabs>
 
 							<ClientReferrerTab
+                        client={client}
 								formValues={referenciador}
 								index="0"
-                        handleClickOut={handleClickOut}
+								handleClickOut={handleClickOut}
 							/>
-							<ClientPhonesTab client={client} index="1" handleClickOut={handleClickOut}/>
-							<ClientAddressTab client={client} index="2" handleClickOut={handleClickOut}/>
-							<ClientMailsTab client={client} index="3" handleClickOut={handleClickOut}/>
-							<ClientStateHistoryTab client={client} index="4" handleClickOut={handleClickOut}/>
-							<ClientBenefitsTab client={client} index="5" handleClickOut={handleClickOut}/>
-                     <ClientAuditTab client={referenciador} index="6" handleClickOut={handleClickOut}/>
-
+							<ClientPhonesTab
+								client={client}
+								index="1"
+								handleClickOut={handleClickOut}
+							/>
+							<ClientAddressTab
+								client={client}
+								index="2"
+								handleClickOut={handleClickOut}
+							/>
+							<ClientMailsTab
+								client={client}
+								index="3"
+								handleClickOut={handleClickOut}
+							/>
+							<ClientStateHistoryTab
+								client={client}
+								index="4"
+								handleClickOut={handleClickOut}
+							/>
+							<ClientBenefitsTab
+								client={client}
+								index="5"
+								handleClickOut={handleClickOut}
+							/>
+							<ClientAuditTab
+								client={referenciador}
+								index="6"
+								handleClickOut={handleClickOut}
+							/>
 						</TabContext>
 					</Box>
 				</div>

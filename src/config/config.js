@@ -6,6 +6,7 @@ export const PAGE_SIZE = process.env.REACT_APP_PAGE_SIZE;
 export const ID_DOCUMENT_TYPES = process.env.REACT_APP_ID_DOCUMENT_TYPES;  
 export const ID_GENDERS = process.env.REACT_APP_ID_GENDERS;  
 export const ID_LOAD_TYPES = process.env.REACT_APP_ID_LOAD_TYPES;
+export const ID_MOTIVES = process.env.REACT_APP_ID_MOTIVES;
 export const ID_OUTPUT_FILE_TYPES = process.env.REACT_APP_ID_OUTPUT_FILE_TYPES;
 export const ID_PROCESS_STATES = process.env.REACT_APP_ID_PROCESS_STATES;
 export const ID_PROGRAMS = process.env.REACT_APP_ID_PROGRAMS;

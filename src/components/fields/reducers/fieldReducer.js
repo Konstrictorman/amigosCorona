@@ -25,8 +25,8 @@ const initialState = {
 	estados: [],
 	estadosProceso: [],
 	estadosReferido: [],
-	valoresCampo: [],
 	generos: [],
+   motivos:[],
 	periodos: [],
 	programas: [],
 	tiposArchivoSalida: [],
@@ -34,6 +34,7 @@ const initialState = {
 	tiposDocumento: [],
 	tiposProceso: [],
 	tiposRedencion: [],
+   valoresCampo: [],
 };
 
 export const fieldReducer = (state = { initialState }, action) => {
@@ -124,6 +125,12 @@ export const fieldReducer = (state = { initialState }, action) => {
 				...state,
 				tiposArchivoSalida: action.payload,
 			};
+
+         case types.fieldsSetMotives:
+            return {
+               ...state,
+               motivos: action.payload,
+            };         
 
 		default:
 			return state;

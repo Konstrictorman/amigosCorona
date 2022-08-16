@@ -5,6 +5,8 @@ import {
 	FormControlLabel,
 	FormHelperText,
 	Grid,
+	IconButton,
+	InputAdornment,
 	TextField,
 } from "@mui/material";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
@@ -20,18 +22,21 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { CustomDatePicker } from "../general/CustomDatePicker";
 import { Spinner } from "../general/Spinner";
+import { SearchTableModal } from "../general/SearchTableModal";
+import { useSelector } from "react-redux";
+import { getClientColumns } from "../clients/selectors/getClientColumns";
 
 const validationSchema = yup.object({
-	fechaInicial: yup.date().nullable().required("Se requiere la fecha inicial"),
-	fechaFinal: yup
+	fechaDesde: yup.date().nullable().required("Se requiere la fecha inicial"),
+	fechaHasta: yup
 		.date()
 		.nullable()
 		.required("Se requiere la fecha final")
 		.min(
-			yup.ref("fechaInicial"),
+			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
-	codeCliente: yup.string(),
+	codigoCliente: yup.string().nullable().required("Se requiere el código de cliente"),
 	llaveMaestraFlag: yup.boolean(),
 });
 
@@ -40,35 +45,50 @@ export const MovementsList = () => {
 
 	const [params, setParams] = useState({});
 	const [show, setShow] = useState(false);
-   const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [openModal, setOpenModal] = useState(false);
+	const handleOpenModal = () => setOpenModal(true);
+	const handleCloseModal = () => setOpenModal(false);
+	const { tiposDocumento, motivos } = useSelector((state) => state.lists);
+
+	const columns = getClientColumns(tiposDocumento);
 
 	const initialValues = {
-		codeCliente: "",
-		fechaInicial: null,
-		fechaFinal: null,
+		codigoCliente: null,
+		fechaDesde: null,
+		fechaHasta: null,
 		llaveMaestraFlag: false,
+      idCliente: 0,
 	};
-
 
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			handleSearch();
+			handleSearch(values);
 		},
 
 		enableReinitialize: true,
 	});
 
 	const handleClick = (params) => {
-		console.log("click");
+		const { field, row } = params;
+		console.log("click on ", row);
+		if (field === "codigoCliente") {
+         formik.setFieldValue("codigoCliente", row.codigoCliente);
+			formik.setFieldValue("idCliente", row.id);
+		}
+		handleCloseModal();
 	};
 
-	const handleSearch = () => {
-      setLoading(true);
-      setShow(false);
-      //console.log(JSON.stringify(formik.values, null, 2));
-		Object.entries(formik.values).forEach((fv) => {
+	const handleSearch = (values) => {
+		setLoading(true);
+		setShow(false);
+      setParams({});
+
+      delete values.codigoCliente;
+		console.log(JSON.stringify(values, null, 2));
+		Object.entries(values).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {
 					return {
@@ -78,13 +98,13 @@ export const MovementsList = () => {
 				});
 			}
 		});
-      setLoading(false);
-		setShow(true);      
+		setLoading(false);
+		setShow(true);
 	};
 
 	const handleReset = () => {
 		formik.resetForm();
-      setParams({});
+		setParams({});
 		setShow(false);
 	};
 
@@ -112,71 +132,109 @@ export const MovementsList = () => {
 			>
 				<form className="container__form" onSubmit={formik.handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
+
+						<Grid item xs={3}>
+							<Item className="">
+								<TextField
+									label="Código cliente *"
+									id="codigoCliente"
+									type="text"
+									name="codigoCliente"
+									autoComplete="off"
+									size="small"
+									value={formik.values.codigoCliente}
+									onChange={formik.handleChange}
+									error={
+										formik.touched.codigoCliente &&
+										Boolean(formik.errors.codigoCliente)
+									}
+									className="form-control"
+									variant={INPUT_TYPE}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton
+													onClick={handleOpenModal}
+													disabled={
+														formik.values.codigoCliente?.length < 4
+													}
+												>
+													<SearchIcon />
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Item>
+							<FormHelperText className="helperText right">
+								{formik.touched.codigoCliente && formik.errors.codigoCliente}
+							</FormHelperText>
+						</Grid>
+{/*
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
 									label="Cliente"
-									id="codeCliente"
+									id="codigoCliente"
 									type="text"
-									name="codeCliente"
+									name="codigoCliente"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codeCliente}
+									value={formik.values.codigoCliente}
 									onChange={formik.handleChange}
 									className="form-control"
 									error={
-										formik.touched.codeCliente &&
-										Boolean(formik.errors.codeCliente)
+										formik.touched.codigoCliente &&
+										Boolean(formik.errors.codigoCliente)
 									}
 									variant={INPUT_TYPE}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{formik.touched.codeCliente &&
-									formik.errors.codeCliente}{" "}
+								{formik.touched.codigoCliente &&
+									formik.errors.codigoCliente}{" "}
+							</FormHelperText>
+						</Grid>
+                        */}
+						<Grid item xs={3}>
+							<Item className="">
+								<CustomDatePicker
+									label="Fecha inicial *"
+									id="fechaDesde"
+									value={formik.values.fechaDesde}
+									maxDate={new Date()}
+									onChange={(val) => {
+										handleCustomChange("fechaDesde", val);
+									}}
+									error={
+										formik.touched.fechaDesde &&
+										Boolean(formik.errors.fechaDesde)
+									}
+								/>
+							</Item>
+							<FormHelperText className="helperText">
+								{formik.touched.fechaDesde && formik.errors.fechaDesde}
 							</FormHelperText>
 						</Grid>
 
 						<Grid item xs={3}>
 							<Item className="">
 								<CustomDatePicker
-									label="Fecha inicial *"
-									id="fechaInicial"
-									value={formik.values.fechaInicial}
+									label="Fecha final *"
+									id="fechaHasta"
+									value={formik.values.fechaHasta}
 									maxDate={new Date()}
 									onChange={(val) => {
-										handleCustomChange("fechaInicial", val);
+										handleCustomChange("fechaHasta", val);
 									}}
 									error={
-										formik.touched.fechaInicial &&
-										Boolean(formik.errors.fechaInicial)
+										formik.touched.fechaHasta &&
+										Boolean(formik.errors.fechaHasta)
 									}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-                     {formik.touched.fechaInicial && formik.errors.fechaInicial}
-							</FormHelperText>
-						</Grid>
-
-						<Grid item xs={3}>
-							<Item className="">
-                     <CustomDatePicker
-										label="Fecha final *"
-										id="fechaFinal"
-									value={formik.values.fechaFinal}
-									maxDate={new Date()}
-									onChange={(val) => {
-										handleCustomChange("fechaFinal", val);
-									}}
-									error={
-										formik.touched.fechaFinal &&
-										Boolean(formik.errors.fechaFinal)
-									}
-								/>                        
-
-							</Item>
-							<FormHelperText className="helperText">
-                     {formik.touched.fechaFinal && formik.errors.fechaFinal}
+								{formik.touched.fechaHasta && formik.errors.fechaHasta}
 							</FormHelperText>
 						</Grid>
 
@@ -188,9 +246,12 @@ export const MovementsList = () => {
 											id="llaveMaestraFlag"
 											name="llaveMaestraFlag"
 											checked={formik.values.llaveMaestraFlag}
-                                 onChange={({target}) => {
-                                    formik.setFieldValue("llaveMaestraFlag", target.checked);
-                                 }}
+											onChange={({ target }) => {
+												formik.setFieldValue(
+													"llaveMaestraFlag",
+													target.checked
+												);
+											}}
 										/>
 									}
 									label="Llave maestra"
@@ -233,20 +294,31 @@ export const MovementsList = () => {
 				</form>
 			</div>
 
-         {(loading &&
-               (<Spinner  css="text-center spinner-top-margin"/>)
-         )}         
+			<SearchTableModal
+            title="Clientes"
+				handleClose={handleCloseModal}
+				handleAction={handleClick}
+				open={openModal}
+				criteria="codigoCliente"
+				filter={formik.values.codigoCliente}
+				pageSize={10}
+				columns={columns}
+				//items={selectedIds}
+			></SearchTableModal>
+
+			{loading && <Spinner css="text-center spinner-top-margin" />}
 
 			<PagedMovementDataTable
 				handleClick={handleClick}
 				params={params}
 				show={show}
+            motives={motivos}
 			/>
 
-			{show &&  (
+			{show && (
 				<MovementsResume
-					fechaDesde={formik.values.fechaInicial}
-					fechaHasta={formik.values.fechaFinal}
+					fechaDesde={formik.values.fechaDesde}
+					fechaHasta={formik.values.fechaHasta}
 				/>
 			)}
 		</div>

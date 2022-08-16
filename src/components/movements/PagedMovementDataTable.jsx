@@ -64,8 +64,8 @@ const useQuery = (page, pageSize, params, show) => {
 
 export const PagedMovementDataTable = (attrs) => {
 
-   const { handleClick, params, show } = attrs;
-   const columns = getMovementsColumns();
+   const { handleClick, params, show, motives } = attrs;
+   const columns = getMovementsColumns(motives);
 
 	const [rowsState, setRowsState] = useState({
 		page: 0,

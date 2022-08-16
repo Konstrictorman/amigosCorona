@@ -76,6 +76,7 @@ export const ProcessMonitor = () => {
 	const handleSearch = () => {
 		setLoading(true);
 		setShow(false);
+      setParams({});      
 		Object.entries(formik.values).forEach((fv) => {
          //console.log(fv);
 			if (fv[1]) {

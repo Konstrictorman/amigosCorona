@@ -379,6 +379,7 @@ export const Amounts = () => {
 				</div>
 
 				<SearchTableModal
+               title="Referenciadores"
 					handleClose={handleCloseModal}
 					handleAction={handleClick}
 					open={openModal}

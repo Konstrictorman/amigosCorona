@@ -72,7 +72,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 
    const execute = (values) => {
       setLoading(true);
-      launchProcess("PRUEBA", "PROCE", idReporte, values.tipoArchivoSalida)
+      launchProcess("PRUEBA",type , idReporte, values.tipoArchivoSalida)
          .then(async(response) => {
             //console.log(response);
             const idx = response.data.id;
@@ -98,7 +98,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
                   await saveProcessParam(obj);
                });
                const res = await executeProcess(idx);
-               console.log(res);
+               //console.log(res);
             } catch(e) {
                Swal.fire("Error", e.message, "error");
                setLoading(false);
