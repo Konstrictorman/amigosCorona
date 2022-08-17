@@ -97,7 +97,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 
                   await saveProcessParam(obj);
                });
-               const res = await executeProcess(idx);
+               await executeProcess(idx);
                //console.log(res);
             } catch(e) {
                Swal.fire("Error", e.message, "error");
