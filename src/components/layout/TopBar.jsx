@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import Corona_logo from "../../assets/images/Corona_W.png";
+import Corona_logo from "../../assets/images/centro_corona.png";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { AppMenu } from "./AppMenu";
@@ -40,8 +40,8 @@ export const TopBar = () => {
 						<img
 							src={Corona_logo}
 							alt="Logo"
-							width="5%"
-							height="5%"
+							width="15%"
+							height="15%"
 							className="ml-2 pl-2"
 						/>
 						<Typography
