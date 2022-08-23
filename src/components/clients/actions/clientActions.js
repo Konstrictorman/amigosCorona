@@ -1,5 +1,5 @@
 import { delay } from "../../../helpers/delay";
-import { addCliente, createReferenciador, deleteClienteById, updateCliente, updateReferenciador } from "../api/clientApi";
+import { addCliente, addReferenciadorNivel, createReferenciador, deleteClienteById, updateCliente, updateReferenciador } from "../api/clientApi";
 import { TIME_OUT } from '../../../config/config';
 import { getClientById } from "../selectors/getClientById";
 import { getPhonesByClientId } from "../selectors/getPhonesByClientId";
@@ -79,7 +79,6 @@ export const updateReferrer = async (id, referrer) => {
    referrer.fechaModificacion = date;
    referrer.usuarioModificacion="PRUEBA";
    await updateReferenciador(id, referrer);
-   await delay(TIME_OUT);
 }
 
 export const createReferrer = async (referrer) => {
@@ -89,6 +88,23 @@ export const createReferrer = async (referrer) => {
    referrer.fechaModificacion = date;
    referrer.usuarioCreacion = "PRUEBA";
    referrer.usuarioModificacion="PRUEBA";
-   await createReferenciador(referrer);
-   await delay(TIME_OUT);
+   const ref = await createReferenciador(referrer);
+   return ref;
 }
+
+export const addReferrerBenefitLevel = async (idBenefitLevel, idReferrer) => {
+   if (idBenefitLevel && idReferrer) {
+      const obj = {
+         estado: "A",
+         fechaReferencia: dateFormatter3(moment.now()),
+         id:0,
+         idNivelBeneficio: idBenefitLevel,
+         idReferenciador: idReferrer,
+      }
+      const def = await addReferenciadorNivel(obj);
+      return def;
+   } else {
+      throw new Error("Imposible guardar beneficio sin identificador de refereido/nivelBeneficio");
+   }
+}
+

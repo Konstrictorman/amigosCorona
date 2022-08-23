@@ -1,60 +1,77 @@
-import { format, parseISO } from 'date-fns';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
 import { GridActionsCellItem } from "@mui/x-data-grid";
+import { dateFormatter2 } from '../../../helpers/dateFormatter';
+import DownloadIcon from '@mui/icons-material/Download';
 
-const dateFormatter = (date) => {
-   let d = parseISO(date);
-   const offSet = d.getTimezoneOffset();
-   d = new Date(d.valueOf() + offSet * 60 * 1000);
-   d = format(d, 'dd/MM/yyyy');
-   return d;
-}
-/*
-const getSalesPointName = async (id) => {
-   const sp = await getSalesPointById(id);
-   console.log(id, sp);
-   return sp.descripcion;
-}
-*/
-export const getRedemptionBasicColumns = (handleRevert) => {
+
+export const getRedemptionBasicColumns = (salesPoints, statusList, handleRevert, handleDownload) => {
+
+   const getSalesPointName = (val) => {
+      if (salesPoints) {
+         const sp = salesPoints.find(e=> e.id === val);
+         if (sp) {
+            return sp.descripcion;
+         } else {
+            return val;
+         }
+         
+      } else {
+         return val;
+      }
+   }
+
+   const getStatusDesc = (val) => {
+      if (statusList) {
+         const sp = statusList.find(e=> e.valor === val);
+         if (sp) {
+            return sp.descripcion;
+         } else {
+            return val;
+         }
+         
+      } else {
+         return val;
+      }
+   }   
+
    const columns = [
       {
          field: "referencia", 
          headerName: "Id Ref", 
-         flex:1,
+         flex:0.5,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
          type: 'string'   
       },      
       {
-         field: "idCliente", 
-         headerName: "Id Cliente", 
-         flex:0.6,
+         field: "codigoCliente", 
+         headerName: "Cod. cliente", 
+         flex:0.5,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
          type: 'string'         
       },
       {
-         field: "puntoVenta", 
+         field: "idPuntoVenta", 
          headerName: "Pto de venta", 
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
          type: 'string',
-         //valueFormatter: ({ value }) => getSalesPointName(value),           
+         valueFormatter: ({ value }) => getSalesPointName(value),           
       },      
       {
          field: "fecha", 
          headerName: "Fecha", 
-         flex:1,
+         flex:0.5,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
          type: 'dateTime',
-         valueFormatter: ({ value }) => dateFormatter(value),
+         valueFormatter: ({ value }) => dateFormatter2(value),
       },      
       {
          field: "estadoRedencion", 
@@ -63,12 +80,13 @@ export const getRedemptionBasicColumns = (handleRevert) => {
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
-         type: 'string'   
+         type: 'string',
+         valueFormatter: ({ value }) => getStatusDesc(value),            
       },    
       {
          field: "tipoRedencion", 
          headerName: "Tipo", 
-         flex:1,
+         flex:0.4,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
@@ -91,25 +109,30 @@ export const getRedemptionBasicColumns = (handleRevert) => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'actions',
-         /*
-         valueGetter: ()=>("Revertir"),
-         cellClassName: (params) => {
-            let css = "";
-            if (params.getValue(params.id, 'estadoRedencion') === 'Ok') {
-               css = "btn btn-primary btn-sm";
-            } else {
-               css = "btn btn-primary btn-sm disabled";
-            }
-            return css;
-         },*/
          getActions: (params) => [
-            <GridActionsCellItem icon={<FastRewindIcon/>} label="Eliminar" 
+            <GridActionsCellItem icon={<FastRewindIcon/>} label="Revertir" 
             disabled={params.row.actionDisabled}
             onClick={() => {               
                handleRevert(params.row);
             }}/>
          ]         
-      },        
+      },    
+      {
+         field: "download", 
+         headerName: "Descargar", 
+         flex:0.6,
+         headerClassName: 'headerCol',
+         headerAlign: 'center', 
+         align: 'center' ,
+         type: 'actions',
+         getActions: (params) => [
+            <GridActionsCellItem icon={<DownloadIcon/>} label="Descargar" 
+            disabled={!params.row.downloadable}
+            onClick={() => {               
+               handleDownload(params.row);
+            }}/>
+         ]         
+      },     
    ];
    return columns;
 }

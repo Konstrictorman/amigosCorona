@@ -1,27 +1,18 @@
 import React from "react";
 import { TabPanel } from "@mui/lab";
-import { NoRowsOverlay } from "../../general/NoRowsOverlay";
-import { getRedemptionAuditColumns } from "../selectors/getRedemptionAuditColumns";
-import { DataGrid } from "@mui/x-data-grid";
+import { PagedRedemptionsAuditTable } from "../PagedRedemptionsAuditTable";
 
-export const RedemptionAuditTab = ({ index, rows, handleClick }) => {
-	const columns = getRedemptionAuditColumns();
+export const RedemptionAuditTab = ({ index, params, show, handleClick, setResultsCount }) => {
+	
 	return (
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
-				<DataGrid
-					className=""
-					rows={rows}
-					columns={columns}
-					pageSize={5}
-					checkboxSelection={false}
-					density="compact"
-					autoHeight={true}
-					autoPageSize={true}
-					components={{
-						NoRowsOverlay: NoRowsOverlay,
-					}}
-				/>
+				<PagedRedemptionsAuditTable
+					handleClick={() => {}}
+					params={params}
+					show={show}
+					setResultsCount={setResultsCount}
+				/>            
 			</TabPanel>
 		</div>
 	);

@@ -12,6 +12,7 @@ export const ID_PROCESS_STATES = process.env.REACT_APP_ID_PROCESS_STATES;
 export const ID_PROGRAMS = process.env.REACT_APP_ID_PROGRAMS;
 export const ID_STATES = process.env.REACT_APP_ID_STATES;
 export const ID_PERIODS = process.env.REACT_APP_ID_PERIODS;
+export const ID_REDEMPTION_STATUS = process.env.REACT_APP_ID_REDEMPTION_STATUS;
 export const ID_REDEMPTION_TYPES = process.env.REACT_APP_ID_REDEMPTION_TYPES;
 export const ID_REFERRED_STATUS = process.env.REACT_APP_ID_REFERRED_STATUS;
 export const ID_SPECIALTIES = process.env.REACT_APP_ID_SPECIALTIES;

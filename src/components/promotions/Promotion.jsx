@@ -34,7 +34,10 @@ const validationSchema = yup.object({
 			3,
 			"El nombre de la promoción/exclusión debe tener al menos 3 caracteres"
 		)
-      .max(5,"El nombre de la promoción/exclusión debe ser máximo de 5 caracteres")
+		.max(
+			5,
+			"El nombre de la promoción/exclusión debe ser máximo de 5 caracteres"
+		)
 		.required("El nombre de la promoción/exclusión es requerido"),
 	fechaInicio: yup.date().nullable().required("Se requiere la fecha inicial"),
 	fechaFin: yup
@@ -46,20 +49,36 @@ const validationSchema = yup.object({
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
 	idArticulo: yup.string().required("Se requiere el id del artículo"),
-	idPuntoVenta: yup.string().required("Se requiere el punto de venta"),
+	flagExclusion: yup.boolean(),
+	flagTodos: yup.boolean(),
+	idPuntoVenta: yup
+		.string()
+		.nullable()
+		.when("flagTodos", (flagTodos) => {
+			if (flagTodos === false) {
+				return yup
+					.string()
+					.nullable()
+					.required("Se requiere el punto de venta");
+			} else {
+				return yup.string().nullable();
+			}
+		}),		
 	pctPromo: yup
-		.number()
-		.required("Se requiere el valor del porcentaje")
-		.min(0, "No se permiten porcentajes negativos"),
+		.number()		
+      .when("flagExclusion", (flagExclusion)=> {
+         if (flagExclusion === false) {
+            return yup.number().required("Se requiere el valor del porcentaje")
+            .positive("Sólo se permiten porcentajes positivos")
+         } 
+      })
 });
 
 export const Promotion = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { id = "" } = queryString.parse(location.search);
-	//const promo = useMemo(() => getPromoById(id), [id]);
-	//	const [sortedSalesPoints, setSortedSalesPoints] = useState([]);
-   const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const [resetFlag, setResetFlag] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -79,15 +98,15 @@ export const Promotion = () => {
 
 	useEffect(() => {
 		const getPromo = async (id) => {
-			setLoading(true);         
+			setLoading(true);
 			try {
-            if (id) {
-               const promo = await getPromoById(id);
-               setFormState({
-                  ...promo,
-               });
-               console.log("promo", JSON.stringify(promo, null, 2));   
-            }
+				if (id) {
+					const promo = await getPromoById(id);
+					setFormState({
+						...promo,
+					});
+					console.log("promo", JSON.stringify(promo, null, 2));
+				}
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
@@ -113,11 +132,11 @@ export const Promotion = () => {
 		enableReinitialize: true,
 	});
 
-   const update = (values) => {
-      setLoading(true);
+	const update = (values) => {
+		setLoading(true);
 
-      updatePromotion(id, values)
-         .then((response) => {
+		updatePromotion(id, values)
+			.then((response) => {
 				setLoading(false);
 				Swal.fire(
 					"Actualización exitosa",
@@ -126,44 +145,59 @@ export const Promotion = () => {
 				);
 			})
 			.catch((err) => {
-				setLoading(false);				
+				setLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
 				dispatch(setError(err));
-			}); 
-   }
+			});
+	};
 
-   const create = (values) => {
-      setLoading(true);
+	const create = (values) => {
+		setLoading(true);
 
-      createPromotion(values)
-      .then((response) => {
-         setLoading(false);     
-         Swal.fire(
-            "Registro exitoso",
-            "El registro se creó con éxito",
-            "success"
-         );
-         handleClickOut();
-      })
-      .catch((err) => {
-         setLoading(false);				
-         Swal.fire(
-            "Error",
-            err.cause ? err.cause.message : (err.message? err.message:err),
-            "error"
-         );
-         dispatch(setError(err));
-      }); 
-     
-   }
+		createPromotion(values)
+			.then((response) => {
+				setLoading(false);
+				Swal.fire(
+					"Registro exitoso",
+					"El registro se creó con éxito",
+					"success"
+				);
+				handleClickOut();
+			})
+			.catch((err) => {
+				setLoading(false);
+				Swal.fire(
+					"Error",
+					err.cause ? err.cause.message : err.message ? err.message : err,
+					"error"
+				);
+				dispatch(setError(err));
+			});
+	};
 
 	const handleCustomChange = (name, val) => {
-		console.log("Cambiando valores:", name, val);
-		formik.setFieldValue(name, val);		
+		formik.setFieldValue(name, val);
+	};
+
+	const handleFlagExclusionChange = (val) => {
+		console.log(val);
+		handleCustomChange("flagExclusion", val);
+		if (val) {
+			handleCustomChange("pctPromo", 0);
+		}
+      formik.setFieldTouched("pctPromo", false, false);      
+	};
+
+	const handleFlagTodosChange = (val) => {
+		handleCustomChange("flagTodos", val);
+		if (val) {
+			handleCustomChange("idPuntoVenta", "");
+		}
+      formik.setFieldTouched("idPuntoVenta", false, false);      
 	};
 
 	const handleReset = () => {
@@ -171,13 +205,13 @@ export const Promotion = () => {
 		setResetFlag(!resetFlag);
 	};
 
-   const [animatedStyle, handleClickOut] = useAnimatedStyle({
+	const [animatedStyle, handleClickOut] = useAnimatedStyle({
 		navigate,
 		path: "/promotionsList",
 	});
 
 	if (loading) {
-		return <Spinner  css="text-center spinner-top-margin"/>;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (
@@ -195,7 +229,6 @@ export const Promotion = () => {
 			<div
 				className="align-self-center"
 				style={{
-					
 					width: "80%",
 				}}
 			>
@@ -243,7 +276,7 @@ export const Promotion = () => {
 										formik.touched.fechaInicio &&
 										Boolean(formik.errors.fechaInicio)
 									}
-                           inputFormat="dd/MM/yyyy"
+									inputFormat="dd/MM/yyyy"
 								/>
 							</Item>
 
@@ -311,6 +344,7 @@ export const Promotion = () => {
 										formik.touched.idPuntoVenta &&
 										Boolean(formik.errors.idPuntoVenta)
 									}
+									disabled={formik.values.flagTodos}
 								/>
 							</Item>
 							<FormHelperText className="helperText half-quarter-width right">
@@ -343,6 +377,7 @@ export const Promotion = () => {
 											</InputAdornment>
 										),
 									}}
+									disabled={formik.values.flagExclusion}
 								/>
 							</Item>
 							<FormHelperText>
@@ -358,7 +393,9 @@ export const Promotion = () => {
 										id="flagExclusion"
 										name="flagExclusion"
 										checked={formik.values.flagExclusion}
-										onChange={formik.handleChange}
+										onChange={({ target }) => {
+											handleFlagExclusionChange(target.checked);
+										}}
 									/>
 								}
 								labelPlacement="start"
@@ -374,7 +411,9 @@ export const Promotion = () => {
 										id="flagTodos"
 										name="flagTodos"
 										checked={formik.values.flagTodos}
-										onChange={formik.handleChange}
+										onChange={({ target }) => {
+											handleFlagTodosChange(target.checked);
+										}}
 									/>
 								}
 								labelPlacement="start"

@@ -15,7 +15,7 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import { useDispatch } from "react-redux";
@@ -463,12 +463,12 @@ export const ReferenceProgram = () => {
 				<div className="">
 					<Button
 						variant="contained"
-						className="mt-3 mx-2 btn-error"
-						startIcon={<ClearIcon />}
+						className="mt-3 mx-2 btn-warning"
+						startIcon={<ArrowBackIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
 					>
-						Cancelar
+						Volver
 					</Button>
 					<Button
 						form="refProg-form"

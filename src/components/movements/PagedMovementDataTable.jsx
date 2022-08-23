@@ -27,16 +27,10 @@ const useQuery = (page, pageSize, params, show) => {
 		if (show) {
 			getMovementsByParams(pageSize, page, params)
 				.then((response) => {
-               //console.log("response:",response);
+               
 					if (!active) {
 						return;
 					}
-               /*
-               response.data?._embedded?.registroMovimientoSeqs.forEach((f) => {
-                  const estado = estados.find((e) => e.valor === f.estadoFactura);
-                  f.estado = estado.descripcion;
-               })
-               */
 					setRows(response.data?._embedded?.registroMovimientoSeqs);
 					setRowCount(response.data?.page?.totalElements);
 					setLoading(false);

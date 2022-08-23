@@ -249,3 +249,18 @@ export const getSaldoReferenciadorByDocumento = (doc) => {
 	};
 	return axios(config);   
 }
+
+export const addReferenciadorNivel = (nivel) => {
+	const config = {
+		method: "post",
+		url: `${API_URL}/api/matriculaReferenciadoresNiveles`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		data: nivel,
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+	return axios(config);
+};

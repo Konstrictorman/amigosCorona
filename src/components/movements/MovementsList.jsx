@@ -54,7 +54,7 @@ export const MovementsList = () => {
 	const columns = getClientColumns(tiposDocumento);
 
 	const initialValues = {
-		codigoCliente: null,
+		codigoCliente: "",
 		fechaDesde: null,
 		fechaHasta: null,
 		llaveMaestraFlag: false,
@@ -65,6 +65,7 @@ export const MovementsList = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
+         console.log(JSON.stringify(values,null,2));
 			handleSearch(values);
 		},
 
@@ -86,7 +87,7 @@ export const MovementsList = () => {
 		setShow(false);
       setParams({});
 
-      delete values.codigoCliente;
+      //delete values.codigoCliente;
 		console.log(JSON.stringify(values, null, 2));
 		Object.entries(values).forEach((fv) => {
 			if (fv[1]) {
@@ -102,10 +103,13 @@ export const MovementsList = () => {
 		setShow(true);
 	};
 
-	const handleReset = () => {
-		formik.resetForm();
+	const handleReset = () => {		
+      //formik.setFieldValue("codigoCliente", "");
+      
 		setParams({});
 		setShow(false);
+      formik.resetForm();
+      console.log(JSON.stringify(formik.values, null, 2));
 	};
 
 	const handleCustomChange = (name, val) => {
@@ -143,13 +147,14 @@ export const MovementsList = () => {
 									autoComplete="off"
 									size="small"
 									value={formik.values.codigoCliente}
-									onChange={formik.handleChange}
+                           onChange={formik.handleChange}
 									error={
 										formik.touched.codigoCliente &&
 										Boolean(formik.errors.codigoCliente)
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
+                           
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position="end">
@@ -164,38 +169,14 @@ export const MovementsList = () => {
 											</InputAdornment>
 										),
 									}}
+                           
 								/>
 							</Item>
 							<FormHelperText className="helperText right">
 								{formik.touched.codigoCliente && formik.errors.codigoCliente}
 							</FormHelperText>
 						</Grid>
-{/*
-						<Grid item xs={3}>
-							<Item className="">
-								<TextField
-									label="Cliente"
-									id="codigoCliente"
-									type="text"
-									name="codigoCliente"
-									autoComplete="off"
-									size="small"
-									value={formik.values.codigoCliente}
-									onChange={formik.handleChange}
-									className="form-control"
-									error={
-										formik.touched.codigoCliente &&
-										Boolean(formik.errors.codigoCliente)
-									}
-									variant={INPUT_TYPE}
-								/>
-							</Item>
-							<FormHelperText className="helperText">
-								{formik.touched.codigoCliente &&
-									formik.errors.codigoCliente}{" "}
-							</FormHelperText>
-						</Grid>
-                        */}
+
 						<Grid item xs={3}>
 							<Item className="">
 								<CustomDatePicker

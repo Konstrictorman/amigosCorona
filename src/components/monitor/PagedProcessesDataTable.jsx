@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { PAGE_SIZE } from "../../config/config";
-import { setError } from "../general/actions/uiActions";
+import { setError, setMessage } from "../general/actions/uiActions";
 import { DataTable } from "../general/DataTable";
 import { Spinner } from "../general/Spinner";
 import { downloadFileByProcessId } from "./actions/monitorActions";
@@ -38,8 +38,17 @@ const useQuery = (page, pageSize, params, show, estados) => {
 				})
 				.catch((e) => {
 					setLoading(false);
-					Swal.fire("Error", e.message, "error");
-					dispatch(setError(e));
+					if (e.response.status === 404) {
+						dispatch(
+							setMessage({
+								msg: "No se hayaron registros con los criterios seleccionados",
+								severity: "warning",
+							})
+						);
+					} else {
+						Swal.fire("Error", e.message, "error");
+						dispatch(setError(e));
+					}
 				});
 		} else {
 			setRows([]);
@@ -65,7 +74,7 @@ export const PagedProcessesDataTable = (attrs) => {
 	const [messages, setMessages] = useState([]);
 	const handleOpenMsgModal = () => setOpenMsgModal(true);
 	const handleCloseMsgModal = () => setOpenMsgModal(false);
-   const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
 	const [rowsState, setRowsState] = useState({
 		page: 0,
@@ -86,48 +95,38 @@ export const PagedProcessesDataTable = (attrs) => {
 	}, [rowCount, setRowCountState]);
 
 	const handleViewMessages = (id) => {
-		
 		handleOpenMsgModal();
 		setTLoading(true);
 
 		getMessagesByProcessId(id)
-         .then((response) => {
-			   //console.log(JSON.stringify(response, null, 2));
-			   setMessages(response);
-			   setTLoading(false);
-         })
-         .catch((err) => {
-				setTLoading(false);				
+			.then((response) => {
+				//console.log(JSON.stringify(response, null, 2));
+				setMessages(response);
+				setTLoading(false);
+			})
+			.catch((err) => {
+				setTLoading(false);
 				Swal.fire(
 					"Error",
-					err.cause ? err.cause.message : (err.message? err.message:err),
+					err.cause ? err.cause.message : err.message ? err.message : err,
 					"error"
 				);
-				dispatch(setError(err));            
-         })
-		
+				dispatch(setError(err));
+			});
 	};
 
 	const handleDownload = (row) => {
-		console.log("Descargando params", JSON.stringify(row,null,2));
-      /*
-      var encoding = "application/octet-stream";
-      if (row.tipoArchivoSalida === "pdf") {
-         encoding = "application/pdf";
-      } else if (row.tipoArchivoSalida ==="xls") {
-         encoding = "application/vnd.ms-excel";
-      } 
-      */
-      downloadFileByProcessId(row.id)
-         .then((response) => {
-            const encoding = response.headers['content-type'];
-            console.log(JSON.stringify(encoding,null,2));
-            const blob = new Blob([response.data], {type: encoding});
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `${row.id}.${row.tipoArchivoSalida}`;
-            link.click();
-         })
+		//		console.log("Descargando params", JSON.stringify(row,null,2));
+
+		downloadFileByProcessId(row.id).then((response) => {
+			const encoding = response.headers["content-type"];
+			console.log(JSON.stringify(encoding, null, 2));
+			const blob = new Blob([response.data], { type: encoding });
+			const link = document.createElement("a");
+			link.href = window.URL.createObjectURL(blob);
+			link.download = `${row.id}.${row.tipoArchivoSalida}`;
+			link.click();
+		});
 	};
 
 	const columns = getProcessColumns(
@@ -150,7 +149,7 @@ export const PagedProcessesDataTable = (attrs) => {
 	}, [show]);
 */
 	if (loading) {
-		return <Spinner  css="text-center spinner-top-margin"/>;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (

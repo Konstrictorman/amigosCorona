@@ -15,6 +15,7 @@ import {
 	loadProcessStates,
 	loadProcessTypes,
 	loadPrograms,
+	loadRedemptionStatus,
 	loadRedemptionTypes,
 	loadReferredStatus,
 	loadSpecialties,
@@ -41,6 +42,7 @@ export const AppRouter = () => {
          dispatch(loadSpecialties());
 			dispatch(loadStates());
          dispatch(loadProcessStates());
+         dispatch(loadRedemptionStatus());
          dispatch(loadReferredStatus());
          dispatch(loadFieldValues());
          dispatch(loadGenders());

@@ -2,9 +2,9 @@ export const getClientColumns = (tiposDoc) => {
 
    const getDocumentTypeName = (val) => {
       if(tiposDoc) {
-         const desc = tiposDoc.filter((td)=> td.valor === val);
-         if ( desc[0]) {
-            return desc[0].descripcion;
+         const desc = tiposDoc.find((td)=> td.valor === val);
+         if ( desc) {
+            return desc.descripcion;
          } else {
             return val;
          }

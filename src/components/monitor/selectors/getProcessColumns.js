@@ -8,9 +8,9 @@ export const getProcessColumns = (handleViewMessages, handleDownload, estadosPro
 
    const getDescEstado = (val) => {
       if (estadosProceso) {
-         const desc = estadosProceso.filter(e=> e.valor === val);
-         if (desc[0]) {
-            return desc[0].descripcion;
+         const desc = estadosProceso.find(e=> e.valor === val);
+         if (desc) {
+            return desc.descripcion;
          } else {
             return val;
          }
