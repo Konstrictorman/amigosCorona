@@ -5,9 +5,9 @@ export const getMovementsColumns = (motives) => {
 
    const getDescMotivo = (val) => {
       if (motives) {
-         const desc = motives.filter(e=> e.valor === val);
-         if (desc[0]) {
-            return desc[0].descripcion;
+         const desc = motives.find(e=> e.valor === val);
+         if (desc) {
+            return desc.descripcion;
          } else {
             return val;
          }
@@ -66,7 +66,7 @@ export const getMovementsColumns = (motives) => {
          type: 'string'
       },    
       { 
-         field: "valor", 
+         field: "valorAcumulado", 
          headerName: "Monto", 
          flex:1,
          headerClassName: 'headerCol',

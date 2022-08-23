@@ -34,19 +34,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../general/actions/uiActions";
 import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
+import { createRedemption, processRedemptionById } from "./actions/redemptionActions";
 
 const validationSchema = yup.object({
 	documento: yup
 		.string()
 		.min(6, "El código del referenciador debe tener al menos 6 caracteres")
 		.required("El código del referenciador es requerido"),
-	redemptionType: yup.string().nullable().required("El tipo de redención es requerido"),
+	tipoRedencion: yup.string().nullable().required("El tipo de redención es requerido"),
 	monto: yup
 		.number()
 		.min(0, "El monto de la redención no puede tener valores negativos")
 		.required("El monto de la redención es requerido"),
 	idPuntoVenta: yup.string().required("El punto de venta es requerido"),
-	ref: yup.string().required("La referencia es requerida"),
+	referencia: yup
+      .string()
+      .max(15,"La referencia debe ser menor a 15 caracteres")
+      .required("La referencia es requerida"),
 });
 
 export const Redemption = () => {
@@ -66,11 +70,12 @@ export const Redemption = () => {
 	const initialValues = {
 		id: 0,
 		documento: "",
-		redemptionType: null,
+		tipoRedencion: null,
 		monto: "",
 		idPuntoVenta: "",
 		referencia: "",
-		saldo: 0,      
+		saldo: 0,    
+      idCliente:0,  
 	};
 
 	const [formState, setFormState] = useState(initialValues);
@@ -98,10 +103,29 @@ export const Redemption = () => {
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));			
+         handleCreate(values);		
 		},
 		enableReinitialize: true,
 	});
+
+   const handleCreate = (values) =>{
+      console.log(JSON.stringify(values, null, 2));	
+      setLoading(true);
+      createRedemption(values)
+         .then(async (response)=> {
+            await processRedemptionById(response.id);
+				setLoading(false);
+				Swal.fire(
+					"Registro exitoso",
+					"El registro se creó con éxito",
+					"success"
+				);            
+         })
+			.catch((e) => {
+				setLoading(false);
+				Swal.fire("Error", e.message, "error");
+			});         
+   }
 
 
    const handleReset = () => {
@@ -133,7 +157,8 @@ export const Redemption = () => {
          .then((response) => {
             //console.log(JSON.stringify(response,null,2));   
             if (response) {              
-               setReferrer(response);               
+               setReferrer(response);      
+               formik.setFieldValue("idCliente",response.idCliente);         
                setShow(true);
             } else {
                setShow(false);
@@ -309,24 +334,24 @@ export const Redemption = () => {
 							<Grid item xs={4}>
 								<Item>
                         <FieldsComboBox
-									id="redemptionType"
+									id="tipoRedencion"
 									label="Tipo redención *"
-									value={formik.values.redemptionType}
+									value={formik.values.tipoRedencion}
 									type="tiposRedencion"
 									handleChange={(e) => {
-										handleCustomChange("tipoProceso",e.target.value);
+										handleCustomChange("tipoRedencion",e.target.value);
 									}}
 									valueType="valor"
                            labelType="valor"
 									error={
-										formik.touched.redemptionType &&
-										Boolean(formik.errors.redemptionType)
+										formik.touched.tipoRedencion &&
+										Boolean(formik.errors.tipoRedencion)
 									}
 								/>             
 								</Item>
 								<FormHelperText className="helperText">
-									{formik.touched.redemptionType &&
-										formik.errors.redemptionType}
+									{formik.touched.tipoRedencion &&
+										formik.errors.tipoRedencion}
 								</FormHelperText>
 							</Grid>
 
@@ -417,7 +442,7 @@ export const Redemption = () => {
 										name="newBalance"
 										autoComplete="off"
 										size="small"
-										value={referrer?.saldo - parseInt(formik.values.monto)}
+										value={referrer?.saldo - parseFloat(formik.values.monto)}
 										onChange={formik.handleChange}
 										error={false}
 										className="form-control"
@@ -451,7 +476,7 @@ export const Redemption = () => {
 					>
 						Volver
 					</Button>
-
+               {show &&(
 					<Button
 						variant="contained"
 						className="mt-3 mx-2 btn-error"
@@ -461,6 +486,8 @@ export const Redemption = () => {
 					>
 						Limpiar
 					</Button>
+               )}
+               {show &&(
 					<Button
 						form="redemption-form"
 						color="primary"
@@ -469,10 +496,11 @@ export const Redemption = () => {
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"
-                  disabled={!formik.values.redemptionType}
+                  disabled={!formik.values.tipoRedencion}
 					>
-						Generar {formik.values.redemptionType}
+						Generar {formik.values.tipoRedencion}
 					</Button>
+               )}
 				</div>
 
 				<SearchTableModal

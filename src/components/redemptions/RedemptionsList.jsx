@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Button,
 	FormHelperText,
 	Grid,
+	IconButton,
+	InputAdornment,
 	Tab,
 	TextField,
 	Typography,
 } from "@mui/material";
 
-import { getRedemptions } from "./selectors/getRedemptions";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import {
 	TabContext,
@@ -21,10 +22,9 @@ import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import Box from "@mui/material/Box";
 import { withStyles } from "@mui/styles";
 import SellIcon from "@mui/icons-material/Sell";
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import { RedemptionBasicDataTab } from "./tabs/RedemptionBasicDataTab";
-import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
 import ArticleIcon from "@mui/icons-material/Article";
-import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import { Spinner } from "../general/Spinner";
 import { SalesPointsCombo } from "../salesPoint/SalesPointsCombo";
 import { INPUT_TYPE } from "../../config/config";
@@ -33,10 +33,14 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { CustomDatePicker } from "../general/CustomDatePicker";
 import { ReverseConfirmationModal } from "../general/ReverseConfirmationModal";
-import { reverseRedemption } from "./actions/redemptionActions";
+import { downloadRedemptionById, reverseRedemption } from "./actions/redemptionActions";
 import Swal from "sweetalert2";
 import { setError, setMessage } from "../general/actions/uiActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getSalesPointsActive } from "../salesPoint/selectors/getSalesPointsActive";
+import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
+import { SearchTableModal } from "../general/SearchTableModal";
+import { getClientColumns } from "../clients/selectors/getClientColumns";
 
 const StyledTabs = withStyles({
 	indicator: {
@@ -46,35 +50,60 @@ const StyledTabs = withStyles({
 })(TabList);
 
 const validationSchema = yup.object({
-	fechaInicial: yup.date().required("Se requiere la fecha inicial").nullable(),
-	fechaFinal: yup
+	fechaDesde: yup.date().required("Se requiere la fecha inicial").nullable(),
+	fechaHasta: yup
 		.date()
 		.nullable()
 		.required("Se requiere la fecha final")
 		.min(
-			yup.ref("fechaInicial"),
+			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
+   //idPuntoVenta: yup.string().required("El punto de venta es requerido"),      
 });
 
 export const RedemptionsList = () => {
 	const navigate = useNavigate();
 	const [tabIndex, setTabIndex] = useState("0");
-	const [rows, setRows] = useState([]);
+	//const [rows, setRows] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(false);
 	const [params, setParams] = useState({});
 	const [openModal, setOpenModal] = useState(false);
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
-	const [selected, setSelected] = useState({});
-	const dispatch = useDispatch();
 
+	const [openRevModal, setOpenRevModal] = useState(false);
+	const handleOpenRevModal = () => setOpenRevModal(true);
+	const handleCloseRevModal = () => setOpenRevModal(false);
+	const [selected, setSelected] = useState({});
+   const [salesPoints, setSalesPoints] = useState([]);
+	const dispatch = useDispatch();
+   const { estadosRedencion, tiposDocumento } = useSelector((state) => state.lists);
+   const [resultsCount, setResultsCount] = useState(0);
+   const columns = getClientColumns(tiposDocumento);
+
+   useEffect(() => {
+      const loadSalesPoints = async () => {
+         setLoading(true);
+         try {
+            const sps = await getSalesPointsActive();
+            setSalesPoints(sps);
+            setLoading(false);
+         } catch(e) {
+            Swal.fire("Error", e.message, "error");
+            setLoading(false);
+         }            
+      }
+      loadSalesPoints();
+   }, [])
+
+   
 	const initialValues = {
 		codeCliente: "",
 		idPuntoVenta: "",
-		fechaInicial: null,
-		fechaFinal: null,
+		fechaDesde: null,
+		fechaHasta: null,
 	};
 
 	const formik = useFormik({
@@ -87,6 +116,26 @@ export const RedemptionsList = () => {
 
 		enableReinitialize: true,
 	});
+
+   const handleRevert = (row) => {
+		setSelected(row);
+		handleOpenRevModal();
+	};
+
+   const handleDownload = (row) => {
+		setSelected(row);
+		console.log("Descargando archivo para ",row);
+      downloadRedemptionById(row.id)
+         .then((response) => {
+            const blob = new Blob([response.data], {type: 'application/pdf'});
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${row.id}.pdf`;
+            link.click();            
+         })
+   }
+
+   //const columns = getRedemptionBasicColumns(salesPoints, estadosRedencion, handleClick);
 
 	const handleSearch = async () => {
 		setLoading(true);
@@ -103,15 +152,17 @@ export const RedemptionsList = () => {
 				});
 			}
 		});
-		const redemptions = await getRedemptions();
-		setRows(redemptions);
+		//const redemptions = await getRedemptions();
+
+		//setRows(redemptions);
+      //setResultsCount(redemptions.length);
 		setLoading(false);
 		setShow(true);
 	};
 
 	const handleReset = () => {
 		formik.resetForm();
-		setRows([]);
+		//setRows([]);
 		setShow(false);
 	};
 
@@ -119,11 +170,19 @@ export const RedemptionsList = () => {
 		setTabIndex(newValue);
 	};
 
-	const handleClick = (params) => {
-		setSelected(params);
-		handleOpenModal();
+   const handleClick = (params) => {
+      setLoading(true);
+		const { field, row } = params;
+		console.log("click on ", row);
+		if (field === "codigoCliente") {
+         formik.setFieldValue("codeCliente", row.codigoCliente);
+			formik.setFieldValue("idCliente", row.id);
+		}
 
+		handleCloseModal();
+      setLoading(false);
 	};
+
 
 	const reverseItem = () => {
 		handleCloseModal();
@@ -136,7 +195,7 @@ export const RedemptionsList = () => {
 				//handleReset();
 				dispatch(
 					setMessage({
-						msg: "Registro actualizado exitosamente",
+						msg: "Registro reversado exitosamente",
 						severity: "success",
 					})
 				);
@@ -200,21 +259,21 @@ export const RedemptionsList = () => {
 							<Item className="">
 								<CustomDatePicker
 									label="Fecha inicial *"
-									id="fechaInicial"
-									value={formik.values.fechaInicial}
+									id="fechaDesde"
+									value={formik.values.fechaDesde}
 									maxDate={new Date()}
 									onChange={(val) => {
-										handleCustomChange("fechaInicial", val);
+										handleCustomChange("fechaDesde", val);
 									}}
 									error={
-										formik.touched.fechaInicial &&
-										Boolean(formik.errors.fechaInicial)
+										formik.touched.fechaDesde &&
+										Boolean(formik.errors.fechaDesde)
 									}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{formik.touched.fechaInicial &&
-									formik.errors.fechaInicial}
+								{formik.touched.fechaDesde &&
+									formik.errors.fechaDesde}
 							</FormHelperText>
 						</Grid>
 
@@ -222,20 +281,20 @@ export const RedemptionsList = () => {
 							<Item className="">
 								<CustomDatePicker
 									label="Fecha final *"
-									id="fechaFinal"
-									value={formik.values.fechaFinal}
+									id="fechaHasta"
+									value={formik.values.fechaHasta}
 									maxDate={new Date()}
 									onChange={(val) => {
-										handleCustomChange("fechaFinal", val);
+										handleCustomChange("fechaHasta", val);
 									}}
 									error={
-										formik.touched.fechaFinal &&
-										Boolean(formik.errors.fechaFinal)
+										formik.touched.fechaHasta &&
+										Boolean(formik.errors.fechaHasta)
 									}
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{formik.touched.fechaFinal && formik.errors.fechaFinal}
+								{formik.touched.fechaHasta && formik.errors.fechaHasta}
 							</FormHelperText>
 						</Grid>
 
@@ -273,6 +332,20 @@ export const RedemptionsList = () => {
 										Boolean(formik.errors.codeCliente)
 									}
 									variant={INPUT_TYPE}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position="end">
+												<IconButton
+													onClick={handleOpenModal}
+													disabled={
+														formik.values.codeCliente?.length < 4
+													}
+												>
+													<SearchIcon />
+												</IconButton>
+											</InputAdornment>
+										),
+									}}                           
 								/>
 							</Item>
 							<FormHelperText className="helperText">
@@ -327,11 +400,15 @@ export const RedemptionsList = () => {
 
 				{loading && <Spinner  css="text-center spinner-top-margin"/>}
 
-				{show && rows.length > 0 && (
+				{show && (
 					<div className="topMargin">
-						<Typography variant="h6" className="left-align">
-							{rows.length} Resultados
-						</Typography>
+                  
+						<Typography variant="h6" className="left-align">                     
+                     {resultsCount?`${resultsCount} Resultados`:'No se encontraron resultados'} 
+                  </Typography>
+
+
+                  
 						<Box
 							className="align-self-center container__dataTable "
 							sx={{
@@ -352,6 +429,7 @@ export const RedemptionsList = () => {
 										icon={<ArticleIcon fontSize="large" />}
 										wrapped
 									/>
+                           
 									<Tab
 										value="1"
 										label="Auditoría"
@@ -359,32 +437,48 @@ export const RedemptionsList = () => {
 										icon={<LocationSearchingIcon fontSize="large" />}
 										wrapped
 									/>
+                           
 								</StyledTabs>
 								<RedemptionBasicDataTab
 									index="0"
-									rows={rows}
                            params={params}
-									handleClick={handleClick}
+                           salesPoints={salesPoints}
+                           statusList={estadosRedencion}
+									handleRevert={handleRevert}
+                           handleDownload={handleDownload}
+                           setResultsCount={setResultsCount}
+                           show={show}                           
 								/>
-								<RedemptionAuditTab index="1" rows={rows} />
+                        
+								<RedemptionAuditTab 
+                           index="1"                            
+                           params={params}
+                           setResultsCount={setResultsCount}
+                           show={show}                
+                        />
+                        
 							</TabContext>
 						</Box>
 					</div>
 				)}
-
-				{show && rows.length === 0 && (
-					<div className="topMargin">
-						<Typography variant="h6" className="left-align">
-							No se encontraron resultados
-						</Typography>
-					</div>
-				)}
 			</div>
 
+         <SearchTableModal
+               title="Referenciadores"
+					handleClose={handleCloseModal}
+					handleAction={handleClick}
+					open={openModal}
+               criteria="codigoCliente"
+					filter={formik.values.codeCliente}
+					pageSize={10}
+               columns={columns}
+					//items={selectedIds}
+				/>         
+
 			<ReverseConfirmationModal
-				handleClose={handleCloseModal}
+				handleClose={handleCloseRevModal}
 				handleAction={reverseItem}
-				open={openModal}
+				open={openRevModal}
 				items={selected?.id}
 				recordDesc={selected?.referencia}
 			/>

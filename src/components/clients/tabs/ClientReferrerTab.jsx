@@ -7,7 +7,7 @@ import {
 	InputAdornment,
 	TextField,
 } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { FieldsComboBox } from "../../fields/FieldsComboBox";
 import { Spinner } from "../../general/Spinner";
@@ -16,12 +16,13 @@ import Swal from "sweetalert2";
 import { getProgramsWithSpecialties } from "../../fields/selectors/getProgramsWithSpecialties";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { createReferrer, updateReferrer } from "../actions/clientActions";
+import { addReferrerBenefitLevel, createReferrer, updateReferrer } from "../actions/clientActions";
 import { Item } from "../../general/Item";
 import { CustomDatePicker } from "../../general/CustomDatePicker";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import { getDefaultBenefitByProgramRefId } from "../../benefits/selectors/getDefaultBenefitByProgramRefId";
 
 const validationSchema = yup.object({
 	fechaMat: yup
@@ -102,12 +103,10 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			//console.log(JSON.stringify(values, null, 2));
-			if (formState.id) {
-				
+			console.log(JSON.stringify(values, null, 2));
+			if (formState.id) {				
 				handleUpdateReferrer(formState.id, values);
-			} else {
-				
+			} else {				
 				handleCreateReferrer(values);
 			}
 		},
@@ -123,13 +122,12 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 			setLoading(true);
 			try {
 				const progs = await getProgramsWithSpecialties();
-				//if (componentMounted.current) {
+               
 				setPrograms(progs);
 				const p = progs?.find(
 					(p) => p.twinId === idProgramaReferenciacionRef.current
 				);
 				setSpecialties(p?.specs);
-				//}
 			} catch (e) {
 				console.log(e);
 				Swal.fire("Error", e.message + ` - ${ERROR_MSG}`, "error");
@@ -140,21 +138,39 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 		getPrograms();
 	}, []);
 
-	const handleCreateReferrer = (values) => {
+	const handleCreateReferrer = async (values) => {
 		setLoading(true);
+
 		createReferrer(values)
-			.then((response) => {
-				setLoading(false);
-				Swal.fire(
-					"Registro exitoso",
-					"El registro se creó con éxito",
-					"success"
-				);
+			.then(async (response) => {
+            const def = await getDefaultBenefitByProgramRefId(values.idProgramaReferenciacion);
+            console.log(JSON.stringify(def,null,2));
+            if (!def) {
+               setLoading(false);
+               Swal.fire(
+                  "Advertencia",
+                  "Se ha creado el referenciador, pero sin nivel de beneficio por defecto",
+                  "warning"
+               );   
+            } else {
+               
+               const res = await addReferrerBenefitLevel(def.id, response.id);
+               console.log(JSON.stringify(res,null,2));
+               
+               setLoading(false);
+               Swal.fire(
+                  "Registro exitoso",
+                  "El registro se creó con éxito",
+                  "success"
+               );
+            }
+            
 			})
 			.catch((e) => {
 				setLoading(false);
 				Swal.fire("Error", e.message, "error");
 			});
+         
 	};
 
 	const handleUpdateReferrer = (id, values) => {
@@ -425,7 +441,6 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 									value={formik.values.genero}
 									type="generos"
 									handleChange={(e) => {
-										console.log(e.target.name, e.target.value);
 										formik.handleChange(e);
 									}}
 									valueType="valor"
@@ -474,12 +489,12 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 					<Button
 						color="error"
 						variant="contained"
-						className="mt-3 mx-2"
-						startIcon={<ClearIcon />}
+						className="mt-3 mx-2 btn-warning"
+						startIcon={<ArrowBackIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
 					>
-						Cancelar
+						Volver
 					</Button>
 					<Button
 						form="referrer-form"

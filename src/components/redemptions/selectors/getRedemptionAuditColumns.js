@@ -1,12 +1,5 @@
-import { format, parseISO } from 'date-fns';
+import { dateFormatter2 } from "../../../helpers/dateFormatter";
 
-const dateFormatter = (date) => {
-   let d = parseISO(date);
-   const offSet = d.getTimezoneOffset();
-   d = new Date(d.valueOf() + offSet * 60 * 1000);
-   d = format(d, 'dd/MM/yyyy');
-   return d;
-}
 
 export const getRedemptionAuditColumns = () => {
    const columns = [
@@ -27,7 +20,7 @@ export const getRedemptionAuditColumns = () => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'dateTime',
-         valueFormatter: ({ value }) => dateFormatter(value),
+         valueFormatter: ({ value }) => dateFormatter2(value),
       },   
       {
          field: "usariosCreacion", 
@@ -47,7 +40,7 @@ export const getRedemptionAuditColumns = () => {
          headerAlign: 'center', 
          align: 'center' ,
          type: 'dateTime',
-         valueFormatter: ({ value }) => dateFormatter(value),
+         valueFormatter: ({ value }) => dateFormatter2(value),
       },   
       {
          field: "usariosModificacion", 
@@ -60,7 +53,7 @@ export const getRedemptionAuditColumns = () => {
       },       
       {
          field: "descrEstado", 
-         headerName: "Descrición estado", 
+         headerName: "Descripción estado", 
          flex:2,
          headerClassName: 'headerCol',
          headerAlign: 'center', 

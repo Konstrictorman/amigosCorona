@@ -358,7 +358,7 @@ export const Field = () => {
 								style={{ textTransform: "none" }}
 								onClick={handleClickOut}
 							>
-								Cancelar
+								Volver
 							</Button>
 						</Grid>
 

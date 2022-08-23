@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
 import queryString from "query-string";
 import { Button, FormHelperText, Grid, TextField } from "@mui/material";
-import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { Spinner } from "../general/Spinner";
 import { getSalesPointById } from "./selectors/getSalesPointById";
@@ -239,12 +239,12 @@ export const SalesPoint = () => {
 				
 				<Button
 					variant="contained"
-					className="mt-3 mx-2 btn-error"
-					startIcon={<ClearIcon />}
+					className="mt-3 mx-2 btn-warning"
+					startIcon={<ArrowBackIcon />}
 					style={{ textTransform: "none" }}
 					onClick={handleClickOut}
 				>
-					Cancelar
+					Volver
 				</Button>
 				<Button
                form="salesPoint-form"

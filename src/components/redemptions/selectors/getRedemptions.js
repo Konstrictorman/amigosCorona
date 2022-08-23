@@ -1,4 +1,3 @@
-import { getSalesPointNameById } from "../../salesPoint/selectors/getSalesPointNameById";
 import { getRedenciones } from "../api/redemptionsApi";
 
 
@@ -9,10 +8,9 @@ export const getRedemptions = async () => {
       .sort((a,b) => a.referencia.localeCompare(b.referencia));
 
    array.forEach(async (f) => {
-      const name = await getSalesPointNameById(f.idPuntoVenta);
-      console.log(f);
-      f.puntoVenta = name;
-      f.actionDisabled = (f.estadoRedencion === "OK" && f.tipoRedencion === "NEQUI")?false:true ;
+      //console.log(f);
+      f.actionDisabled = (f.estadoRedencion !== "OK" || f.tipoRedencion === "BONO");
+      f.downloadable = (f.estadoRedencion === "OK"  && f.tipoRedencion === "BONO");
 		delete f._links;
 	});
    //delay(10000, console.log("waiting"));

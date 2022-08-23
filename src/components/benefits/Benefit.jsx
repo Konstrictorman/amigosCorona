@@ -14,7 +14,7 @@ import {
 	Typography,
 } from "@mui/material";
 import PercentIcon from "@mui/icons-material/Percent";
-import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckIcon from "@mui/icons-material/Check";
 import { useDispatch } from "react-redux";
 import { getBenefitById } from "./selectors/getBenefitById";
@@ -33,8 +33,8 @@ const validationSchema = yup.object({
 	nivelBeneficio: yup
 		.string("Nivel de beneficio")
 		.min(
-			4,
-			"El nombre del nivel de beneficios debe tener al menos 4 caracteres"
+			3,
+			"El nombre del nivel de beneficios debe tener al menos 3 caracteres"
 		)
 		.required("El nombre del nivel de beneficios es requerido"),
 	idProgramaReferenciacion: yup
@@ -664,12 +664,12 @@ export const Benefit = () => {
 				<div>
 					<Button
 						variant="contained"
-						className="mt-3 mx-2 btn-error"
-						startIcon={<ClearIcon />}
+						className="mt-3 mx-2 btn-warning"
+						startIcon={<ArrowBackIcon />}
 						style={{ textTransform: "none" }}
 						onClick={handleClickOut}
 					>
-						Cancelar
+						Volver
 					</Button>
 					<Button
 						form="benefit-form"

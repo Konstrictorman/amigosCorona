@@ -1,28 +1,31 @@
 import React from "react";
 import { TabPanel } from "@mui/lab";
-import { NoRowsOverlay } from "../../general/NoRowsOverlay";
-import { getRedemptionBasicColumns } from "../selectors/getRedemptionBasicColumns";
-import { DataGrid } from "@mui/x-data-grid";
+import { PagedRedemptionsDataTable } from "../PagedRedemptionsDataTable";
 
-export const RedemptionBasicDataTab = ({ index, rows, handleClick }) => {
-	const columns = getRedemptionBasicColumns(handleClick);
+export const RedemptionBasicDataTab = ({
+	index,
+	salesPoints,
+	statusList,
+	handleRevert,
+	handleDownload,
+	setResultsCount,
+	show,
+	params,
+}) => {
+	//const columns = getRedemptionBasicColumns(salesPoints, statusList,handleRevert,handleDownload);
 
 	return (
 		<div>
 			<TabPanel value={index} style={{ padding: "0" }}>
-				<DataGrid
-					className=""
-					rows={rows}
-					columns={columns}
-					pageSize={5}
-					checkboxSelection={false}
-					density="compact"
-					autoHeight={true}
-					autoPageSize={true}
-               //onCellClick={handleClick}
-					components={{
-						NoRowsOverlay: NoRowsOverlay,
-					}}
+				<PagedRedemptionsDataTable
+					handleClick={() => {}}
+					params={params}
+					show={show}
+					salesPoints={salesPoints}
+					statusList={statusList}
+					handleRevert={handleRevert}
+					handleDownload={handleDownload}
+					setResultsCount={setResultsCount}
 				/>
 			</TabPanel>
 		</div>

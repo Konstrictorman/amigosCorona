@@ -156,6 +156,7 @@ export const Reports = () => {
 							startIcon={<PlayCircleFilledWhiteIcon />}
 							style={{ textTransform: "none" }}
 							type="submit"
+                     disabled={show}
 						>
 							Generar
 						</Button>

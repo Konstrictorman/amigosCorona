@@ -71,3 +71,17 @@ export const addNivelBeneficio = (nivelBeneficio) => {
    };
    return axios(config);
 }
+
+export const getNivelBeneficioDefaultByProgRefId = (id) => {
+   const config = {
+      method: 'get',
+      url: `${API_URL}/api/nivelesBeneficios/search/findByNivelDefault?idProgramaReferenciacion=${id}`,
+      headers: { 
+         'Content-Type': 'application/json',
+         'Accept': '*/*',
+         'Access-Control-Allow-Origin': '*',
+       },
+       "Access-Control-Allow-Headers": "Access-Control-Allow-Origin"
+   };
+   return axios(config);
+}

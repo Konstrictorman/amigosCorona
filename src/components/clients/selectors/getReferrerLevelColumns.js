@@ -1,25 +1,34 @@
-import { format, parseISO } from 'date-fns';
-import { getBenefitById } from '../../benefits/selectors/getBenefitById';
+import { dateFormatter2 } from "../../../helpers/dateFormatter";
 
-const dateFormatter = (date) => {
-   let d = parseISO(date);
-   const offSet = d.getTimezoneOffset();
-   d = new Date(d.valueOf() + offSet * 60 * 1000);
-   d = format(d, 'dd/MM/yyyy');
-   return d;
-}
+export const getReferrerLevelColumns = (benefits) => {
 
-const getBenefitName = (id) => {
-   const b = getBenefitById(id);
-   return b?.nivelBeneficio? b.nivelBeneficio: '';
-}
+   const getBenefitName = (val) => {
+      if (benefits) {
+         const ben = benefits.find((b)=> b.id === val);
+         if (ben) {
+            return ben.nivelBeneficio;
+         } else {
+            return val;
+         }
+      } else {
+         return val;
+      }
+   }
 
-const getBenefitDesc = (id) => {
-   const b = getBenefitById(id);
-   return b?.descripcion? b.descripcion: '';
-}
+   const getBenefitDesc = (val) => {
+      
+      if (benefits) {
+         const ben = benefits.find((b)=> b.id === val.idNivelBeneficio);
+         if (ben) {
+            return ben.descripcion;
+         } else {
+            return val;
+         }
+      } else {
+         return val;
+      }
+   }
 
-export const getReferrerLevelColumns = () => {
    const columns = [
       {
          field: "estado",
@@ -37,7 +46,7 @@ export const getReferrerLevelColumns = () => {
          headerAlign: 'center',
          align: 'center',
          type: 'dateTime',    
-         valueFormatter: ({ value }) => dateFormatter(value),        
+         valueFormatter: ({ value }) => dateFormatter2(value),        
       },
       {
          field: "idNivelBeneficio",
@@ -50,14 +59,14 @@ export const getReferrerLevelColumns = () => {
          valueFormatter: ({ value }) => getBenefitName(value),  
       },     
       {
-         field: "desc",
+         field: "descripcion",
          headerName: "Descripción",
          flex:3,
          headerClassName: 'headerCol',
          headerAlign: 'center',
          align: 'left',
          type: 'string',         
-         valueGetter: (params) => (getBenefitDesc(`${params.getValue(params.id, 'idNivelBeneficio')}`)),
+         valueGetter: ({row}) => getBenefitDesc(row),  
       },       
    ];
    return columns;

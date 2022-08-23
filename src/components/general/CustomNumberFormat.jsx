@@ -19,6 +19,7 @@ export const CustomNumberFormat = forwardRef(function CustomNumberFormat(props, 
         }}
         thousandSeparator
         isNumericString
+        decimalScale={2}
       />
     );
   });

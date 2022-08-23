@@ -141,10 +141,10 @@ export const Amounts = () => {
 						p.idProgramaReferenciacion ===
 						response.idProgramaReferenciacion
 				);
-            console.log(JSON.stringify(prog,null,2));
+            //console.log(JSON.stringify(prog,null,2));
 				formik.setFieldValue("programaRef", prog[0].valor);
 				formik.setFieldValue("idMatriculaReferenciador", response.id);
-            formik.setFieldValue("idCliente", response.idCliente);
+            //formik.setFieldValue("idCliente", response.idCliente);
 				setShow(true);
 				setLoading(false);
 				console.log(JSON.stringify(response, null, 2));

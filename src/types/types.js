@@ -20,6 +20,7 @@ export const types = {
    fieldsSetProcessStates: '[Field] Setting process states list',
    fieldsSetProcessTypes: '[Field Setting process types list',
    fieldsSetPrograms: '[Field] Setting programs list',
+   fieldsSetRedemptionStatus: '[Field] Setting redemption status list',
    fieldsSetRedemptionTypes: '[Field] Setting redemption types list',  
    fieldsSetReferredStatus: '[Field] Setting referredStatus list',
    fieldsSetSpecialties: '[Field] Setting specialties list',

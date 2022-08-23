@@ -1,4 +1,3 @@
-import { dateFormatter3 } from "../../../helpers/dateFormatter";
 import { getMovimientosResumen, saveRegistroMovimiento, saveRegistroMovimientoSeq } from "../api/movementApi";
 
 export const getResume = async (fInit, fFinal) => {
@@ -23,7 +22,7 @@ export const addRecordMovement = async (rMovement) => {
 export const addRecordMovementSeq = async(record) => {
    if (record) {
       record.estadoFactura = "A";
-      record.fechaAsigna = dateFormatter3(new Date());
+      //record.fechaAsigna = dateFormatter3(record.fechaAsigna);
       record.idFactura=0;
       record.idFacturaAdj="";
       record.idProceso=0;
