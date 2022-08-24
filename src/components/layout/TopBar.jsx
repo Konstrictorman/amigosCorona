@@ -5,15 +5,17 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Corona_logo from "../../assets/images/centro_corona.png";
-import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { Avatar, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { AppMenu } from "./AppMenu";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+
+import { stringAvatar } from "../../helpers/stringAvatar";
+import { useNavigate } from "react-router-dom";
 
 export const TopBar = () => {
 	const [anchorEl, setAnchorEl] = useState(null);
+   const navigate = useNavigate();
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -21,9 +23,10 @@ export const TopBar = () => {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+      navigate("logout");
 	};
 
-	const MyMenutem = withStyles({
+	const MyMenuItem = withStyles({
 		root: {
 			justifyContent: "flex-end",
 			textAlign: "right",
@@ -58,7 +61,8 @@ export const TopBar = () => {
 						>
 							{"UserName"}
 						</Typography>
-						<div>
+						<div className="mr-5">
+                     
 							<IconButton
 								size="large"
 								aria-label="account of current user"
@@ -67,31 +71,58 @@ export const TopBar = () => {
 								onClick={handleMenu}
 								color="inherit"
 							>
-								<AccountCircle />
+								<Avatar {...stringAvatar('Usuario Prueba')} />
 							</IconButton>
+   
+                     
 							<Menu
 								id="menu-profile"
 								anchorEl={anchorEl}
 								keepMounted
 								open={Boolean(anchorEl)}
 								onClose={handleClose}
+                        disableScrollLock={true}
+                        anchorOrigin={{
+                           vertical: 'bottom',
+                           horizontal: 'right',
+                         }}
+                         transformOrigin={{
+                           vertical: 'top',
+                           horizontal: 'right',
+                         }}
+                         PaperProps={{
+                           elevation: 0,
+                           sx: {
+                             overflow: 'visible',
+                             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                             mt: 1.5,
+                             '& .MuiSvgIcon-root': {
+                               width: 32,
+                               height: 32,
+                               ml: -0.5,
+                               mr: 1,
+                             },
+                             '&:before': {
+                               content: '""',
+                               display: 'block',
+                               position: 'absolute',
+                               top: 0,
+                               right: 14,
+                               width: 10,
+                               height: 10,
+                               bgcolor: 'background.paper',
+                               transform: 'translateY(-50%) rotate(45deg)',
+                               zIndex: 0,
+                             },
+                           },
+                         }}
 							>
-								<MyMenutem onClick={handleClose}>
-									<ListItemIcon>
-										<AccountBoxIcon
-											color="primary"
-											fontSize="medium"
-										/>
-									</ListItemIcon>
-									<ListItemText>Mi Perfil</ListItemText>
-								</MyMenutem>
-
-								<MyMenutem onClick={handleClose}>
+								<MyMenuItem onClick={handleClose}>
 									<ListItemIcon>
 										<LogoutIcon color="primary" fontSize="medium" />
 									</ListItemIcon>
 									<ListItemText>Salir </ListItemText>
-								</MyMenutem>
+								</MyMenuItem>
 							</Menu>
 						</div>
 					</Toolbar>

@@ -31,7 +31,7 @@ import { SearchTableModal } from "../general/SearchTableModal";
 import { FieldsComboBox } from "../fields/FieldsComboBox";
 import { getReferrerBalanceByDocument } from "../clients/selectors/getReferrerBalanceByDocument";
 import { useDispatch, useSelector } from "react-redux";
-import { setError } from "../general/actions/uiActions";
+import { setError, setMessage } from "../general/actions/uiActions";
 import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { createRedemption, processRedemptionById } from "./actions/redemptionActions";
@@ -63,6 +63,7 @@ export const Redemption = () => {
 	const handleOpenModal = () => setOpenModal(true);
 	const handleCloseModal = () => setOpenModal(false);
    const [show, setShow] = useState(false);
+   const [allow, setAllow] = useState(false);
    const dispatch = useDispatch();
    const {tiposDocumento} = useSelector((state) => state.lists);
 	const columns = getClientColumns2(tiposDocumento);
@@ -115,9 +116,10 @@ export const Redemption = () => {
          .then(async (response)=> {
             await processRedemptionById(response.id);
 				setLoading(false);
+            handleReset();
 				Swal.fire(
 					"Registro exitoso",
-					"El registro se creó con éxito",
+					`Se creó la redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${values.nombre}`,
 					"success"
 				);            
          })
@@ -131,6 +133,7 @@ export const Redemption = () => {
    const handleReset = () => {
       formik.resetForm();
       setShow(false);
+      setAllow(false);
    }
 
 	const handleCustomChange = (name, val) => {
@@ -155,10 +158,20 @@ export const Redemption = () => {
    const loadReferrerBalance = (documento) => {
 		getReferrerBalanceByDocument(documento)
          .then((response) => {
-            //console.log(JSON.stringify(response,null,2));   
+            console.log(JSON.stringify(response,null,2));   
             if (response) {              
                setReferrer(response);      
                formik.setFieldValue("idCliente",response.idCliente);         
+               if (response.saldo>0) {
+                  setAllow(true);
+               } else {
+                  dispatch(setMessage(
+                     {
+                        severity:'warning',
+                        msg:'El referenciador no puede realizar redenciones',
+                     }
+                  ))
+               }
                setShow(true);
             } else {
                setShow(false);
@@ -496,7 +509,7 @@ export const Redemption = () => {
 						startIcon={<CheckIcon />}
 						style={{ textTransform: "none" }}
 						type="submit"
-                  disabled={!formik.values.tipoRedencion}
+                  disabled={!formik.values.tipoRedencion || !allow}
 					>
 						Generar {formik.values.tipoRedencion}
 					</Button>

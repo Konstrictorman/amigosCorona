@@ -57,7 +57,7 @@ export const getMovementsColumns = (motives) => {
          type: 'number'
       },     
       { 
-         field: "idFactura", 
+         field: "numeroFactura", 
          headerName: "Factura", 
          flex:1,
          headerClassName: 'headerCol',

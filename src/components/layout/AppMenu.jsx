@@ -59,7 +59,7 @@ export const AppMenu = () => {
 				anchorEl={anchorEl}
 				open={Boolean(anchorEl)}
 				onClose={handleClose}
-            
+            disableScrollLock={true}
 				MenuListProps={{
 					"aria-labelledby": "basic-button",
 				}}

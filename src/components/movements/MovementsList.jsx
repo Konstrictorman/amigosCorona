@@ -65,7 +65,7 @@ export const MovementsList = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-         console.log(JSON.stringify(values,null,2));
+         //console.log(JSON.stringify(values,null,2));
 			handleSearch(values);
 		},
 
@@ -74,7 +74,7 @@ export const MovementsList = () => {
 
 	const handleClick = (params) => {
 		const { field, row } = params;
-		console.log("click on ", row);
+		//console.log("click on ", row);
 		if (field === "codigoCliente") {
          formik.setFieldValue("codigoCliente", row.codigoCliente);
 			formik.setFieldValue("idCliente", row.id);
@@ -88,7 +88,7 @@ export const MovementsList = () => {
       setParams({});
 
       //delete values.codigoCliente;
-		console.log(JSON.stringify(values, null, 2));
+		//console.log(JSON.stringify(values, null, 2));
 		Object.entries(values).forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {

@@ -30,6 +30,7 @@ import {
 } from "../components/general/actions/uiActions";
 import Swal from "sweetalert2";
 import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
+import { LogoutView } from "../components/logout/LogoutView";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
@@ -73,6 +74,7 @@ export const AppRouter = () => {
 				<div>
 					<Routes>
 						<Route exact path="/login" element={<LoginView />} />
+                  <Route exact path="/logout" element={<LogoutView />} />
 						<Route path="/*" element={<DashRouter />} />
 					</Routes>
 				</div>
