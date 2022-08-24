@@ -282,7 +282,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 															</InputAdornment>
 														),
 													}}
-                                       required
+                                       required={p.requerido}
 												/>
 											</Item>
 										</Grid>
