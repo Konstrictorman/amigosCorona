@@ -16,7 +16,11 @@ import Swal from "sweetalert2";
 import { getProgramsWithSpecialties } from "../../fields/selectors/getProgramsWithSpecialties";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { addReferrerBenefitLevel, createReferrer, updateReferrer } from "../actions/clientActions";
+import {
+	addReferrerBenefitLevel,
+	createReferrer,
+	updateReferrer,
+} from "../actions/clientActions";
 import { Item } from "../../general/Item";
 import { CustomDatePicker } from "../../general/CustomDatePicker";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
@@ -27,29 +31,29 @@ import { getDefaultBenefitByProgramRefId } from "../../benefits/selectors/getDef
 const validationSchema = yup.object({
 	fechaMat: yup
 		.date()
-      .nullable()
+		.nullable()
 		.required("La fecha de matrícula es requerida"),
 	idProgramaReferenciacion: yup
 		.string()
-      .nullable()
+		.nullable()
 		.required("Se requiere un programa de referenciación"),
-      
+
 	especialidad: yup
 		.string()
 		.nullable()
 		.required("La especialidad es requerida"),
-      
+
 	numHijos: yup
 		.number()
 		.min(0, "La cantidad de hijos debe ser un número positivo")
 		.required("El número de hijos es requerido"),
-      
+
 	idLifeMiles: yup.string(),
-   
+
 	estadoRef: yup.string().required("El estado es requerido"),
-   
+
 	genero: yup.string().required("El género es requerido"),
-   
+
 	celNequi: yup
 		.number()
 		.test(
@@ -58,20 +62,25 @@ const validationSchema = yup.object({
 			(val) => val?.toString().length === 10
 		)
 		.required("El celular para Nequi debe ser obligatorio"),
-      
+
 	referencia1: yup
 		.string()
 		.min(8, "La referencia debe tener al menos 10 caracteres")
 		.required("La referencia es requerida"),
-      
 });
 
-export const ClientReferrerTab = ({ formValues, index, handleClickOut, client }) => {
+export const ClientReferrerTab = ({
+	formValues,
+	index,
+	handleClickOut,
+	client,
+   setLevels,
+}) => {
 	const [loading, setLoading] = useState(false);
 	const [programs, setPrograms] = useState([]);
 	const [specialties, setSpecialties] = useState([]);
 
-   //console.log(JSON.stringify(client,null,2));
+	//console.log(JSON.stringify(client,null,2));
 
 	const initialValues = {
 		id: 0,
@@ -84,7 +93,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 		referencia1: "",
 		genero: "",
 		celNequi: 0,
-      idCliente:client.id,
+		idCliente: client.id,
 	};
 
 	const [formState, setFormState] = useState(initialValues);
@@ -103,10 +112,10 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
-			if (formState.id) {				
+			//console.log(JSON.stringify(values, null, 2));
+			if (formState.id) {
 				handleUpdateReferrer(formState.id, values);
-			} else {				
+			} else {
 				handleCreateReferrer(values);
 			}
 		},
@@ -122,7 +131,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 			setLoading(true);
 			try {
 				const progs = await getProgramsWithSpecialties();
-               
+
 				setPrograms(progs);
 				const p = progs?.find(
 					(p) => p.twinId === idProgramaReferenciacionRef.current
@@ -140,37 +149,45 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 
 	const handleCreateReferrer = async (values) => {
 		setLoading(true);
+		getDefaultBenefitByProgramRefId(values.idProgramaReferenciacion)
+			.then((res) => {
+				//console.log(JSON.stringify(res, null, 2));
 
-		createReferrer(values)
-			.then(async (response) => {
-            const def = await getDefaultBenefitByProgramRefId(values.idProgramaReferenciacion);
-            console.log(JSON.stringify(def,null,2));
-            if (!def) {
-               setLoading(false);
-               Swal.fire(
-                  "Advertencia",
-                  "Se ha creado el referenciador, pero sin nivel de beneficio por defecto",
-                  "warning"
-               );   
-            } else {
-               
-               const res = await addReferrerBenefitLevel(def.id, response.id);
-               console.log(JSON.stringify(res,null,2));
-               
-               setLoading(false);
-               Swal.fire(
-                  "Registro exitoso",
-                  "El registro se creó con éxito",
-                  "success"
-               );
-            }
-            
+				if (!res) {
+					setLoading(false);
+					Swal.fire(
+						"Advertencia",
+						"No es posible crear referenciador.  No existe nivel de beneficios por defecto para el programa de referenciación",
+						"warning"
+					);
+				} else {
+					createReferrer(values)
+						.then(async (response) => {
+							const ref = await addReferrerBenefitLevel(
+								res.id,
+								response.id
+							);
+							console.log(JSON.stringify(ref, null, 2));
+                     const levels = [];
+                     levels.push(ref);
+
+							setLoading(false);
+							Swal.fire(
+								"Registro exitoso",
+								"El registro se creó con éxito",
+								"success"
+							);
+						})
+						.catch((e) => {
+							setLoading(false);
+							Swal.fire("Error", e.message, "error");
+						});
+				}
 			})
 			.catch((e) => {
 				setLoading(false);
 				Swal.fire("Error", e.message, "error");
 			});
-         
 	};
 
 	const handleUpdateReferrer = (id, values) => {
@@ -206,7 +223,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 	};
 
 	if (loading) {
-		return <Spinner css="text-center spinner-top-margin" />;
+		return <Spinner css="text-center" />;
 	}
 	return (
 		<div>
@@ -231,7 +248,7 @@ export const ClientReferrerTab = ({ formValues, index, handleClickOut, client })
 										formik.touched.fechaMat &&
 										Boolean(formik.errors.fechaMat)
 									}
-                           disabled={false}
+									disabled={false}
 								/>
 							</Item>
 							<FormHelperText className="helperText">

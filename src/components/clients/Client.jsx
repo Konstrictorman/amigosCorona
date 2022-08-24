@@ -55,7 +55,7 @@ export const Client = () => {
 		direccionesCliente: [],
 		emailsCliente: [],
 	});
-
+   const [levels, setLevels] = useState([]);
 	const { nombreCompleto, tipoDocumento, documento, referenciador } = client;
 	const { tiposDocumento } = useSelector((state) => state.lists);
 
@@ -72,6 +72,8 @@ export const Client = () => {
 					data.tipoDocumento = tipoDoc;
 
 					setClient(data);
+               //console.log(JSON.stringify(data.referenciador.levels,null,2));
+               setLevels(data.referenciador.levels);
 				}
 			} catch (e) {
 				console.log(e);
@@ -142,7 +144,7 @@ export const Client = () => {
 					</Grid>
 				</div>
 
-				<div className="topMargin">
+				<div className="">
 					<Box className="align-self-center container__dataTable">
 						<TabContext value={tabIndex}>
 							<StyledTabs
@@ -206,6 +208,7 @@ export const Client = () => {
 								formValues={referenciador}
 								index="0"
 								handleClickOut={handleClickOut}
+                        setLevels={setLevels}
 							/>
 							<ClientPhonesTab
 								client={client}
@@ -228,7 +231,7 @@ export const Client = () => {
 								handleClickOut={handleClickOut}
 							/>
 							<ClientBenefitsTab
-								client={client}
+								levels={levels}
 								index="5"
 								handleClickOut={handleClickOut}
 							/>

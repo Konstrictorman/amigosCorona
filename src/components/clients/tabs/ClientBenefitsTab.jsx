@@ -11,22 +11,24 @@ import Swal from "sweetalert2";
 import { setError } from "../../general/actions/uiActions";
 import { useDispatch } from "react-redux";
 
-export const ClientBenefitsTab = ({ client, index, handleClickOut }) => {
+export const ClientBenefitsTab = ({ levels, index, handleClickOut }) => {
 	const [columns, setColumns] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
+   const [rows, setRows] = useState([]);
 
+   /*
 	const rows = client?.referenciador?.levels
 		? client.referenciador.levels
 		: [];
-
+*/
 	useEffect(() => {
 		setLoading(true);
 		const loadBenefits = async () => {
 			try {
 				const bens = await getBenefits();
 				setColumns(getReferrerLevelColumns(bens));
-				console.log(bens);
+				//console.log(levels);
 				setLoading(false);
 			} catch (err) {
 				setLoading(false);
@@ -41,8 +43,14 @@ export const ClientBenefitsTab = ({ client, index, handleClickOut }) => {
 		loadBenefits();
 	}, [dispatch]);
 
+   useEffect(() => {
+     setRows(levels);
+   
+   }, [levels])
+   
+
 	if (loading) {
-		return <Spinner  css="text-center spinner-top-margin"/>;
+		return <Spinner  css="text-center"/>;
 	}
 
 	return (

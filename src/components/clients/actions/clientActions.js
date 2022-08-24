@@ -82,17 +82,22 @@ export const updateReferrer = async (id, referrer) => {
 }
 
 export const createReferrer = async (referrer) => {
-   const today = moment.now();
-   const date =dateFormatter3(today);
-   referrer.fechaCreacion = date;
-   referrer.fechaModificacion = date;
-   referrer.usuarioCreacion = "PRUEBA";
-   referrer.usuarioModificacion="PRUEBA";
-   const ref = await createReferenciador(referrer);
-   return ref;
+   if (referrer) {
+      const today = moment.now();
+      const date =dateFormatter3(today);
+      referrer.fechaCreacion = date;
+      referrer.fechaModificacion = date;
+      referrer.usuarioCreacion = "PRUEBA";
+      referrer.usuarioModificacion="PRUEBA";
+      const ref = await createReferenciador(referrer);
+      return ref.data;   
+   } else {
+      throw new Error("Imposible guardar referenciador.  Datos insuficientes");
+   }
 }
 
 export const addReferrerBenefitLevel = async (idBenefitLevel, idReferrer) => {
+   console.log(idBenefitLevel, idReferrer);
    if (idBenefitLevel && idReferrer) {
       const obj = {
          estado: "A",
@@ -102,7 +107,8 @@ export const addReferrerBenefitLevel = async (idBenefitLevel, idReferrer) => {
          idReferenciador: idReferrer,
       }
       const def = await addReferenciadorNivel(obj);
-      return def;
+      delete def.data._links;
+      return def.data;
    } else {
       throw new Error("Imposible guardar beneficio sin identificador de referido/nivelBeneficio");
    }
