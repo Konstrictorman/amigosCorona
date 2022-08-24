@@ -36,6 +36,7 @@ const useQuery = (page, pageSize, params, show) => {
 					setLoading(false);
 				})
 				.catch((e) => {
+               //console.log(JSON.stringify(e,null,2));
 					setLoading(false);
 					Swal.fire("Error", e.message, "error");
                dispatch(setError(e));

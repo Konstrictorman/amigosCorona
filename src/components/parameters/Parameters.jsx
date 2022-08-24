@@ -83,7 +83,7 @@ export const Parameters = ({ isLoading, parameterGroupId, handleClickOut }) => {
 		initialValues: formState,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			if (formik.values.id === 0) {
 				create(values);
 			} else {
@@ -207,6 +207,7 @@ export const Parameters = ({ isLoading, parameterGroupId, handleClickOut }) => {
 				id: row.id,
 				parametro: row.parametro,
 				valor: row.valor,
+            idGrupoParametros: parameterGroupId,
 			});
 
 			rows.forEach((item) => {
