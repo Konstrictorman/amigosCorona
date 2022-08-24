@@ -78,7 +78,7 @@ export const Amounts = () => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(values, null, 2));
 			registerAmount(values);
 		},
 

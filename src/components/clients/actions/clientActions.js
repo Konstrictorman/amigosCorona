@@ -104,7 +104,7 @@ export const addReferrerBenefitLevel = async (idBenefitLevel, idReferrer) => {
       const def = await addReferenciadorNivel(obj);
       return def;
    } else {
-      throw new Error("Imposible guardar beneficio sin identificador de refereido/nivelBeneficio");
+      throw new Error("Imposible guardar beneficio sin identificador de referido/nivelBeneficio");
    }
 }
 
