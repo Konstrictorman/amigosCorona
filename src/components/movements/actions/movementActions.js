@@ -23,7 +23,7 @@ export const addRecordMovementSeq = async(record) => {
    if (record) {
       record.estadoFactura = "A";
       //record.fechaAsigna = dateFormatter3(record.fechaAsigna);
-      record.idFactura=0;
+      //record.idFactura=null;
       record.idFacturaAdj="";
       record.idProceso=0;
       record.motivo= "MAN";
@@ -33,6 +33,7 @@ export const addRecordMovementSeq = async(record) => {
       record.sequencia=0;
       record.ultUsuario="PRUEBA";
       record.valorAcumulado= record.valor;
+      console.log(JSON.stringify(record,null,2));
       const result = await saveRegistroMovimientoSeq(record);
       return result;
    } else {

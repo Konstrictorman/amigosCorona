@@ -72,7 +72,7 @@ export const SalesPointsCombo = (props) => {
    const handleChange = (event, newValue) => {
 		setSelected(newValue);
       handleValueChange(newValue?newValue.id:undefined);    
-      console.log(event,newValue);
+      //console.log(event,newValue);
    }
 
 	return (

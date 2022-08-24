@@ -111,13 +111,13 @@ export const Amounts = () => {
 	};
 
 	const handleOpenModal = () => {
-		console.log(formik.values.codeReferrer);
+		//console.log(formik.values.codeReferrer);
 		setOpenModal(true);
 	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
-		console.log("click on ", row);
+		//console.log("click on ", row);
 		if (field === "codigoCliente") {
 			formik.setFieldValue("codeReferrer", row.codigoCliente);
 		}
@@ -147,7 +147,7 @@ export const Amounts = () => {
             //formik.setFieldValue("idCliente", response.idCliente);
 				setShow(true);
 				setLoading(false);
-				console.log(JSON.stringify(response, null, 2));
+				//console.log(JSON.stringify(response, null, 2));
 			})
 			.catch((err) => {
 				setShow(true);
