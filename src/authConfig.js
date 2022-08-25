@@ -1,8 +1,8 @@
 export const msalConfig = {
    auth: {
      clientId: "6cebbf4e-4092-418a-abc7-6d483c3f8f04",
-     authority: "OrgCorona.onmicrosoft.com/e6eb211f-4f1d-4d85-a663-7ede2efbf39b", // This is a URL (e.g. https://login.microsoftonline.com/{your tenant ID})
-     redirectUri: "http://localhost:4200",
+     authority: "https://login.microsoftonline.com/e6eb211f-4f1d-4d85-a663-7ede2efbf39b", // This is a URL (e.g. https://login.microsoftonline.com/{your tenant ID})
+     redirectUri: "https://gray-wave-0abf87e10.1.azurestaticapps.net",
    },
    cache: {
      cacheLocation: "sessionStorage", // This configures where your cache will be stored
