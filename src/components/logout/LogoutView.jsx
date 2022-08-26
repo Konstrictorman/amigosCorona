@@ -1,5 +1,5 @@
-import { Button, Stack, Typography } from "@mui/material";
 import React from "react";
+import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Corona_logo from "../../assets/images/centroCorona.png";
 import { Footer } from "../layout/Footer";

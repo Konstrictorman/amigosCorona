@@ -75,6 +75,7 @@ export const AppRouter = () => {
 					<Routes>
 						<Route exact path="/login" element={<LoginView />} />
                   <Route exact path="/logout" element={<LogoutView />} />
+                  <Route exact path="/" element={<LoginView/>}/>
 						<Route path="/*" element={<DashRouter />} />
 					</Routes>
 				</div>

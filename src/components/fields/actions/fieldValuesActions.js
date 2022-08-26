@@ -15,10 +15,10 @@ export const updateFieldValue = async(id, fieldValue) => {
 
 export const getFieldValues = async() => {
    const res = await getValoresCampos();
-   res.data._embedded.valorCampoes.forEach((vc)=> {
+   res?.data?._embedded?.valorCampoes?.forEach((vc)=> {
       delete vc._links;
    })
-   return res?.data?._embedded.valorCampoes;
+   return res?.data?._embedded?.valorCampoes;
 }
 
 export const setFieldValues = (fv) => ({

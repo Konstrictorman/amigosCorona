@@ -1,0 +1,33 @@
+.login_container {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: space-around;
+   align-items: center;
+   padding-top: 100px;
+}
+
+.login_box {
+   display: flex;
+   width: 50%;
+   height: 500px;
+   padding: 5px;
+   border: 1px solid $pantone298C;
+   background-color: #0671B8;
+   border-radius: 10px;
+   align-items: center;
+}
+
+.login_welcome_kit {
+   background-color: whitesmoke;
+   border: 1px solid black;
+   padding: 10px;
+   width: 50%;
+   
+}
+
+.login_logo {
+   max-width:100%;
+   max-height:100%;
+   align-items: center;
+}

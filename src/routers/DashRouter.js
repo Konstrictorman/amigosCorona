@@ -58,7 +58,6 @@ export const DashRouter = () => {
                   <Route exact path="/reports" element={<Reports/>}/>                  
                   <Route exact path="/salesPoint" element={<SalesPoint/>}/>
                   <Route exact path="/salesPointList" element={<SalesPointList/>}/>
-                  <Route exact path="/" element={<Home/>}/>
                   <Route path="*" element={<PageNotFound/>}/>
                </Routes>   
             </div>
