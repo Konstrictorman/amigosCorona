@@ -1,11 +1,7 @@
 import React from "react";
 import {
-	Box,
 	Button,
-	Grid,
-	Paper,
 	Stack,
-	styled,
 	Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +40,7 @@ export const LoginView = () => {
 						<Button
 							onClick={handleClick}
 							variant="contained"
-							className="btn-warning"
+							className="btn-warning login_button"
 							startIcon={<LoginIcon />}
 						>
 							Ingresar
