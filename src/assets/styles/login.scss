@@ -4,27 +4,41 @@
    flex-wrap: nowrap;
    justify-content: space-around;
    align-items: center;
-   padding-top: 100px;
+
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   -webkit-box-shadow: 0 10px 6px -6px #777;
+   -moz-box-shadow: 0 10px 6px -6px #777;
+        box-shadow: 0 10px 6px -6px #777;
+   //padding-top: 100px;
 }
 
 .login_box {
    display: flex;
-   width: 50%;
-   height: 500px;
-   padding: 5px;
    border: 1px solid $pantone298C;
    background-color: #0671B8;
    border-radius: 10px;
-   align-items: center;
+   align-items: center;   
 }
 
+
 .login_button {
-   margin-bottom: 30px !important;
+   margin-bottom: 100px !important;
   
 }
 
 .login_logo {
-   max-width:100%;
-   max-height:100%;
+   max-width:80%;
+   max-height:80%;
    align-items: center;
+}
+
+.login_logo_container {
+   display: flex;
+   flex-wrap: nowrap;
+   justify-content: center;
+   align-items: center;
+   //border: 1px solid black;
 }
