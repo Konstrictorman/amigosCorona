@@ -1,17 +1,18 @@
 import React from "react";
-import { Button, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Stack, Typography } from "@mui/material";
 import Corona_logo from "../../assets/images/centroCorona.png";
 import { Footer } from "../layout/Footer";
+import { SignInButton } from "../login/SignInButton";
+import LoginIcon from "@mui/icons-material/Login";
 
 export const LogoutView = () => {
-
+/*
    const navigate = useNavigate();
 
    const handleClick = () => {
       navigate("/home");
    }
-
+*/
 	return (
 		<>
 			<div clasName="row ">
@@ -31,7 +32,11 @@ export const LogoutView = () => {
 					<Typography variant="caption" className="center mt-0">
 						Gracias por usar Programas de fidelización amigos Corona
 					</Typography>
-					<Button onClick={handleClick} variant="contained">Ingresar de nuevo</Button>
+               <SignInButton
+							caption="Ingresar de nuevo"
+							className="btn-primary"
+							startIcon={<LoginIcon />}
+						/>               
 				</Stack>
 			</div>
          <div>

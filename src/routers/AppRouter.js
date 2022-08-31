@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LoginView } from "../components/login/LoginView";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+} from "react-router-dom";
 import { DashRouter } from "./DashRouter";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
-   loadDocumentTypes,
-   loadGenders,
+	loadDocumentTypes,
+	loadGenders,
 	loadLoadTypes,
 	loadMotives,
 	loadOutputFileTypes,
@@ -30,42 +33,44 @@ import {
 } from "../components/general/actions/uiActions";
 import Swal from "sweetalert2";
 import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
-import { LogoutView } from "../components/logout/LogoutView";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
 	const { loading } = useSelector((state) => state.ui);
+	//const navigate = useNavigate();
+	//const isAuthenticated = useIsAuthenticated();
 
-   
 	useEffect(() => {
-		dispatch(startLoading());
 		try {
-         dispatch(loadSpecialties());
+			//if (isAuthenticated) {
+			dispatch(startLoading());
+			dispatch(loadSpecialties());
 			dispatch(loadStates());
-         dispatch(loadProcessStates());
-         dispatch(loadRedemptionStatus());
-         dispatch(loadReferredStatus());
-         dispatch(loadFieldValues());
-         dispatch(loadGenders());
-         dispatch(loadMotives());
+			dispatch(loadProcessStates());
+			dispatch(loadRedemptionStatus());
+			dispatch(loadReferredStatus());
+			dispatch(loadFieldValues());
+			dispatch(loadGenders());
+			dispatch(loadMotives());
 			dispatch(loadPeriods());
-         dispatch(loadPrograms());
-         dispatch(loadOutputFileTypes());
-         dispatch(loadLoadTypes());      
-         dispatch(loadDocumentTypes());
-         dispatch(loadProcessTypes());
-         dispatch(loadRedemptionTypes());
+			dispatch(loadPrograms());
+			dispatch(loadOutputFileTypes());
+			dispatch(loadLoadTypes());
+			dispatch(loadDocumentTypes());
+			dispatch(loadProcessTypes());
+			dispatch(loadRedemptionTypes());
 			dispatch(removeError());
+			//}
 		} catch (e) {
 			console.log(e);
 			Swal.fire("Error", e.message, "error");
-         dispatch(setError(e));
+			dispatch(setError(e));
 		}
 		dispatch(finishLoading());
 	}, [dispatch]);
 
 	if (loading) {
-		return <Spinner  css="text-center spinner-top-margin"/>;
+		return <Spinner css="text-center spinner-top-margin" />;
 	}
 
 	return (
@@ -73,10 +78,7 @@ export const AppRouter = () => {
 			<Router>
 				<div>
 					<Routes>
-						<Route exact path="/login" element={<LoginView />} />
-                  <Route exact path="/logout" element={<LogoutView />} />
-                  <Route exact path="/" element={<LoginView/>}/>
-						<Route path="/*" element={<DashRouter />} />
+						<Route exact path="/*" element={<DashRouter />} />
 					</Routes>
 				</div>
 			</Router>
