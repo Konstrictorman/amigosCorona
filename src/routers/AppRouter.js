@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -33,12 +33,18 @@ import {
 } from "../components/general/actions/uiActions";
 import Swal from "sweetalert2";
 import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
+import { useMsal } from "@azure/msal-react";
+import { callMsGraph } from "../auth/graph";
+import { loginRequest } from "../auth/authConfig";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
 	const { loading } = useSelector((state) => state.ui);
+   const { instance, accounts } = useMsal();
+	const [graphData, setGraphData] = useState(null);   
 	//const navigate = useNavigate();
 	//const isAuthenticated = useIsAuthenticated();
+   const name = accounts[0] && accounts[0].name;
 
 	useEffect(() => {
 		try {
@@ -69,6 +75,35 @@ export const AppRouter = () => {
 		dispatch(finishLoading());
 	}, [dispatch]);
 
+   useEffect(() => {
+      const RequestProfileData = () => {
+         const request = {
+            ...loginRequest,
+            account: accounts[0],
+         };
+   
+         // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+         instance
+            .acquireTokenSilent(request)
+            .then((response) => {
+               console.log(JSON.stringify(response,null,2));            
+               callMsGraph(response.accessToken).then((response) =>
+                  setGraphData(response)
+               );
+            })
+            .catch((e) => {
+               instance.acquireTokenPopup(request).then((response) => {
+                  callMsGraph(response.accessToken).then((response) =>
+                     setGraphData(response)
+                  );
+               });
+            });
+      };
+   
+      RequestProfileData();
+   }, [accounts, graphData, instance])
+   
+
 	if (loading) {
 		return <Spinner css="text-center spinner-top-margin" />;
 	}
@@ -78,7 +113,7 @@ export const AppRouter = () => {
 			<Router>
 				<div>
 					<Routes>
-						<Route exact path="/*" element={<DashRouter />} />
+						<Route exact path="/*" element={<DashRouter name={name}/>} />
 					</Routes>
 				</div>
 			</Router>

@@ -27,10 +27,10 @@ import { ProcessMonitor } from "../components/monitor/ProcessMonitor";
 import { Reports } from "../components/reports/Reports";
 import { Amounts } from "../components/amounts/Amounts";
 
-export const DashRouter = () => {
+export const DashRouter = ({name}) => {
 	return (
 		<>
-			<Layout>
+			<Layout name={name}>
 				<div>
 					<Routes>
 						<Route exact path="/" element={<Home />} />
