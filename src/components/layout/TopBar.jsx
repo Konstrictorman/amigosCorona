@@ -18,8 +18,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 import { stringAvatar } from "../../helpers/stringAvatar";
 import { useMsal } from "@azure/msal-react";
+import { AppCashierMenu } from "./AppCashierMenu";
 
-export const TopBar = ({ usr }) => {
+export const TopBar = ({ usr, role}) => {
 	const [anchorEl, setAnchorEl] = useState(null);
    const { instance } = useMsal();
 
@@ -50,7 +51,9 @@ export const TopBar = ({ usr }) => {
 			<Box sx={{ flexGrow: 1 }}>
 				<AppBar position="static" className="topBar">
 					<Toolbar>
-						<AppMenu />
+                  {(role === "admin") && (<AppMenu />)}
+                  {(role === "cashier") && (<AppCashierMenu />)}
+						
 
 						<img
 							src={Corona_logo}

@@ -34,17 +34,19 @@ import {
 import Swal from "sweetalert2";
 import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
 import { useMsal } from "@azure/msal-react";
-import { callMsGraph } from "../auth/graph";
-import { loginRequest } from "../auth/authConfig";
+import { CashierRouter } from "./CashierRouter";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
 	const { loading } = useSelector((state) => state.ui);
-   const { instance, accounts } = useMsal();
-	const [graphData, setGraphData] = useState(null);   
+   const { accounts } = useMsal();
+	//const [graphData, setGraphData] = useState(null);   
+   const [isAdmin, setIsAdmin] = useState(false);
+   const [isCashier, setIsCashier] = useState(false);
 	//const navigate = useNavigate();
 	//const isAuthenticated = useIsAuthenticated();
    const name = accounts[0] && accounts[0].name;
+   const claims = accounts[0] && accounts[0].idTokenClaims;
 
 	useEffect(() => {
 		try {
@@ -76,6 +78,22 @@ export const AppRouter = () => {
 	}, [dispatch]);
 
    useEffect(() => {
+      const checkRoles = ()=> {
+         const admin = claims?.roles?.find(x => x === "Administrador");
+         const cajero = claims?.roles?.find(x=> x === "Cajero");
+         if (admin) {
+            setIsAdmin(true);
+         }
+
+         if (cajero) {
+            setIsCashier(true);
+         }
+      }
+      checkRoles();  
+   }, [claims]);
+
+   /*
+   useEffect(() => {
       const RequestProfileData = () => {
          const request = {
             ...loginRequest,
@@ -102,7 +120,8 @@ export const AppRouter = () => {
    
       RequestProfileData();
    }, [accounts, graphData, instance])
-   
+   */
+
 
 	if (loading) {
 		return <Spinner css="text-center spinner-top-margin" />;
@@ -113,7 +132,8 @@ export const AppRouter = () => {
 			<Router>
 				<div>
 					<Routes>
-						<Route exact path="/*" element={<DashRouter name={name}/>} />
+                  {isAdmin && (<Route exact path="/*" element={<DashRouter name={name}/>} />)}
+						{isCashier && (<Route exact path="/*" element={<CashierRouter name={name}/>} />)}
 					</Routes>
 				</div>
 			</Router>

@@ -10,7 +10,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const Layout = ({ children, name }) => {
+export const Layout = ({ children, name, role }) => {
 	const [open, setOpen] = useState(false);
    const [openMsg, setOpenMsg] = useState(false);
    const { error,message } = useSelector((state) => state.ui);
@@ -48,7 +48,7 @@ export const Layout = ({ children, name }) => {
 	return (
 		<>
 			<div className="row">
-            <TopBar usr={name}/>
+            <TopBar usr={name} role={role}/>            
 			</div>
 			<div className="row">
 				<div className="container">

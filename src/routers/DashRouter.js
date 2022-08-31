@@ -28,9 +28,10 @@ import { Reports } from "../components/reports/Reports";
 import { Amounts } from "../components/amounts/Amounts";
 
 export const DashRouter = ({name}) => {
+
 	return (
 		<>
-			<Layout name={name}>
+			<Layout name={name} role="admin">
 				<div>
 					<Routes>
 						<Route exact path="/" element={<Home />} />
@@ -38,67 +39,27 @@ export const DashRouter = ({name}) => {
                   <Route exact path="/login" element={<Home />} />
 						<Route exact path="/amounts" element={<Amounts />} />
 						<Route exact path="/benefit" element={<Benefit />} />
-						<Route
-							exact
-							path="/benefitsList"
-							element={<BenefitsList />}
-						/>
+						<Route exact path="/benefitsList" element={<BenefitsList />}/>
 						<Route exact path="/billsList" element={<BillsList />} />
 						<Route exact path="/bill" element={<Bill />} />
 						<Route exact path="/client" element={<Client />} />
 						<Route exact path="/clientList" element={<ClientList />} />
 						<Route exact path="/loadData" element={<LoadData />} />
-						<Route
-							exact
-							path="/movementList"
-							element={<MovementsList />}
-						/>
+						<Route exact path="/movementList" element={<MovementsList />}/>
 						<Route exact path="/fieldsList" element={<FieldsList />} />
 						<Route exact path="/field" element={<Field />} />
-						<Route
-							exact
-							path="/parameterGroup"
-							element={<ParameterGroup />}
-						/>
-						<Route
-							exact
-							path="/parametersGroupList"
-							element={<ParametersGroupList />}
-						/>
-						<Route
-							exact
-							path="/processMonitor"
-							element={<ProcessMonitor />}
-						/>
-						<Route
-							exact
-							path="/promotionsList"
-							element={<PromotionsList />}
-						/>
+						<Route exact path="/parameterGroup" element={<ParameterGroup />}/>
+						<Route exact path="/parametersGroupList" element={<ParametersGroupList />}/>
+						<Route exact path="/processMonitor" element={<ProcessMonitor />}/>
+						<Route exact path="/promotionsList" element={<PromotionsList />}/>
 						<Route exact path="/promotion" element={<Promotion />} />
-						<Route
-							exact
-							path="/redemptionsList"
-							element={<RedemptionsList />}
-						/>
+						<Route exact path="/redemptionsList" element={<RedemptionsList />}/>
 						<Route exact path="/redemption" element={<Redemption />} />
-						<Route
-							exact
-							path="/referenceProgram"
-							element={<ReferenceProgram />}
-						/>
-						<Route
-							exact
-							path="/referenceProgramList"
-							element={<ReferenceProgramList />}
-						/>
+						<Route exact path="/referenceProgram" element={<ReferenceProgram />}/>
+						<Route exact path="/referenceProgramList" element={<ReferenceProgramList />}/>
 						<Route exact path="/reports" element={<Reports />} />
 						<Route exact path="/salesPoint" element={<SalesPoint />} />
-						<Route
-							exact
-							path="/salesPointList"
-							element={<SalesPointList />}
-						/>
+						<Route exact path="/salesPointList" element={<SalesPointList />}/>
 						<Route path="*" element={<PageNotFound />} />
 					</Routes>
 				</div>
