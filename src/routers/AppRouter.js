@@ -48,11 +48,11 @@ export const AppRouter = () => {
    const name = accounts[0] && accounts[0].name;
    const claims = accounts[0] && accounts[0].idTokenClaims;
 
-   
+   console.log(JSON.stringify(accounts[0],null,2));
 
 	useEffect(() => {
 		try {
-         console.log(JSON.stringify(accounts[0],null,2));
+         
 			//if (isAuthenticated) {
 			dispatch(startLoading());
 			dispatch(loadSpecialties());
