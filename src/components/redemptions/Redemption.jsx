@@ -35,6 +35,7 @@ import { setError, setMessage } from "../general/actions/uiActions";
 import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { createRedemption, processRedemptionById } from "./actions/redemptionActions";
+import { useMsal } from "@azure/msal-react";
 
 const validationSchema = yup.object({
 	documento: yup
@@ -67,6 +68,10 @@ export const Redemption = () => {
    const dispatch = useDispatch();
    const {tiposDocumento} = useSelector((state) => state.lists);
 	const columns = getClientColumns2(tiposDocumento);
+   const { accounts } = useMsal();
+
+   const userName = accounts[0] && accounts[0].username;
+
 
 	const initialValues = {
 		id: 0,
@@ -112,7 +117,7 @@ export const Redemption = () => {
    const handleCreate = (values) =>{
       console.log(JSON.stringify(values, null, 2));	
       setLoading(true);
-      createRedemption(values)
+      createRedemption(values, userName)
          .then(async (response)=> {
             await processRedemptionById(response.id);
 				setLoading(false);

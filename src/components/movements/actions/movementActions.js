@@ -19,7 +19,7 @@ export const addRecordMovement = async (rMovement) => {
    }   
 }
 
-export const addRecordMovementSeq = async(record) => {
+export const addRecordMovementSeq = async(record, userName) => {
    if (record) {
       record.estadoFactura = "A";
       //record.fechaAsigna = dateFormatter3(record.fechaAsigna);
@@ -31,7 +31,7 @@ export const addRecordMovementSeq = async(record) => {
       record.premio="N";
       record.puntaje=0;
       record.sequencia=0;
-      record.ultUsuario="PRUEBA";
+      record.ultUsuario=userName;
       record.valorAcumulado= record.valor;
       console.log(JSON.stringify(record,null,2));
       const result = await saveRegistroMovimientoSeq(record);

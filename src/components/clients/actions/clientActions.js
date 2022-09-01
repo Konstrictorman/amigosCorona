@@ -73,22 +73,22 @@ export const loadClientById = async (id) => {
 }
 
 
-export const updateReferrer = async (id, referrer) => {
+export const updateReferrer = async (id, referrer, userName) => {
    const today = moment.now();
    const date =dateFormatter3(today);   
    referrer.fechaModificacion = date;
-   referrer.usuarioModificacion="PRUEBA";
+   referrer.usuarioModificacion=userName;
    await updateReferenciador(id, referrer);
 }
 
-export const createReferrer = async (referrer) => {
+export const createReferrer = async (referrer, userName) => {
    if (referrer) {
       const today = moment.now();
       const date =dateFormatter3(today);
       referrer.fechaCreacion = date;
       referrer.fechaModificacion = date;
-      referrer.usuarioCreacion = "PRUEBA";
-      referrer.usuarioModificacion="PRUEBA";
+      referrer.usuarioCreacion = userName;
+      referrer.usuarioModificacion=userName;
       const ref = await createReferenciador(referrer);
       return ref.data;   
    } else {

@@ -2,6 +2,7 @@ import moment from "moment";
 import { dateFormatter3, dateFormatter4 } from "../../../helpers/dateFormatter";
 import { addRedencion, descargarRedencionById, procesarRedencionById, updateRedencion } from "../api/redemptionsApi"
 
+
 export const reverseRedemption = async(red) => {
    red.estadoRedencion = "DE";
    red.amount =0;
@@ -13,7 +14,7 @@ export const reverseRedemption = async(red) => {
    red.puntoVenta = pv;
 }
 
-export const createRedemption = async(red)=> {
+export const createRedemption = async(userName, red)=> {
    if (red) {
       const date = moment.now();
       const fecha = dateFormatter4(date);
@@ -21,8 +22,8 @@ export const createRedemption = async(red)=> {
       red.fechaCreacion = fecha;
       red.fechaModificacion = fecha;
       red.estadoRedencion="IN";
-      red.usariosCreacion="PRUEBA";
-      red.usariosModificacion="PRUEBA";
+      red.usariosCreacion=userName;
+      red.usariosModificacion=userName;
       
       const redemp = await addRedencion(red);
       return redemp.data;   

@@ -28,6 +28,7 @@ import { Spinner } from "../general/Spinner";
 import { addRecordMovementSeq } from "../movements/actions/movementActions";
 import Swal from "sweetalert2";
 import { getClientColumns } from "../clients/selectors/getClientColumns";
+import { useMsal } from "@azure/msal-react";
 
 const validationSchema = yup.object({
 	idPuntoVenta: yup.string().required("Se requiere el punto de venta"),
@@ -54,7 +55,9 @@ export const Amounts = () => {
 	const [openModal, setOpenModal] = useState(false);
    const {tiposDocumento} = useSelector((state) => state.lists);
 	const columns = getClientColumns(tiposDocumento);
+   const { accounts } = useMsal();
 
+   const userName = accounts[0] && accounts[0].username;
 	const handleCloseModal = () => setOpenModal(false);
 	const dispatch = useDispatch();
 
@@ -87,7 +90,7 @@ export const Amounts = () => {
 
 	const registerAmount = (values) => {
 		setLoading(true);
-		addRecordMovementSeq(values)
+		addRecordMovementSeq(values, userName)
 			.then((response) => {
 				setLoading(false);
 				//setDisableValueFields(false);

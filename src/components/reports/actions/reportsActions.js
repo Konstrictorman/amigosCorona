@@ -1,8 +1,8 @@
 import {  dateFormatter3 } from "../../../helpers/dateFormatter"
 import { ejecutarProceso, lanzarProceso, saveParametroProceso } from "../api/processApi";
 
-export const launchProcess = async (user, processType, idDefinition, tipoArchivoSalida) => {
-   if (user && processType && idDefinition) {
+export const launchProcess = async (userName, processType, idDefinition, tipoArchivoSalida) => {
+   if (userName && processType && idDefinition) {
       const data = {
          id:0,
          estadoProceso: "INI",         
@@ -11,8 +11,8 @@ export const launchProcess = async (user, processType, idDefinition, tipoArchivo
          idDefinicionReporte: idDefinition,
          tipoArchivoSalida: tipoArchivoSalida?tipoArchivoSalida:"",
          tipoProceso: processType,
-         usuarioActualizacion: user,
-         usuarioCreacion: user
+         usuarioActualizacion: userName,
+         usuarioCreacion: userName
       }
       //console.log(JSON.stringify(data,null,2));
       const res = await lanzarProceso(data);
