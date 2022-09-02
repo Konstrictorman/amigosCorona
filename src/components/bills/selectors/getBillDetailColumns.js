@@ -7,19 +7,19 @@ export const getBillDetailColumns = () => {
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
-         type: 'number'
+         type: 'string'
       },    
       { 
-         field: "id", 
-         headerName: "ID Artículo", 
+         field: "codigoArticulo", 
+         headerName: "Cod Artículo", 
          flex:1,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
-         type: 'number'
+         type: 'string'
       },          
       { 
-         field: "idArticulo", 
+         field: "descArticulo", 
          headerName: "Artículo", 
          flex:1,
          headerClassName: 'headerCol',

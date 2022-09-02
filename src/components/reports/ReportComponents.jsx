@@ -27,7 +27,6 @@ import {
 } from "./actions/reportsActions";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { getClientColumns } from "../clients/selectors/getClientColumns";
-import { useMsal } from "@azure/msal-react";
 
 export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 	const [loading, setLoading] = useState(false);
@@ -40,11 +39,11 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 	const dispatch = useDispatch();
 	//const initialValues = {};
 	const [formState, setFormState] = useState({});
-	const { accounts } = useMsal();
 
-   const userName = accounts[0] && accounts[0].username;
+
    
-   useEffect(() => {
+
+	useEffect(() => {
       const loadForm = (id) => {
          if (show ) {
             setLoading(true);
@@ -82,7 +81,13 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 
 	const formik = useFormik({
 		initialValues: formState,
+		//validationSchema: validationSchema,
 		onSubmit: (values) => {
+			//console.log(JSON.stringify(values, null, 2));
+			//console.log(JSON.stringify(params, null, 2));
+			//const p = params[0];
+			//const q = values[p.codParametro];
+			//console.log(p,q);
 			execute(values);
 		},
 		enableReinitialize: true,
@@ -94,7 +99,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 		setLoading(true);
       console.log(JSON.stringify(values,null,2));
       
-		launchProcess(userName, type, idReporte, values.tipoArchivoSalida)
+		launchProcess("PRUEBA", type, idReporte, values.tipoArchivoSalida)
 			.then(async (response) => {
 				//console.log(response);
 				const idx = response.data.id;

@@ -1,8 +1,10 @@
 import { dateFormatter2 } from "../../../helpers/dateFormatter";
-import { getClientByCode } from "../../clients/selectors/getClientByCode";
+import { getClientByDocument } from "../../clients/selectors/geClientByDocument";
 import { searchRedenciones } from "../api/redemptionsApi";
 
 export const getRedemptionsByParams = async(size,page,params) =>{
+   console.log(JSON.stringify(params,null,2));   
+
    if (params['fechaDesde']) {
       params['fechaDesde'] = dateFormatter2(params['fechaDesde']);
    }
@@ -11,8 +13,8 @@ export const getRedemptionsByParams = async(size,page,params) =>{
       params['fechaHasta'] = dateFormatter2(params['fechaHasta']);
    }
 
-   if (params.codeCliente && !params.idCliente) {
-      const cliente = await getClientByCode(params.codigoCliente);
+   if (params.documento && !params.idCliente) {
+      const cliente = await getClientByDocument(params.documento);
       params.idCliente = cliente.id;
    }
 

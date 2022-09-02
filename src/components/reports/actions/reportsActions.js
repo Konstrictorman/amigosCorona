@@ -1,8 +1,10 @@
 import {  dateFormatter3 } from "../../../helpers/dateFormatter"
+import { getNoDomainUserName } from "../../../helpers/getNoDomainUserName";
 import { ejecutarProceso, lanzarProceso, saveParametroProceso } from "../api/processApi";
 
 export const launchProcess = async (userName, processType, idDefinition, tipoArchivoSalida) => {
    if (userName && processType && idDefinition) {
+      const usr = getNoDomainUserName(userName);
       const data = {
          id:0,
          estadoProceso: "INI",         
@@ -11,8 +13,8 @@ export const launchProcess = async (userName, processType, idDefinition, tipoArc
          idDefinicionReporte: idDefinition,
          tipoArchivoSalida: tipoArchivoSalida?tipoArchivoSalida:"",
          tipoProceso: processType,
-         usuarioActualizacion: userName,
-         usuarioCreacion: userName
+         usuarioActualizacion: usr,
+         usuarioCreacion: usr
       }
       //console.log(JSON.stringify(data,null,2));
       const res = await lanzarProceso(data);

@@ -27,14 +27,15 @@ import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { Spinner } from "../general/Spinner";
 import { addRecordMovementSeq } from "../movements/actions/movementActions";
 import Swal from "sweetalert2";
-import { getClientColumns } from "../clients/selectors/getClientColumns";
 import { useMsal } from "@azure/msal-react";
+import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 
 const validationSchema = yup.object({
 	idPuntoVenta: yup.string().required("Se requiere el punto de venta"),
-	codeReferrer: yup
+	documento: yup
 		.string()
-		.required("Se requiere el código del referenciador"),
+		.min(6, "El documento debe tener al menos 6 caracteres")
+		.required("El documento del referenciador es requerido"),   
 	fechaAsigna: yup
 		.date()
 		.nullable()
@@ -54,7 +55,7 @@ export const Amounts = () => {
 	const programs = useSelector((state) => state.lists["programas"]);
 	const [openModal, setOpenModal] = useState(false);
    const {tiposDocumento} = useSelector((state) => state.lists);
-	const columns = getClientColumns(tiposDocumento);
+	const columns = getClientColumns2(tiposDocumento);
    const { accounts } = useMsal();
 
    const userName = accounts[0] && accounts[0].username;
@@ -65,7 +66,7 @@ export const Amounts = () => {
       id:0,
       idCliente:0,
 		idPuntoVenta: "",
-		codeReferrer: "",
+		documento: "",
 		fechaAsigna: null,
 		valor: 0,
 		name: "",
@@ -114,15 +115,15 @@ export const Amounts = () => {
 	};
 
 	const handleOpenModal = () => {
-		//console.log(formik.values.codeReferrer);
+		//console.log(formik.values.documento);
 		setOpenModal(true);
 	};
 
 	const handleClick = (params) => {
 		const { field, row } = params;
 		//console.log("click on ", row);
-		if (field === "codigoCliente") {
-			formik.setFieldValue("codeReferrer", row.codigoCliente);
+		if (field === "documento") {
+			formik.setFieldValue("documento", row.documento);
 		}
 		loadReferrerInfo(row.codigoCliente);
 		handleCloseModal();
@@ -193,18 +194,18 @@ export const Amounts = () => {
 						<Grid item xs={show ? 4 : 12}>
 							<Item className={show ? "" : "half-width center"}>
 								<TextField
-									label="Código referenciador"
-									id="codeReferrer"
+									label="Número de documento"
+									id="documento"
 									type="text"
-									name="codeReferrer"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codeReferrer}
+									value={formik.values.documento}
 									onChange={formik.handleChange}
 									className="form-control"
 									error={
-										formik.touched.codeReferrer &&
-										Boolean(formik.errors.codeReferrer)
+										formik.touched.documento &&
+										Boolean(formik.errors.documento)
 									}
 									variant={INPUT_TYPE}
 									InputProps={{
@@ -213,7 +214,7 @@ export const Amounts = () => {
 												<IconButton
 													onClick={handleOpenModal}
 													disabled={
-														formik.values.codeReferrer?.length < 4
+														formik.values.documento?.length < 4
 													}
 												>
 													<SearchIcon />
@@ -224,8 +225,8 @@ export const Amounts = () => {
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{formik.touched.codeReferrer &&
-									formik.errors.codeReferrer}
+								{formik.touched.documento &&
+									formik.errors.documento}
 							</FormHelperText>
 						</Grid>
 
@@ -386,8 +387,8 @@ export const Amounts = () => {
 					handleClose={handleCloseModal}
 					handleAction={handleClick}
 					open={openModal}
-               criteria="codigoCliente"
-					filter={formik.values.codeReferrer}
+               criteria="documento"
+					filter={formik.values.documento}
 					pageSize={10}
                columns={columns}
 					//items={selectedIds}

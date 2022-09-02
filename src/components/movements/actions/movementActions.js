@@ -1,14 +1,6 @@
-import { getMovimientosResumen, saveRegistroMovimiento, saveRegistroMovimientoSeq } from "../api/movementApi";
+import { getNoDomainUserName } from "../../../helpers/getNoDomainUserName";
+import { saveRegistroMovimiento, saveRegistroMovimientoSeq } from "../api/movementApi";
 
-export const getResume = async (fInit, fFinal) => {
-   const resume = await getMovimientosResumen(fInit, fFinal);
-
-   resume.forEach((m) => {
-      delete m._links;
-   })
-
-   return resume;
-}
 
 export const addRecordMovement = async (rMovement) => {
    if (rMovement) {
@@ -21,6 +13,7 @@ export const addRecordMovement = async (rMovement) => {
 
 export const addRecordMovementSeq = async(record, userName) => {
    if (record) {
+      const usr = getNoDomainUserName(userName);
       record.estadoFactura = "A";
       //record.fechaAsigna = dateFormatter3(record.fechaAsigna);
       //record.idFactura=null;
@@ -31,9 +24,9 @@ export const addRecordMovementSeq = async(record, userName) => {
       record.premio="N";
       record.puntaje=0;
       record.sequencia=0;
-      record.ultUsuario=userName;
+      record.ultUsuario=usr;
       record.valorAcumulado= record.valor;
-      console.log(JSON.stringify(record,null,2));
+      //console.log(JSON.stringify(record,null,2));
       const result = await saveRegistroMovimientoSeq(record);
       return result;
    } else {

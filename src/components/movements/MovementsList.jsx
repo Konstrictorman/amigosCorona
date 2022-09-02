@@ -24,7 +24,7 @@ import { CustomDatePicker } from "../general/CustomDatePicker";
 import { Spinner } from "../general/Spinner";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { useSelector } from "react-redux";
-import { getClientColumns } from "../clients/selectors/getClientColumns";
+import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 
 const validationSchema = yup.object({
 	fechaDesde: yup.date().nullable().required("Se requiere la fecha inicial"),
@@ -36,7 +36,10 @@ const validationSchema = yup.object({
 			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
-	codigoCliente: yup.string().nullable().required("Se requiere el código de cliente"),
+   documento: yup
+		.string()
+		.min(6, "El documento debe tener al menos 6 caracteres")
+		.required("El documento del referenciador es requerido"),
 	llaveMaestraFlag: yup.boolean(),
 });
 
@@ -51,14 +54,15 @@ export const MovementsList = () => {
 	const handleCloseModal = () => setOpenModal(false);
 	const { tiposDocumento, motivos } = useSelector((state) => state.lists);
 
-	const columns = getClientColumns(tiposDocumento);
+	const columns = getClientColumns2(tiposDocumento);
 
 	const initialValues = {
-		codigoCliente: "",
+		documento: "",
 		fechaDesde: null,
 		fechaHasta: null,
 		llaveMaestraFlag: false,
-      idCliente: 0,
+      codigoCliente: 0,
+      idCliente:0,
 	};
 
 	const formik = useFormik({
@@ -73,13 +77,16 @@ export const MovementsList = () => {
 	});
 
 	const handleClick = (params) => {
+      setLoading(true);
 		const { field, row } = params;
-		//console.log("click on ", row);
-		if (field === "codigoCliente") {
-         formik.setFieldValue("codigoCliente", row.codigoCliente);
-			formik.setFieldValue("idCliente", row.id);
+		console.log("click on ", row);
+		if (field === "documento") {
+         formik.setFieldValue("documento", row.documento);
+			formik.setFieldValue("codigoCliente", row.codigoCliente);
+         formik.setFieldValue("idCliente", row.id);
 		}
 		handleCloseModal();
+      setLoading(false);
 	};
 
 	const handleSearch = (values) => {
@@ -87,9 +94,9 @@ export const MovementsList = () => {
 		setShow(false);
       setParams({});
 
-      //delete values.codigoCliente;
-		//console.log(JSON.stringify(values, null, 2));
-		Object.entries(values).forEach((fv) => {
+      //delete values.documento;
+		Object.entries(values)
+         .forEach((fv) => {
 			if (fv[1]) {
 				setParams((_params) => {
 					return {
@@ -104,12 +111,9 @@ export const MovementsList = () => {
 	};
 
 	const handleReset = () => {		
-      //formik.setFieldValue("codigoCliente", "");
-      
 		setParams({});
 		setShow(false);
       formik.resetForm();
-      console.log(JSON.stringify(formik.values, null, 2));
 	};
 
 	const handleCustomChange = (name, val) => {
@@ -140,17 +144,17 @@ export const MovementsList = () => {
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
-									label="Código cliente *"
-									id="codigoCliente"
+									label="Número documento *"
+									id="documento"
 									type="text"
-									name="codigoCliente"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codigoCliente}
+									value={formik.values.documento}
                            onChange={formik.handleChange}
 									error={
-										formik.touched.codigoCliente &&
-										Boolean(formik.errors.codigoCliente)
+										formik.touched.documento &&
+										Boolean(formik.errors.documento)
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
@@ -161,7 +165,7 @@ export const MovementsList = () => {
 												<IconButton
 													onClick={handleOpenModal}
 													disabled={
-														formik.values.codigoCliente?.length < 4
+														formik.values.documento?.length < 4
 													}
 												>
 													<SearchIcon />
@@ -173,7 +177,7 @@ export const MovementsList = () => {
 								/>
 							</Item>
 							<FormHelperText className="helperText right">
-								{formik.touched.codigoCliente && formik.errors.codigoCliente}
+								{formik.touched.documento && formik.errors.documento}
 							</FormHelperText>
 						</Grid>
 
@@ -280,8 +284,8 @@ export const MovementsList = () => {
 				handleClose={handleCloseModal}
 				handleAction={handleClick}
 				open={openModal}
-				criteria="codigoCliente"
-				filter={formik.values.codigoCliente}
+            criteria="documento"
+            filter={formik.values.documento}
 				pageSize={10}
 				columns={columns}
 				//items={selectedIds}
@@ -298,8 +302,7 @@ export const MovementsList = () => {
 
 			{show && (
 				<MovementsResume
-					fechaDesde={formik.values.fechaDesde}
-					fechaHasta={formik.values.fechaHasta}
+               params={params}
 				/>
 			)}
 		</div>

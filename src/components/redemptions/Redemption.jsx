@@ -40,8 +40,8 @@ import { useMsal } from "@azure/msal-react";
 const validationSchema = yup.object({
 	documento: yup
 		.string()
-		.min(6, "El código del referenciador debe tener al menos 6 caracteres")
-		.required("El código del referenciador es requerido"),
+		.min(6, "El documento debe tener al menos 6 caracteres")
+		.required("El documento del referenciador es requerido"),
 	tipoRedencion: yup.string().nullable().required("El tipo de redención es requerido"),
 	monto: yup
 		.number()
@@ -124,7 +124,7 @@ export const Redemption = () => {
             handleReset();
 				Swal.fire(
 					"Registro exitoso",
-					`Se creó la redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${values.nombre}`,
+					`Se generó las solicitud de creación de redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${referrer.nombre}.  Verifique por favor su estado en la consulta de redenciones`,
 					"success"
 				);            
          })
@@ -151,11 +151,10 @@ export const Redemption = () => {
 	const handleClick = (params) => {
       setLoading(true);
 		const { field, row } = params;
-		console.log("click on ", row);
 		if (field === "documento") {
 			formik.setFieldValue("documento", row.documento);
+         loadReferrerBalance(row.documento);
 		}
-      loadReferrerBalance(row.documento);
 		handleCloseModal();
       setLoading(false);
 	};

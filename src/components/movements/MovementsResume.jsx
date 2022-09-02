@@ -7,10 +7,9 @@ import { NoRowsOverlay } from "../general/NoRowsOverlay";
 import { getMovementResume } from "./selectors/getMovementResume";
 import { getMovementsResumeColumns } from "./selectors/getMovementsResumeColumns";
 
-export const MovementsResume = (props) => {
+export const MovementsResume = ({params}) => {
 
-   const {fechaDesde, fechaHasta} = props;
-	const columns = getMovementsResumeColumns();
+   const columns = getMovementsResumeColumns();
 	const [loading, setLoading] = useState(false);
 	const [rows, setRows] = useState([]);
 	const componentMounted = useRef(true);
@@ -19,7 +18,7 @@ export const MovementsResume = (props) => {
 		const getResume = async () => {
 			setLoading(true);
 			try {
-				const data = await getMovementResume(fechaDesde,fechaHasta);
+				const data = await getMovementResume(params);
 
 				if (componentMounted.current) {
 					setRows(data);
@@ -36,7 +35,7 @@ export const MovementsResume = (props) => {
 			componentMounted.current = false;
 			setLoading(null);
 		};
-	}, [fechaDesde, fechaHasta]);
+	}, [params]);
 
 	return (
 		<div className="topMargin">
