@@ -19,7 +19,7 @@ export const LoginView = (props) => {
 						<div className="login_logo_container">
 							<img src={Corona_logo} alt="Logo" className="login_logo" />
 						</div>
-						<Typography variant="h2" className="center mt-5">
+						<Typography variant="h2" className="center mt-5 login_title">
 							CC FIDELIZACIÓN
 						</Typography>
 						<Typography
@@ -27,7 +27,7 @@ export const LoginView = (props) => {
 							className="center mt-0"
 							sx={{ color: "whitesmoke" }}
 						>
-							Bienvenido al programa de fidelización amigos Corona
+							Bienvenido al programa de fidelización Centro Corona
 						</Typography>
 						<SignInButton
 							caption="Ingresar"

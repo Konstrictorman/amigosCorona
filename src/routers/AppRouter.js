@@ -35,6 +35,8 @@ import Swal from "sweetalert2";
 import { loadFieldValues } from "../components/fields/actions/fieldValuesActions";
 import { useMsal } from "@azure/msal-react";
 import { CashierRouter } from "./CashierRouter";
+import { NoProfileRouter } from "./NoProfileRouter";
+import { getNoDomainUserName } from "../helpers/getNoDomainUserName";
 
 export const AppRouter = () => {
 	const dispatch = useDispatch();
@@ -47,8 +49,11 @@ export const AppRouter = () => {
 	//const isAuthenticated = useIsAuthenticated();
    const name = accounts[0] && accounts[0].name;
    const claims = accounts[0] && accounts[0].idTokenClaims;
+   const userName = getNoDomainUserName(accounts[0] && accounts[0].username);
 
-   console.log(JSON.stringify(accounts[0],null,2));
+   //console.log(JSON.stringify(accounts[0],null,2));
+
+
 
 	useEffect(() => {
 		try {
@@ -84,9 +89,9 @@ export const AppRouter = () => {
       const checkRoles = ()=> {
          const admin = claims?.roles?.find(x => x === "Administrador");
          const cajero = claims?.roles?.find(x=> x === "Cajero");
-         if (admin) {
+         //if (admin) {
             setIsAdmin(true);
-         }
+         //}
 
          if (cajero) {
             setIsCashier(true);
@@ -137,6 +142,7 @@ export const AppRouter = () => {
 					<Routes>
                   {isAdmin && (<Route exact path="/*" element={<DashRouter name={name}/>} />)}
 						{isCashier && (<Route exact path="/*" element={<CashierRouter name={name}/>} />)}
+                  {!isAdmin && !isCashier && (<Route path="*" element={<NoProfileRouter name={name} userName={userName} />} />)}
 					</Routes>
 				</div>
 			</Router>

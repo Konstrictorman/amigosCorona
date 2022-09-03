@@ -41,7 +41,7 @@ export const getClienteByDocumento = (doc) => {
 	const config = {
 		method: "get",
 		url:
-			`${API_URL}/api/clientes/search/findByParametros?documento=${doc}`,
+			`${API_URL}/api/clientes/search/findByDocumento?documento=${doc}`,
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "*/*",

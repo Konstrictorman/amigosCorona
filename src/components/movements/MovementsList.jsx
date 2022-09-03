@@ -25,6 +25,8 @@ import { Spinner } from "../general/Spinner";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { useSelector } from "react-redux";
 import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
+import { getClientByDocument } from "../clients/selectors/geClientByDocument";
+import Swal from "sweetalert2";
 
 const validationSchema = yup.object({
 	fechaDesde: yup.date().nullable().required("Se requiere la fecha inicial"),
@@ -36,9 +38,9 @@ const validationSchema = yup.object({
 			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
-   documento: yup
+	documento: yup
 		.string()
-		.min(6, "El documento debe tener al menos 6 caracteres")
+		//.min(6, "El documento debe tener al menos 6 caracteres")
 		.required("El documento del referenciador es requerido"),
 	llaveMaestraFlag: yup.boolean(),
 });
@@ -61,15 +63,15 @@ export const MovementsList = () => {
 		fechaDesde: null,
 		fechaHasta: null,
 		llaveMaestraFlag: false,
-      codigoCliente: 0,
-      idCliente:0,
+		codigoCliente: 0,
+		idCliente: 0,
 	};
 
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-         //console.log(JSON.stringify(values,null,2));
+			//console.log(JSON.stringify(values,null,2));
 			handleSearch(values);
 		},
 
@@ -77,43 +79,48 @@ export const MovementsList = () => {
 	});
 
 	const handleClick = (params) => {
-      setLoading(true);
+		setLoading(true);
 		const { field, row } = params;
 		console.log("click on ", row);
 		if (field === "documento") {
-         formik.setFieldValue("documento", row.documento);
+			formik.setFieldValue("documento", row.documento);
 			formik.setFieldValue("codigoCliente", row.codigoCliente);
-         formik.setFieldValue("idCliente", row.id);
+			formik.setFieldValue("idCliente", row.id);
 		}
 		handleCloseModal();
-      setLoading(false);
+		setLoading(false);
 	};
 
-	const handleSearch = (values) => {
+	const handleSearch = async (values) => {
 		setLoading(true);
 		setShow(false);
-      setParams({});
+		setParams({});
 
-      //delete values.documento;
-		Object.entries(values)
-         .forEach((fv) => {
-			if (fv[1]) {
-				setParams((_params) => {
-					return {
-						..._params,
-						[fv[0]]: fv[1],
-					};
-				});
-			}
-		});
-		setLoading(false);
-		setShow(true);
+		const client = await getClientByDocument(values.documento);
+		if (client) {
+			Object.entries(values).forEach((fv) => {
+				if (fv[1]) {
+					setParams((_params) => {
+						return {
+							..._params,
+							[fv[0]]: fv[1],
+						};
+					});
+				}
+			});
+			setLoading(false);
+			setShow(true);
+		} else {
+         setLoading(false);
+         Swal.fire("Atención !", `No se encontraron resultados asociados al documento ${values.documento}`, "warning");
+      }
+
 	};
 
-	const handleReset = () => {		
+	const handleReset = () => {
 		setParams({});
 		setShow(false);
-      formik.resetForm();
+		formik.resetForm();
 	};
 
 	const handleCustomChange = (name, val) => {
@@ -140,7 +147,6 @@ export const MovementsList = () => {
 			>
 				<form className="container__form" onSubmit={formik.handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
-
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
@@ -151,14 +157,13 @@ export const MovementsList = () => {
 									autoComplete="off"
 									size="small"
 									value={formik.values.documento}
-                           onChange={formik.handleChange}
+									onChange={formik.handleChange}
 									error={
 										formik.touched.documento &&
 										Boolean(formik.errors.documento)
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
-                           
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position="end">
@@ -173,7 +178,6 @@ export const MovementsList = () => {
 											</InputAdornment>
 										),
 									}}
-                           
 								/>
 							</Item>
 							<FormHelperText className="helperText right">
@@ -280,12 +284,12 @@ export const MovementsList = () => {
 			</div>
 
 			<SearchTableModal
-            title="Clientes"
+				title="Clientes"
 				handleClose={handleCloseModal}
 				handleAction={handleClick}
 				open={openModal}
-            criteria="documento"
-            filter={formik.values.documento}
+				criteria="documento"
+				filter={formik.values.documento}
 				pageSize={10}
 				columns={columns}
 				//items={selectedIds}
@@ -297,14 +301,10 @@ export const MovementsList = () => {
 				handleClick={handleClick}
 				params={params}
 				show={show}
-            motives={motivos}
+				motives={motivos}
 			/>
 
-			{show && (
-				<MovementsResume
-               params={params}
-				/>
-			)}
+			{show && <MovementsResume params={params} />}
 		</div>
 	);
 };

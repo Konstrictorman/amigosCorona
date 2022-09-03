@@ -184,10 +184,9 @@ export const RedemptionsList = () => {
 
 
 	const reverseItem = () => {
-		handleCloseModal();
 		setLoading(true);
 		//const index = rows.findIndex((item) => item.id === selected.id);
-
+      handleCloseRevModal();
 		reverseRedemption(selected)
 			.then((response) => {
 				setLoading(false);
@@ -199,6 +198,7 @@ export const RedemptionsList = () => {
 					})
 				);
 				setSelected(null);
+
 			})
 			.catch((err) => {
 				setLoading(false);

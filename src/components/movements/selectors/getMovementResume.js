@@ -16,17 +16,21 @@ export const getMovementResume = async (params) => {
       
       if (!params.codigoCliente) {
          const cliente = await getClientByDocument(params.documento);         
-         console.log(JSON.stringify(cliente,null,2));
-         params.codigoCliente = cliente.codigoCliente;
+         if (cliente) {
+            console.log(JSON.stringify(cliente,null,2));
+            params.codigoCliente = cliente.codigoCliente;   
+         } else {
+            return [];
+         }
       }
 
       const resume = await getMovimientosResumen(params.codigoCliente, params.fechaDesde, params.fechaHasta);
 
-      resume.data._embedded.resumenMovimientoses.forEach((m) => {
+      resume.data?._embedded?.resumenMovimientoses?.forEach((m) => {
          delete m._links;
       })
 
-      return resume.data._embedded.resumenMovimientoses;
+      return resume.data?._embedded?.resumenMovimientoses;
    } else {
       throw new Error("No se puede obtener resumen con filtros incompletos");
    }

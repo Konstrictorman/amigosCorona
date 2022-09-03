@@ -27,6 +27,8 @@ import {
 } from "./actions/reportsActions";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { getClientColumns } from "../clients/selectors/getClientColumns";
+import { useMsal } from "@azure/msal-react";
+
 
 export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 	const [loading, setLoading] = useState(false);
@@ -39,7 +41,9 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 	const dispatch = useDispatch();
 	//const initialValues = {};
 	const [formState, setFormState] = useState({});
+   const { accounts } = useMsal();
 
+   const userName = accounts[0] && accounts[0].username;
 
    
 
@@ -99,7 +103,7 @@ export const ReportComponents = ({ idReporte, show, type, handleReset }) => {
 		setLoading(true);
       console.log(JSON.stringify(values,null,2));
       
-		launchProcess("PRUEBA", type, idReporte, values.tipoArchivoSalida)
+		launchProcess(userName, type, idReporte, values.tipoArchivoSalida)
 			.then(async (response) => {
 				//console.log(response);
 				const idx = response.data.id;

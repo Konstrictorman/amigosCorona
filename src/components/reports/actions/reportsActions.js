@@ -5,6 +5,7 @@ import { ejecutarProceso, lanzarProceso, saveParametroProceso } from "../api/pro
 export const launchProcess = async (userName, processType, idDefinition, tipoArchivoSalida) => {
    if (userName && processType && idDefinition) {
       const usr = getNoDomainUserName(userName);
+      console.log(userName, usr);
       const data = {
          id:0,
          estadoProceso: "INI",         
@@ -16,7 +17,7 @@ export const launchProcess = async (userName, processType, idDefinition, tipoArc
          usuarioActualizacion: usr,
          usuarioCreacion: usr
       }
-      //console.log(JSON.stringify(data,null,2));
+      console.log(JSON.stringify(data,null,2));
       const res = await lanzarProceso(data);
       delete res._links;
       return res;

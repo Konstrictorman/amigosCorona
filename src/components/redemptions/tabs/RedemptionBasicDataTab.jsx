@@ -11,9 +11,7 @@ export const RedemptionBasicDataTab = ({
 	setResultsCount,
 	show,
 	params,
-}) => {
-	//const columns = getRedemptionBasicColumns(salesPoints, statusList,handleRevert,handleDownload);
-   console.log(JSON.stringify(params,null,2));   
+}) => { 
 
 
 	return (

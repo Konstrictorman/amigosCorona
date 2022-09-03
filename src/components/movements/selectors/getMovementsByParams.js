@@ -16,7 +16,7 @@ export const getMovementsByParams = async (size, page, params) => {
 
    if (!params.idCliente) {
       const cliente = await getClientByDocument(params.documento);
-      params.idCliente = cliente.id;
+      params.idCliente = cliente?.id;
    }
 
    //delete params.documento;
