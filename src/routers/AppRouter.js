@@ -89,9 +89,9 @@ export const AppRouter = () => {
       const checkRoles = ()=> {
          const admin = claims?.roles?.find(x => x === "Administrador");
          const cajero = claims?.roles?.find(x=> x === "Cajero");
-         //if (admin) {
+         if (admin) {
             setIsAdmin(true);
-         //}
+         }
 
          if (cajero) {
             setIsCashier(true);
