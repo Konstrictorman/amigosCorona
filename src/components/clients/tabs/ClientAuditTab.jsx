@@ -23,7 +23,7 @@ export const ClientAuditTab = ({ client, index, handleClickOut }) => {
 									type="text"
 									name="userCreated"
 									size="small"
-									value={client.usariosCreacion}
+									value={client.usuarioCreacion}
 									className="form-control"
 									variant={INPUT_TYPE}
                            disabled
@@ -57,7 +57,7 @@ export const ClientAuditTab = ({ client, index, handleClickOut }) => {
 									type="text"
 									name="userUpdated"
 									size="small"
-									value={client.usariosModificacion}
+									value={client.usuarioModificacion}
 									className="form-control"
 									variant={INPUT_TYPE}
                            disabled

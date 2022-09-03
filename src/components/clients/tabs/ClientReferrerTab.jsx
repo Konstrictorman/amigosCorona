@@ -27,6 +27,7 @@ import ChildCareIcon from "@mui/icons-material/ChildCare";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import { getDefaultBenefitByProgramRefId } from "../../benefits/selectors/getDefaultBenefitByProgramRefId";
+import { useMsal } from "@azure/msal-react";
 
 const validationSchema = yup.object({
 	fechaMat: yup
@@ -79,6 +80,9 @@ export const ClientReferrerTab = ({
 	const [loading, setLoading] = useState(false);
 	const [programs, setPrograms] = useState([]);
 	const [specialties, setSpecialties] = useState([]);
+   const { accounts } = useMsal();
+
+   const userName = accounts[0] && accounts[0].username;   
 
 	//console.log(JSON.stringify(client,null,2));
 
@@ -161,7 +165,7 @@ export const ClientReferrerTab = ({
 						"warning"
 					);
 				} else {
-					createReferrer(values)
+					createReferrer(values, userName)
 						.then(async (response) => {
 							const ref = await addReferrerBenefitLevel(
 								res.id,
@@ -192,7 +196,7 @@ export const ClientReferrerTab = ({
 
 	const handleUpdateReferrer = (id, values) => {
 		setLoading(true);
-		updateReferrer(id, values)
+		updateReferrer(id, values, userName)
 			.then((response) => {
 				setLoading(false);
 				Swal.fire(

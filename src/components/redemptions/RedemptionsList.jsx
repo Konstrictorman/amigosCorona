@@ -40,7 +40,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSalesPointsActive } from "../salesPoint/selectors/getSalesPointsActive";
 import { RedemptionAuditTab } from "./tabs/RedemptionAuditTab";
 import { SearchTableModal } from "../general/SearchTableModal";
-import { getClientColumns } from "../clients/selectors/getClientColumns";
+import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 
 const StyledTabs = withStyles({
 	indicator: {
@@ -81,7 +81,7 @@ export const RedemptionsList = () => {
 	const dispatch = useDispatch();
    const { estadosRedencion, tiposDocumento } = useSelector((state) => state.lists);
    const [resultsCount, setResultsCount] = useState(0);
-   const columns = getClientColumns(tiposDocumento);
+   const columns = getClientColumns2(tiposDocumento);
 
    useEffect(() => {
       const loadSalesPoints = async () => {
@@ -100,7 +100,7 @@ export const RedemptionsList = () => {
 
    
 	const initialValues = {
-		codeCliente: "",
+		documento: "",
 		idPuntoVenta: "",
 		fechaDesde: null,
 		fechaHasta: null,
@@ -173,9 +173,8 @@ export const RedemptionsList = () => {
    const handleClick = (params) => {
       setLoading(true);
 		const { field, row } = params;
-		console.log("click on ", row);
-		if (field === "codigoCliente") {
-         formik.setFieldValue("codeCliente", row.codigoCliente);
+		if (field === "documento") {
+         formik.setFieldValue("documento", row.codigoCliente);
 			formik.setFieldValue("idCliente", row.id);
 		}
 
@@ -185,10 +184,9 @@ export const RedemptionsList = () => {
 
 
 	const reverseItem = () => {
-		handleCloseModal();
 		setLoading(true);
 		//const index = rows.findIndex((item) => item.id === selected.id);
-
+      handleCloseRevModal();
 		reverseRedemption(selected)
 			.then((response) => {
 				setLoading(false);
@@ -200,6 +198,7 @@ export const RedemptionsList = () => {
 					})
 				);
 				setSelected(null);
+
 			})
 			.catch((err) => {
 				setLoading(false);
@@ -318,18 +317,18 @@ export const RedemptionsList = () => {
 						<Grid item xs={2}>
 							<Item className="">
 								<TextField
-									label="Código cliente"
-									id="codeCliente"
+									label="Nro documento"
+									id="documento"
 									type="text"
-									name="codeCliente"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codeCliente}
+									value={formik.values.documento}
 									onChange={formik.handleChange}
 									className="form-control"
 									error={
-										formik.touched.codeCliente &&
-										Boolean(formik.errors.codeCliente)
+										formik.touched.documento &&
+										Boolean(formik.errors.documento)
 									}
 									variant={INPUT_TYPE}
 									InputProps={{
@@ -338,7 +337,7 @@ export const RedemptionsList = () => {
 												<IconButton
 													onClick={handleOpenModal}
 													disabled={
-														formik.values.codeCliente?.length < 4
+														formik.values.documento?.length < 4
 													}
 												>
 													<SearchIcon />
@@ -349,8 +348,8 @@ export const RedemptionsList = () => {
 								/>
 							</Item>
 							<FormHelperText className="helperText">
-								{formik.touched.codeCliente &&
-									formik.errors.codeCliente}
+								{formik.touched.documento &&
+									formik.errors.documento}
 							</FormHelperText>
 						</Grid>
 
@@ -468,8 +467,8 @@ export const RedemptionsList = () => {
 					handleClose={handleCloseModal}
 					handleAction={handleClick}
 					open={openModal}
-               criteria="codigoCliente"
-					filter={formik.values.codeCliente}
+               criteria="documento"
+					filter={formik.values.documento}
 					pageSize={10}
                columns={columns}
 					//items={selectedIds}

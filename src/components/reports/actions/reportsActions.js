@@ -1,8 +1,11 @@
 import {  dateFormatter3 } from "../../../helpers/dateFormatter"
+import { getNoDomainUserName } from "../../../helpers/getNoDomainUserName";
 import { ejecutarProceso, lanzarProceso, saveParametroProceso } from "../api/processApi";
 
-export const launchProcess = async (user, processType, idDefinition, tipoArchivoSalida) => {
-   if (user && processType && idDefinition) {
+export const launchProcess = async (userName, processType, idDefinition, tipoArchivoSalida) => {
+   if (userName && processType && idDefinition) {
+      const usr = getNoDomainUserName(userName);
+      console.log(userName, usr);
       const data = {
          id:0,
          estadoProceso: "INI",         
@@ -11,10 +14,10 @@ export const launchProcess = async (user, processType, idDefinition, tipoArchivo
          idDefinicionReporte: idDefinition,
          tipoArchivoSalida: tipoArchivoSalida?tipoArchivoSalida:"",
          tipoProceso: processType,
-         usuarioActualizacion: user,
-         usuarioCreacion: user
+         usuarioActualizacion: usr,
+         usuarioCreacion: usr
       }
-      //console.log(JSON.stringify(data,null,2));
+      console.log(JSON.stringify(data,null,2));
       const res = await lanzarProceso(data);
       delete res._links;
       return res;

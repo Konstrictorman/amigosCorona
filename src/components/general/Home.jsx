@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HomeCard } from "./HomeCard";
 import { useNavigate } from "react-router";
 import { Grid } from "@mui/material";
@@ -18,9 +18,23 @@ import { ReactComponent as ReferredIcon } from "../../assets/images/REFERENCIACI
 import { ReactComponent as RegisterMovementIcon } from "../../assets/images/REGISTRAR_Mesa de trabajo 1.svg";
 import { ReactComponent as ProcessMonitorIcon } from "../../assets/images/PROCESOS-01.svg";
 import { ReactComponent as AmountsIcon } from "../../assets/images/MONTOS-01.svg";
+import { useMsal } from "@azure/msal-react";
 
 export const Home = () => {
 	const navigate = useNavigate();
+	const { accounts } = useMsal();
+	const claims = accounts[0] && accounts[0].idTokenClaims;
+	const [isAdmin, setIsAdmin] = useState(false);
+
+	useEffect(() => {
+		const checkRoles = () => {
+			const admin = claims?.roles?.find((x) => x === "Administrador");
+			if (admin) {
+				setIsAdmin(true);
+			}
+		};
+		checkRoles();
+	}, [claims]);
 
 	const handleClick = (e, path) => {
 		navigate(path);
@@ -31,8 +45,18 @@ export const Home = () => {
 			<div>
 				<Grid container spacing={2} className="home">
 					<div item={true} xs={12} className="home__banner">
-						<img src={ClubMaestros} alt="Club Maestros" width="35%" className="home__banner__maestros"/>
-						<img src={Profesionales} alt="Club Maestros" width="25%" className="home__banner__profesionales"/>
+						<img
+							src={ClubMaestros}
+							alt="Club Maestros"
+							width="35%"
+							className="home__banner__maestros"
+						/>
+						<img
+							src={Profesionales}
+							alt="Club Maestros"
+							width="25%"
+							className="home__banner__profesionales"
+						/>
 					</div>
 
 					<Grid item={true} xs={12}>
@@ -41,29 +65,35 @@ export const Home = () => {
 						</p>
 					</Grid>
 
-					<HomeCard
-						title="ASIGNACIÓN DE MONTOS"
-						icon={<AmountsIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/amounts");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="ASIGNACIÓN DE MONTOS"
+							icon={<AmountsIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/amounts");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="CAMPOS"
-						icon={<FieldIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/fieldsList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="CAMPOS"
+							icon={<FieldIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/fieldsList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="CARGA DE DATOS"
-						icon={<DataLoadIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/loadData");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="CARGA DE DATOS"
+							icon={<DataLoadIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/loadData");
+							}}
+						/>
+					)}
 
 					<HomeCard
 						title="CLIENTES"
@@ -73,69 +103,85 @@ export const Home = () => {
 						}}
 					/>
 
-					<HomeCard
-						title="FACTURAS"
-						icon={<BillsIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/billsList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="FACTURAS"
+							icon={<BillsIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/billsList");
+							}}
+						/>
+					)}
 
-               <HomeCard
-						title="MONITOR DE PROCESOS"
-						icon={<ProcessMonitorIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/processMonitor");
-						}}
-					/>               
+					{isAdmin && (
+						<HomeCard
+							title="MONITOR DE PROCESOS"
+							icon={<ProcessMonitorIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/processMonitor");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="MOVIMIENTOS"
-						icon={<MovementsIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/movementList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="MOVIMIENTOS"
+							icon={<MovementsIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/movementList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="NIVEL DE BENEFICIOS"
-						icon={<BenefitsIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/benefitsList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="NIVEL DE BENEFICIOS"
+							icon={<BenefitsIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/benefitsList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="PARÁMETROS"
-						icon={<ParametersIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/parametersGroupList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="PARÁMETROS"
+							icon={<ParametersIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/parametersGroupList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="PROGRAMAS DE REFERENCIACIÓN"
-						icon={<ReferredIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/referenceProgramList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="PROGRAMAS DE REFERENCIACIÓN"
+							icon={<ReferredIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/referenceProgramList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="PROMOCIONES / EXCLUSIONES"
-						icon={<PromotionsIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/promotionsList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="PROMOCIONES / EXCLUSIONES"
+							icon={<PromotionsIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/promotionsList");
+							}}
+						/>
+					)}
 
-					<HomeCard
-						title="PUNTOS DE VENTA"
-						icon={<SalesPointIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/salesPointList");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="PUNTOS DE VENTA"
+							icon={<SalesPointIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/salesPointList");
+							}}
+						/>
+					)}
 
 					<HomeCard
 						title="REDENCIONES"
@@ -145,13 +191,15 @@ export const Home = () => {
 						}}
 					/>
 
-					<HomeCard
-						title="REPORTES & PROCESOS"
-						icon={<RegisterMovementIcon className="home__icon" />}
-						handleClick={(e) => {
-							handleClick(e, "/reports");
-						}}
-					/>
+					{isAdmin && (
+						<HomeCard
+							title="REPORTES & PROCESOS"
+							icon={<RegisterMovementIcon className="home__icon" />}
+							handleClick={(e) => {
+								handleClick(e, "/reports");
+							}}
+						/>
+					)}
 				</Grid>
 			</div>
 		</>

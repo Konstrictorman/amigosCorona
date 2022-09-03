@@ -24,7 +24,9 @@ import { CustomDatePicker } from "../general/CustomDatePicker";
 import { Spinner } from "../general/Spinner";
 import { SearchTableModal } from "../general/SearchTableModal";
 import { useSelector } from "react-redux";
-import { getClientColumns } from "../clients/selectors/getClientColumns";
+import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
+import { getClientByDocument } from "../clients/selectors/geClientByDocument";
+import Swal from "sweetalert2";
 
 const validationSchema = yup.object({
 	fechaDesde: yup.date().nullable().required("Se requiere la fecha inicial"),
@@ -36,7 +38,10 @@ const validationSchema = yup.object({
 			yup.ref("fechaDesde"),
 			"La fecha final debe ser mayor a la fecha inicial"
 		),
-	codigoCliente: yup.string().nullable().required("Se requiere el código de cliente"),
+	documento: yup
+		.string()
+		//.min(6, "El documento debe tener al menos 6 caracteres")
+		.required("El documento del referenciador es requerido"),
 	llaveMaestraFlag: yup.boolean(),
 });
 
@@ -51,21 +56,22 @@ export const MovementsList = () => {
 	const handleCloseModal = () => setOpenModal(false);
 	const { tiposDocumento, motivos } = useSelector((state) => state.lists);
 
-	const columns = getClientColumns(tiposDocumento);
+	const columns = getClientColumns2(tiposDocumento);
 
 	const initialValues = {
-		codigoCliente: "",
+		documento: "",
 		fechaDesde: null,
 		fechaHasta: null,
 		llaveMaestraFlag: false,
-      idCliente: 0,
+		codigoCliente: 0,
+		idCliente: 0,
 	};
 
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-         //console.log(JSON.stringify(values,null,2));
+			//console.log(JSON.stringify(values,null,2));
 			handleSearch(values);
 		},
 
@@ -73,43 +79,48 @@ export const MovementsList = () => {
 	});
 
 	const handleClick = (params) => {
+		setLoading(true);
 		const { field, row } = params;
-		//console.log("click on ", row);
-		if (field === "codigoCliente") {
-         formik.setFieldValue("codigoCliente", row.codigoCliente);
+		console.log("click on ", row);
+		if (field === "documento") {
+			formik.setFieldValue("documento", row.documento);
+			formik.setFieldValue("codigoCliente", row.codigoCliente);
 			formik.setFieldValue("idCliente", row.id);
 		}
 		handleCloseModal();
+		setLoading(false);
 	};
 
-	const handleSearch = (values) => {
+	const handleSearch = async (values) => {
 		setLoading(true);
 		setShow(false);
-      setParams({});
+		setParams({});
 
-      //delete values.codigoCliente;
-		//console.log(JSON.stringify(values, null, 2));
-		Object.entries(values).forEach((fv) => {
-			if (fv[1]) {
-				setParams((_params) => {
-					return {
-						..._params,
-						[fv[0]]: fv[1],
-					};
-				});
-			}
-		});
-		setLoading(false);
-		setShow(true);
+		const client = await getClientByDocument(values.documento);
+		if (client) {
+			Object.entries(values).forEach((fv) => {
+				if (fv[1]) {
+					setParams((_params) => {
+						return {
+							..._params,
+							[fv[0]]: fv[1],
+						};
+					});
+				}
+			});
+			setLoading(false);
+			setShow(true);
+		} else {
+         setLoading(false);
+         Swal.fire("Atención !", `No se encontraron resultados asociados al documento ${values.documento}`, "warning");
+      }
+
 	};
 
-	const handleReset = () => {		
-      //formik.setFieldValue("codigoCliente", "");
-      
+	const handleReset = () => {
 		setParams({});
 		setShow(false);
-      formik.resetForm();
-      console.log(JSON.stringify(formik.values, null, 2));
+		formik.resetForm();
 	};
 
 	const handleCustomChange = (name, val) => {
@@ -136,32 +147,30 @@ export const MovementsList = () => {
 			>
 				<form className="container__form" onSubmit={formik.handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
-
 						<Grid item xs={3}>
 							<Item className="">
 								<TextField
-									label="Código cliente *"
-									id="codigoCliente"
+									label="Número documento *"
+									id="documento"
 									type="text"
-									name="codigoCliente"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={formik.values.codigoCliente}
-                           onChange={formik.handleChange}
+									value={formik.values.documento}
+									onChange={formik.handleChange}
 									error={
-										formik.touched.codigoCliente &&
-										Boolean(formik.errors.codigoCliente)
+										formik.touched.documento &&
+										Boolean(formik.errors.documento)
 									}
 									className="form-control"
 									variant={INPUT_TYPE}
-                           
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position="end">
 												<IconButton
 													onClick={handleOpenModal}
 													disabled={
-														formik.values.codigoCliente?.length < 4
+														formik.values.documento?.length < 4
 													}
 												>
 													<SearchIcon />
@@ -169,11 +178,10 @@ export const MovementsList = () => {
 											</InputAdornment>
 										),
 									}}
-                           
 								/>
 							</Item>
 							<FormHelperText className="helperText right">
-								{formik.touched.codigoCliente && formik.errors.codigoCliente}
+								{formik.touched.documento && formik.errors.documento}
 							</FormHelperText>
 						</Grid>
 
@@ -276,12 +284,12 @@ export const MovementsList = () => {
 			</div>
 
 			<SearchTableModal
-            title="Clientes"
+				title="Clientes"
 				handleClose={handleCloseModal}
 				handleAction={handleClick}
 				open={openModal}
-				criteria="codigoCliente"
-				filter={formik.values.codigoCliente}
+				criteria="documento"
+				filter={formik.values.documento}
 				pageSize={10}
 				columns={columns}
 				//items={selectedIds}
@@ -293,15 +301,10 @@ export const MovementsList = () => {
 				handleClick={handleClick}
 				params={params}
 				show={show}
-            motives={motivos}
+				motives={motivos}
 			/>
 
-			{show && (
-				<MovementsResume
-					fechaDesde={formik.values.fechaDesde}
-					fechaHasta={formik.values.fechaHasta}
-				/>
-			)}
+			{show && <MovementsResume params={params} />}
 		</div>
 	);
 };

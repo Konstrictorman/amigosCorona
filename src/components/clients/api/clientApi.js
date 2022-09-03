@@ -36,6 +36,23 @@ export const buscarClientes = (size, page, params) => {
 	return axios(config);
 };
 
+export const getClienteByDocumento = (doc) => {
+
+	const config = {
+		method: "get",
+		url:
+			`${API_URL}/api/clientes/search/findByDocumento?documento=${doc}`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+   
+	return axios(config);
+};
+
 export const getClienteById = (id) => {
 	const config = {
 		method: "get",

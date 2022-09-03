@@ -10,6 +10,7 @@ import { getStatusHistoryByReferrerId } from "../selectors/getStatusHistoryByRef
 import { getReferrerLevelsByReferrerId } from "../selectors/getReferrerLevelsByReferrerId";
 import moment from "moment";
 import { dateFormatter3 } from "../../../helpers/dateFormatter";
+import { getNoDomainUserName } from "../../../helpers/getNoDomainUserName";
 
 export const updateClient = async (id, client) => {
    await updateCliente(id, client);
@@ -73,22 +74,28 @@ export const loadClientById = async (id) => {
 }
 
 
-export const updateReferrer = async (id, referrer) => {
+export const updateReferrer = async (id, referrer, userName) => {
+
+   const usr = getNoDomainUserName(userName);
+
    const today = moment.now();
    const date =dateFormatter3(today);   
    referrer.fechaModificacion = date;
-   referrer.usuarioModificacion="PRUEBA";
+   referrer.usuarioModificacion=usr;
+   //console.log(JSON.stringify(referrer,null,2));
+   //console.log(userName);
    await updateReferenciador(id, referrer);
 }
 
-export const createReferrer = async (referrer) => {
+export const createReferrer = async (referrer, userName) => {
    if (referrer) {
+      const usr = getNoDomainUserName(userName);
       const today = moment.now();
       const date =dateFormatter3(today);
       referrer.fechaCreacion = date;
       referrer.fechaModificacion = date;
-      referrer.usuarioCreacion = "PRUEBA";
-      referrer.usuarioModificacion="PRUEBA";
+      referrer.usuarioCreacion = usr;
+      referrer.usuarioModificacion=usr;
       const ref = await createReferenciador(referrer);
       return ref.data;   
    } else {

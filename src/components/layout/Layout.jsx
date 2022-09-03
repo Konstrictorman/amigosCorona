@@ -6,16 +6,18 @@ import { TopBar } from "./TopBar";
 import { useDispatch, useSelector } from "react-redux";
 import { removeError,removeMessage } from "../general/actions/uiActions";
 
-
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const Layout = ({ children }) => {
+export const Layout = ({ children, name, role }) => {
 	const [open, setOpen] = useState(false);
    const [openMsg, setOpenMsg] = useState(false);
    const { error,message } = useSelector((state) => state.ui);
    const dispatch = useDispatch();
+   //const { accounts } = useMsal();
+
+   //const name = accounts[0] && accounts[0].name;
 
 	const handleClose = (event, reason) => {
 		if (reason === "clickaway") {
@@ -46,7 +48,7 @@ export const Layout = ({ children }) => {
 	return (
 		<>
 			<div className="row">
-				<TopBar />
+            <TopBar usr={name} role={role}/>            
 			</div>
 			<div className="row">
 				<div className="container">

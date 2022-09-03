@@ -2,6 +2,11 @@
 export const stringToColor =(string) => {
    let hash = 0;
    let i;
+
+   if (!string) {
+      return '#FFFFFF';
+   }
+   
  
    /* eslint-disable no-bitwise */
    for (i = 0; i < string.length; i += 1) {

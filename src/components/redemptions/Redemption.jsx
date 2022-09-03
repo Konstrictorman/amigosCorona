@@ -35,12 +35,13 @@ import { setError, setMessage } from "../general/actions/uiActions";
 import { getClientColumns2 } from "../clients/selectors/getClientColumns2";
 import { CustomNumberFormat } from "../general/CustomNumberFormat";
 import { createRedemption, processRedemptionById } from "./actions/redemptionActions";
+import { useMsal } from "@azure/msal-react";
 
 const validationSchema = yup.object({
 	documento: yup
 		.string()
-		.min(6, "El código del referenciador debe tener al menos 6 caracteres")
-		.required("El código del referenciador es requerido"),
+		.min(6, "El documento debe tener al menos 6 caracteres")
+		.required("El documento del referenciador es requerido"),
 	tipoRedencion: yup.string().nullable().required("El tipo de redención es requerido"),
 	monto: yup
 		.number()
@@ -67,6 +68,10 @@ export const Redemption = () => {
    const dispatch = useDispatch();
    const {tiposDocumento} = useSelector((state) => state.lists);
 	const columns = getClientColumns2(tiposDocumento);
+   const { accounts } = useMsal();
+
+   const userName = accounts[0] && accounts[0].username;
+
 
 	const initialValues = {
 		id: 0,
@@ -112,14 +117,14 @@ export const Redemption = () => {
    const handleCreate = (values) =>{
       console.log(JSON.stringify(values, null, 2));	
       setLoading(true);
-      createRedemption(values)
+      createRedemption(values, userName)
          .then(async (response)=> {
             await processRedemptionById(response.id);
 				setLoading(false);
             handleReset();
 				Swal.fire(
 					"Registro exitoso",
-					`Se creó la redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${values.nombre}`,
+					`Se generó las solicitud de creación de redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${referrer.nombre}.  Verifique por favor su estado en la consulta de redenciones`,
 					"success"
 				);            
          })
@@ -146,11 +151,10 @@ export const Redemption = () => {
 	const handleClick = (params) => {
       setLoading(true);
 		const { field, row } = params;
-		console.log("click on ", row);
 		if (field === "documento") {
 			formik.setFieldValue("documento", row.documento);
+         loadReferrerBalance(row.documento);
 		}
-      loadReferrerBalance(row.documento);
 		handleCloseModal();
       setLoading(false);
 	};

@@ -52,11 +52,11 @@ export const searchRegistroMovimientosSeq = (size, page, params) => {
 }
 
 
-export const getMovimientosResumen = (fInit, fFinal) => {   
+export const getMovimientosResumen = (codCliente, fInit, fFinal) => {   
 
 	const config = {
 		method: "get",
-		url:`${API_URL}/api/resumenMovimientos/search/findByParametrosResumen?fechaDesde=${fInit}&fechaHasta=${fFinal}`,
+		url:`${API_URL}/api/resumenMovimientos/search/findByParametrosResumen?codigoCliente=${codCliente}&fechaDesde=${fInit}&fechaHasta=${fFinal}`,
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "*/*",

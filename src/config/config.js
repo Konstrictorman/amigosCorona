@@ -1,4 +1,7 @@
 export const API_URL = process.env.REACT_APP_API_URL;
+export const AUTH_CLIENT_ID = process.env.REACT_APP_AUTH_CLIENT_ID;
+export const AUTH_REDIRECT_URL = process.env.REACT_APP_AUTH_REDIRECT_URL;
+export const AUTH_TENANT_ID = process.env.REACT_APP_AUTH_TENANT_ID;
 export const TIME_OUT = process.env.REACT_APP_TIME_OUT;
 export const INPUT_TYPE = process.env.REACT_APP_INPUT_TYPE;
 export const ERROR_MSG = process.env.REACT_APP_ERROR_MSG;

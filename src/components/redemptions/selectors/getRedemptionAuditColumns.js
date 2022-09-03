@@ -23,7 +23,7 @@ export const getRedemptionAuditColumns = () => {
          valueFormatter: ({ value }) => dateFormatter2(value),
       },   
       {
-         field: "usariosCreacion", 
+         field: "usuarioCreacion", 
          headerName: "Creado por", 
          flex:1,
          headerClassName: 'headerCol',
@@ -43,7 +43,7 @@ export const getRedemptionAuditColumns = () => {
          valueFormatter: ({ value }) => dateFormatter2(value),
       },   
       {
-         field: "usariosModificacion", 
+         field: "usuarioModificacion", 
          headerName: "Modificado por", 
          flex:1,
          headerClassName: 'headerCol',

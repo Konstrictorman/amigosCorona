@@ -28,6 +28,7 @@ import Swal from "sweetalert2";
 import { getReportDefinitionsByProcessType } from "../reports/selectors/getReportDefinitionsByProcessType";
 import { setError, setMessage } from "../general/actions/uiActions";
 import { loadFile } from "./actions/loadDataActions";
+import { useMsal } from "@azure/msal-react";
 
 const Input = styled("input")({
 	display: "none",
@@ -43,6 +44,9 @@ export const LoadData = () => {
 	const [loading, setLoading] = useState(false);
 	const [idDef, setIdDef] = useState(0);
 	const dispatch = useDispatch();
+	const { accounts } = useMsal();
+
+   const userName = accounts[0] && accounts[0].username;   
 
 	const initialValues = {
 		id: 0,
@@ -108,7 +112,7 @@ export const LoadData = () => {
 	const handleLoadData = (e) => {
 		setLoading(true);
 
-		launchProcess("PRUEBA", "CARGA", idDef)
+		launchProcess(userName, "CARGA", idDef)
 			.then(async (response) => {
 				console.log(response);
             const data = createFormData();

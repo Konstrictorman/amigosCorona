@@ -5,25 +5,38 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Corona_logo from "../../assets/images/centro_corona.png";
-import { Avatar, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import {
+	Avatar,
+	ListItemIcon,
+	ListItemText,
+	Menu,
+	MenuItem,
+} from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { AppMenu } from "./AppMenu";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import { stringAvatar } from "../../helpers/stringAvatar";
-import { useNavigate } from "react-router-dom";
+import { useMsal } from "@azure/msal-react";
+import { AppCashierMenu } from "./AppCashierMenu";
 
-export const TopBar = () => {
+export const TopBar = ({ usr, role}) => {
 	const [anchorEl, setAnchorEl] = useState(null);
-   const navigate = useNavigate();
+   const { instance } = useMsal();
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
+   const handleLogout = (instance) => {
+      handleClose();
+      instance.logoutRedirect().catch((e) => {
+         console.error(e);
+      });
+   };
+   
 	const handleClose = () => {
 		setAnchorEl(null);
-      navigate("logout");
 	};
 
 	const MyMenuItem = withStyles({
@@ -38,8 +51,10 @@ export const TopBar = () => {
 			<Box sx={{ flexGrow: 1 }}>
 				<AppBar position="static" className="topBar">
 					<Toolbar>
-						<AppMenu />
-                  
+                  {(role === "admin") && (<AppMenu />)}
+                  {(role === "cashier") && (<AppCashierMenu />)}
+						
+
 						<img
 							src={Corona_logo}
 							alt="Logo"
@@ -59,10 +74,10 @@ export const TopBar = () => {
 							sx={{ flexGrow: 1 }}
 							align="right"
 						>
-							{"UserName"}
+							{usr}
 						</Typography>
-						<div className="mr-5">
-                     
+
+						<div className="mr-5">                     
 							<IconButton
 								size="large"
 								aria-label="account of current user"
@@ -71,7 +86,7 @@ export const TopBar = () => {
 								onClick={handleMenu}
 								color="inherit"
 							>
-								<Avatar {...stringAvatar('Usuario Prueba')} />
+								<Avatar {...stringAvatar(usr?usr:"")} />
 							</IconButton>
    
                      
@@ -117,14 +132,17 @@ export const TopBar = () => {
                            },
                          }}
 							>
-								<MyMenuItem onClick={handleClose}>
+								<MyMenuItem onClick={()=> handleLogout(instance)}>
 									<ListItemIcon>
-										<LogoutIcon color="primary" fontSize="medium" />
+										<LogoutIcon color="primary"/>
 									</ListItemIcon>
 									<ListItemText>Salir </ListItemText>
 								</MyMenuItem>
+
 							</Menu>
+                     
 						</div>
+						
 					</Toolbar>
 				</AppBar>
 			</Box>

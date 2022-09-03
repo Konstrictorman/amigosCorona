@@ -60,3 +60,22 @@
    margin-top: 32px !important;      
 }
 
+.container__message {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: space-around;
+   align-items: center;
+
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+
+.container__message__box {
+   display: flex;
+   border-radius: 10px;
+   align-items: center;      
+}
+
