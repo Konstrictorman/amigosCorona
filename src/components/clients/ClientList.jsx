@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAnimatedStyle } from "../customHooks/useAnimatedStyle";
-import { getClientColumns } from "./selectors/getClientColumns";
 import { Button, Grid, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { INPUT_TYPE, PAGE_SIZE } from "../../config/config";
@@ -11,11 +10,12 @@ import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { PagedClientDataTable } from "./PagedClientDataTable";
 import { useSelector } from "react-redux";
 import { Item } from "../general/Item";
+import { getClientColumns2 } from "./selectors/getClientColumns2";
 
 export const ClientList = () => {
 	const navigate = useNavigate();
    const {tiposDocumento} = useSelector((state) => state.lists);
-	const columns = getClientColumns(tiposDocumento);
+	const columns = getClientColumns2(tiposDocumento);
 
 	const [params, setParams] = useState({});
 	const [show, setShow] = useState(false);
@@ -25,15 +25,15 @@ export const ClientList = () => {
 		handleInputChange,
 		reset,
 	] = useCustomForm({
-		codigoCliente: "",
+		documento: "",
 		nombreCompleto: "",
 	});
 
-	const { codigoCliente, nombreCompleto } = formValues;
+	const { documento, nombreCompleto } = formValues;
 
 	const handleClick = (params) => {
 		const { field, row } = params;
-		if (field === "codigoCliente") {
+		if (field === "documento") {
 			navigate(`/client?id=${row.id}`);
 		}
 	};
@@ -77,14 +77,14 @@ export const ClientList = () => {
 						<Grid item xs={6}>
 							<Item className="half-quarter-width right">
 								<TextField
-									label="Código cliente"
+									label="Nro documento"
 									error={false}
-									id="codigoCliente"
+									id="documento"
 									type="text"
-									name="codigoCliente"
+									name="documento"
 									autoComplete="off"
 									size="small"
-									value={codigoCliente}
+									value={documento}
 									onChange={handleInputChange}
 									className="form-control"
 									disabled={false}

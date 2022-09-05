@@ -15,6 +15,15 @@ export const getClientColumns2 = (tiposDoc) => {
    }
 
 	const columns = [
+		{
+			field: "documento",
+			headerName: "Nro de documento",
+			flex: 2,
+			headerClassName: "headerCol",
+			headerAlign: "center",
+			align: "center",
+			cellClassName: "clickableCell",                  
+		},       
       {
 			field: "codigoCliente",
 			headerName: "Código Cliente",
@@ -32,15 +41,6 @@ export const getClientColumns2 = (tiposDoc) => {
 			align: "center",
          valueGetter: ({value})=> getDocumentTypeName(value),     
 		},          
-		{
-			field: "documento",
-			headerName: "Nro de documento",
-			flex: 2,
-			headerClassName: "headerCol",
-			headerAlign: "center",
-			align: "center",
-			cellClassName: "clickableCell",                  
-		}, 
       {
 			field: "nombreCompleto",
 			headerName: "Nombre completo",
