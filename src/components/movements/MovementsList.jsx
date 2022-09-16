@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
 	Button,
-	Checkbox,
-	FormControlLabel,
 	FormHelperText,
 	Grid,
 	IconButton,
@@ -147,7 +145,7 @@ export const MovementsList = () => {
 			>
 				<form className="container__form" onSubmit={formik.handleSubmit}>
 					<Grid container spacing={2} rowSpacing={1}>
-						<Grid item xs={3}>
+						<Grid item xs={4}>
 							<Item className="">
 								<TextField
 									label="Número documento *"
@@ -185,7 +183,7 @@ export const MovementsList = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={3}>
+						<Grid item xs={4}>
 							<Item className="">
 								<CustomDatePicker
 									label="Fecha inicial *"
@@ -206,7 +204,7 @@ export const MovementsList = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={3}>
+						<Grid item xs={4}>
 							<Item className="">
 								<CustomDatePicker
 									label="Fecha final *"
@@ -226,7 +224,7 @@ export const MovementsList = () => {
 								{formik.touched.fechaHasta && formik.errors.fechaHasta}
 							</FormHelperText>
 						</Grid>
-
+{/*
 						<Grid item xs={3}>
 							<div className="center">
 								<FormControlLabel
@@ -247,7 +245,7 @@ export const MovementsList = () => {
 								/>
 							</div>
 						</Grid>
-
+*/}
 						<Grid item xs={12}>
 							<div>
 								<Button

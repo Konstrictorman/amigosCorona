@@ -42,8 +42,7 @@ const validationSchema = yup.object({
 		.required("Se requiere la fecha de asignación"),
 	valor: yup
 		.number()
-		.required("El valor del importe es requerido")
-		.positive("Sólo se aceptan números positivos"),
+		.required("El valor del importe es requerido"),
 	name: yup.string().nullable(),
 	programaRef: yup.string().nullable(),
 });
