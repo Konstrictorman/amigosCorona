@@ -124,3 +124,19 @@ export const procesarRedencionById = (id) => {
    
 	return axios(config);     
 }
+
+export const ejecutarReversionById = (id) => {
+	const config = {
+		method: "patch",
+		url:
+			`${API_URL}/ReversarRedencion/${id}`,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "*/*",
+			"Access-Control-Allow-Origin": "*",
+		},
+		"Access-Control-Allow-Headers": "Access-Control-Allow-Origin",
+	};
+   
+	return axios(config);     
+}

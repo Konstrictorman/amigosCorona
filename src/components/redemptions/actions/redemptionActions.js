@@ -1,18 +1,21 @@
 import moment from "moment";
-import { dateFormatter3, dateFormatter4 } from "../../../helpers/dateFormatter";
+import { dateFormatter4 } from "../../../helpers/dateFormatter";
 import { getNoDomainUserName } from "../../../helpers/getNoDomainUserName";
-import { addRedencion, descargarRedencionById, procesarRedencionById, updateRedencion } from "../api/redemptionsApi"
+import { addRedencion, descargarRedencionById, ejecutarReversionById, procesarRedencionById } from "../api/redemptionsApi"
 
 
 export const reverseRedemption = async(red) => {
+   /*
    red.estadoRedencion = "DE";
    red.amount =0;
    red.fechaModificacion = dateFormatter3(new Date());
-   red.actionDisabled=true;
+   
    const pv = red.puntoVenta;
    delete red.puntoVenta;
-   await updateRedencion(red.id, red);
    red.puntoVenta = pv;
+   */
+   await ejecutarReversionById(red.id);
+   red.actionDisabled=true;   
 }
 
 export const createRedemption = async(red,userName)=> {
