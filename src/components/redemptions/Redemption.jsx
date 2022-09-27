@@ -69,7 +69,8 @@ export const Redemption = () => {
    const {tiposDocumento} = useSelector((state) => state.lists);
 	const columns = getClientColumns2(tiposDocumento);
    const { accounts } = useMsal();
-
+   const [redemptionTypesFilter, setRedemptionTypesFilter] = useState([]);
+   //const redemptionTypesFilter = [];
    const userName = accounts[0] && accounts[0].username;
 
 
@@ -166,6 +167,12 @@ export const Redemption = () => {
             if (response) {              
                setReferrer(response);      
                formik.setFieldValue("idCliente",response.idCliente);         
+               if (response.flagEnvEle) {
+                  setRedemptionTypesFilter([...redemptionTypesFilter, "NEQUI"]);
+               }
+               if (response.flagGenBono) {
+                  setRedemptionTypesFilter([...redemptionTypesFilter, "BONO"]);
+               }               
                if (response.saldo>0) {
                   setAllow(true);
                } else {
@@ -364,6 +371,7 @@ export const Redemption = () => {
 										formik.touched.tipoRedencion &&
 										Boolean(formik.errors.tipoRedencion)
 									}
+                           filterArr={redemptionTypesFilter}
 								/>             
 								</Item>
 								<FormHelperText className="helperText">

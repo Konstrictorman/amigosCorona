@@ -6,9 +6,13 @@ import PropTypes from 'prop-types';
 import { INPUT_TYPE } from "../../config/config";
 
 export const FieldsComboBox = (params) => {
-	const { id, label, value, type, handleChange, valueType, error, labelType } = params;
-   const items = useSelector((state) => state.lists[`${type}`]);
+	const { id, label, value, type, handleChange, valueType, error, labelType, filterArr } = params;
+   let items = useSelector((state) => state.lists[`${type}`]);
 
+
+   if (filterArr?.length>0) {
+      items = items.filter(x=> filterArr.includes(x.valor));        
+   }
    
 
 	return (
