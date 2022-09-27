@@ -115,24 +115,36 @@ export const Redemption = () => {
 		enableReinitialize: true,
 	});
 
-   const handleCreate = (values) =>{
+   const handleCreate = async (values) =>{
       console.log(JSON.stringify(values, null, 2));	
       setLoading(true);
-      createRedemption(values, userName)
-         .then(async (response)=> {
-            await processRedemptionById(response.id);
-				setLoading(false);
-            handleReset();
-				Swal.fire(
-					"Registro exitoso",
-					`Se generó las solicitud de creación de redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${referrer.nombre}.  Verifique por favor su estado en la consulta de redenciones`,
-					"success"
-				);            
-         })
-			.catch((e) => {
-				setLoading(false);
-				Swal.fire("Error", e.message, "error");
-			});         
+      try {
+         const response = await createRedemption(values, userName)
+         const resp = await processRedemptionById(response.id);
+
+               
+         handleReset();
+         setLoading(false);
+         if (resp?.data === "LI") {
+            Swal.fire(
+               "Límite diario alcanzado",
+               `Se ha alcanzado para el día de hoy el número máximo de transacciones ${values.tipoRedencion} para este referenciador`,
+               "warning"
+            );               
+
+         } else {
+            Swal.fire(
+               "Registro exitoso",
+               `Se generó las solicitud de creación de redención de tipo ${values.tipoRedencion} por valor de $${values.monto} para ${referrer.nombre}.  Verifique por favor su estado en la consulta de redenciones`,
+               "success"
+            );               
+
+         }
+         //console.log(resp);
+      } catch(error) {
+         setLoading(false);
+         Swal.fire("Error", error.message, "error");
+      }
    }
 
 
@@ -167,12 +179,19 @@ export const Redemption = () => {
             if (response) {              
                setReferrer(response);      
                formik.setFieldValue("idCliente",response.idCliente);         
+               console.log(JSON.stringify(redemptionTypesFilter,null,2));   
                if (response.flagEnvEle) {
-                  setRedemptionTypesFilter([...redemptionTypesFilter, "NEQUI"]);
+                  const arr = redemptionTypesFilter;
+                  arr.push("NEQUI");
+                  setRedemptionTypesFilter(arr);
                }
+               console.log(JSON.stringify(redemptionTypesFilter,null,2));   
                if (response.flagGenBono) {
-                  setRedemptionTypesFilter([...redemptionTypesFilter, "BONO"]);
+                  const arr = redemptionTypesFilter;
+                  arr.push("BONO");
+                  setRedemptionTypesFilter(arr);
                }               
+               console.log(JSON.stringify(redemptionTypesFilter,null,2));   
                if (response.saldo>0) {
                   setAllow(true);
                } else {

@@ -10,9 +10,11 @@ export const FieldsComboBox = (params) => {
    let items = useSelector((state) => state.lists[`${type}`]);
 
 
+   
    if (filterArr?.length>0) {
       items = items.filter(x=> filterArr.includes(x.valor));        
    }
+   
    
 
 	return (

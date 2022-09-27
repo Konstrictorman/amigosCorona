@@ -39,7 +39,8 @@ export const createRedemption = async(red,userName)=> {
 
 export const processRedemptionById = async (id) => {
    if (id) {
-      await procesarRedencionById(id);
+      const resp = await procesarRedencionById(id);
+      return resp;
    } else {
       throw new Error("Se requiere el id de la redención a procesar");
    }
