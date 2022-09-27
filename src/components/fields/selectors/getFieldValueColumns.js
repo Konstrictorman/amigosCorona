@@ -7,7 +7,7 @@ export const getFieldValueColumns = (handleDelete, valoresCampo) => {
 
    const getFatherName = (val) => {
 
-      
+      //console.log(JSON.stringify(valoresCampo,null,2));
       if (valoresCampo) {
          const desc = valoresCampo.filter(vc => vc.id===val);
          if (desc[0]) {

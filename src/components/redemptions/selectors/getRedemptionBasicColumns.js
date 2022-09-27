@@ -2,7 +2,7 @@ import FastRewindIcon from '@mui/icons-material/FastRewind';
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { dateFormatter2 } from '../../../helpers/dateFormatter';
 import DownloadIcon from '@mui/icons-material/Download';
-
+import { currencyFormatter } from "../../../helpers/currencyFormatter";
 
 export const getRedemptionBasicColumns = (salesPoints, statusList, handleRevert, handleDownload) => {
 
@@ -56,7 +56,7 @@ export const getRedemptionBasicColumns = (salesPoints, statusList, handleRevert,
       {
          field: "idPuntoVenta", 
          headerName: "Pto de venta", 
-         flex:1,
+         flex:0.8,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
@@ -95,16 +95,26 @@ export const getRedemptionBasicColumns = (salesPoints, statusList, handleRevert,
       {
          field: "transId", 
          headerName: "Bono/Transacción", 
-         flex:1,
+         flex:0.7,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'left' ,
          type: 'string'   
-      },              
+      },         
+      {
+         field: "monto", 
+         headerName: "Valor", 
+         flex:0.5,
+         headerClassName: 'headerCol',
+         headerAlign: 'center', 
+         align: 'right' ,
+         type: 'string',
+         valueFormatter: ({ value }) => currencyFormatter(value),         
+      },            
       {
          field: "revertir", 
          headerName: "Revertir", 
-         flex:0.6,
+         flex:0.4,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,
@@ -120,7 +130,7 @@ export const getRedemptionBasicColumns = (salesPoints, statusList, handleRevert,
       {
          field: "download", 
          headerName: "Descargar", 
-         flex:0.6,
+         flex:0.4,
          headerClassName: 'headerCol',
          headerAlign: 'center', 
          align: 'center' ,

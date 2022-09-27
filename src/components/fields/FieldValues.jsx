@@ -61,7 +61,7 @@ const validationSchema = yup.object({
 		.required("El nombre del ítem es requerido"),
 	valor: yup
 		.string("valor")
-		.min(3, "El valor del ítem debe tener al menos 3 caracteres")
+		.min(1, "El valor del ítem debe tener al menos 1 caracter")
 		.required("El valor del ítem es requerido"),
 });
 
@@ -76,7 +76,7 @@ export const FieldValues = (attrs) => {
 	} = attrs;
 
 	//console.log("rowItems:",rowItems);
-   console.log("hijos:", JSON.stringify(rowItems,null,2));
+   //console.log("hijos:", JSON.stringify(rowItems,null,2));
 	const initialValues = {
 		id: 0,
 		descripcion: "",
@@ -133,12 +133,14 @@ export const FieldValues = (attrs) => {
 			...values,
 			idCampo,
 		};
-
+      //console.log(JSON.stringify(camposPadre));
+      
 		const pv = camposPadre.find(
 			(elem) => elem.id?.toString() === param.idValorPadre?.toString()
 		);
 		const fatherName = pv?.valor;
-
+      
+      
 		addFieldValue(param)
 			.then((response) => {
 				const data = response.data;
@@ -149,7 +151,7 @@ export const FieldValues = (attrs) => {
 					valorPadre: fatherName,
 					actionDisabled: true,
 				};
-
+            //console.log(JSON.stringify(newFieldValue,null,2));
 				setRows([...rows, newFieldValue]);
 				reloadLists();
 				setLoading(false);

@@ -100,6 +100,7 @@ export const Benefit = () => {
 		estado: "",
 		flagDefecto: false,
 		flagEnvEle: false,
+      flagGenBono: false,
 		frecuenciaComp: 0,
 		idProgramaReferenciacion: "",
 		numMesesCom: 0,
@@ -581,7 +582,7 @@ export const Benefit = () => {
 							</FormHelperText>
 						</Grid>
 
-						<Grid item xs={8} className=" left-align">
+						<Grid item xs={4} className=" left-align">
 							<FormControlLabel
 								className=""
 								control={
@@ -594,6 +595,23 @@ export const Benefit = () => {
 								}
 								labelPlacement="start"
 								label="Envío electrónico de dinero"
+							/>
+						</Grid>
+
+                  
+						<Grid item xs={4} className=" left-align">
+							<FormControlLabel
+								className=""
+								control={
+									<Switch
+										id="flagGenBono"
+										name="flagGenBono"
+										checked={formik.values.flagGenBono}
+										onChange={formik.handleChange}
+									/>
+								}
+								labelPlacement="start"
+								label="Redención bono"
 							/>
 						</Grid>
 

@@ -22,7 +22,7 @@ export const getRedemptionsByParams = async(size,page,params) =>{
 
    redemptions.data._embedded.redencions.forEach((f)=> {
       f.actionDisabled = (f.estadoRedencion !== "OK" || f.tipoRedencion === "BONO");
-      f.downloadable = (f.estadoRedencion === "OK"  && f.tipoRedencion === "BONO");
+      f.downloadable = (f.estadoRedencion === "OK");
    })
    
    return redemptions;
