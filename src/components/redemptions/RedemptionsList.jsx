@@ -174,7 +174,7 @@ export const RedemptionsList = () => {
       setLoading(true);
 		const { field, row } = params;
 		if (field === "documento") {
-         formik.setFieldValue("documento", row.codigoCliente);
+         formik.setFieldValue("documento", row.documento);
 			formik.setFieldValue("idCliente", row.id);
 		}
 
