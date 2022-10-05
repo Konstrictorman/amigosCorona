@@ -57,7 +57,7 @@ import {
 const validationSchema = yup.object({
 	descripcion: yup
 		.string("descripcion")
-		.min(3, "El nombre del ítem debe tener al menos 3 caracteres")
+		.min(2, "El nombre del ítem debe tener al menos 2 caracteres")
 		.required("El nombre del ítem es requerido"),
 	valor: yup
 		.string("valor")
